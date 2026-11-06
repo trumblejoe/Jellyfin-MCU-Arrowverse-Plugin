@@ -51,6 +51,20 @@ The DLL ends up in `src/Jellyfin.Plugin.WatchOrder/bin/Release/net10.0/Jellyfin.
 
 ## Install
 
+### From the Jellyfin catalog (recommended; gets updates)
+
+1. Dashboard → Plugins → **Repositories** (or **Manage Repositories**) → add:
+   - Name: `Watch Order Playlists`
+   - URL: `https://github.com/trumblejoe/Jellyfin-MCU-Arrowverse-Plugin/releases/latest/download/manifest.json`
+2. Dashboard → Plugins → **Catalog** → **Watch Order Playlists** → Install.
+3. Restart Jellyfin, then follow steps 4 and 5 below.
+
+Jellyfin will then offer an update each time a new version tag is released.
+If you installed by hand before, delete that `WatchOrderPlaylists` folder first so the
+plugin isn't loaded twice.
+
+### By hand
+
 1. Create the folder `<jellyfin data dir>/plugins/WatchOrderPlaylists/`. The data
    dir is `C:\ProgramData\Jellyfin\Server` on Windows, `/var/lib/jellyfin` on Linux, and
    `/config` in Docker.

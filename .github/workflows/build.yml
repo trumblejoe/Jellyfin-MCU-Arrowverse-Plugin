@@ -15,6 +15,8 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.ver.outputs.version }}
     steps:
       - uses: actions/checkout@v7
 
@@ -62,16 +64,45 @@ jobs:
     permissions:
       contents: write
     steps:
+      - uses: actions/checkout@v7
+
       - uses: actions/download-artifact@v8
         with:
           path: dist
           merge-multiple: true
 
+      # Jellyfin plugin repository manifest. It's attached to each release, so the URL
+      #   https://github.com/<owner>/<repo>/releases/latest/download/manifest.json
+      # always points at the newest version. Nothing is committed back to the repo.
+      - name: Build manifest.json
+        env:
+          VERSION: ${{ needs.build.outputs.version }}
+        run: |
+          zip="dist/watch-order-playlists_${VERSION}.zip"
+          field() { grep "^$1:" build.yaml | head -1 | sed -E "s/^$1:[[:space:]]*\"?([^\"]*)\"?[[:space:]]*$/\1/"; }
+          jq -n \
+            --arg guid "$(field guid)" \
+            --arg name "$(field name)" \
+            --arg overview "$(field overview)" \
+            --arg owner "$(field owner)" \
+            --arg category "$(field category)" \
+            --arg targetAbi "$(field targetAbi)" \
+            --arg version "$VERSION" \
+            --arg checksum "$(md5sum "$zip" | cut -d' ' -f1)" \
+            --arg timestamp "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --arg sourceUrl "https://github.com/${GITHUB_REPOSITORY}/releases/download/${GITHUB_REF_NAME}/$(basename "$zip")" \
+            --arg changelog "https://github.com/${GITHUB_REPOSITORY}/releases/tag/${GITHUB_REF_NAME}" \
+            '[{guid:$guid, name:$name, overview:$overview, description:$overview, owner:$owner, category:$category,
+               versions:[{version:$version, changelog:$changelog, targetAbi:$targetAbi,
+                          sourceUrl:$sourceUrl, checksum:$checksum, timestamp:$timestamp}]}]' \
+            > dist/manifest.json
+          cat dist/manifest.json
+
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
         run: >
-          gh release create "$GITHUB_REF_NAME" dist/*.zip
+          gh release create "$GITHUB_REF_NAME" dist/*.zip dist/manifest.json
           --repo "$GITHUB_REPOSITORY"
           --title "$GITHUB_REF_NAME"
           --generate-notes
