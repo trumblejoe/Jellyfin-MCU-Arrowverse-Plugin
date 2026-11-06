@@ -87,3 +87,7 @@ The DLL ends up in `src/Jellyfin.Plugin.WatchOrder/bin/Release/net10.0/Jellyfin.
 
 If you rename a playlist, the plugin stops managing it and creates a fresh one with the
 original name on the next sync.
+
+## License
+
+GPL-3.0. See [LICENSE](LICENSE). This matches Jellyfin's plugin libraries and official plugins.
