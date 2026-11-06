@@ -1,0 +1,73 @@
+name: Update guide data
+
+# Keeps a backup copy of both guides on the "data" branch, so the plugin can still rebuild
+# playlists if a guide site goes offline. Commits only when the data actually changes.
+# A failed run (site down or looks broken) means the existing backup was kept; GitHub emails you.
+on:
+  schedule:
+    - cron: '17 6 * * *'   # daily, 06:17 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-data
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Check out data branch
+        run: |
+          if git ls-remote --exit-code --heads origin data >/dev/null; then
+            git fetch --depth=1 origin data
+            git worktree add -B data data-branch FETCH_HEAD
+          else
+            git worktree add --orphan -b data data-branch
+          fi
+
+      - name: Refresh backup copies
+        id: refresh
+        run: dotnet run -c Release --project tools/GuideDataUpdater -- data-branch
+        continue-on-error: true
+
+      - name: Commit changes
+        working-directory: data-branch
+        run: |
+          cat > README.md <<'EOF'
+          # Guide data backup
+
+          Maintained automatically by the "Update guide data" workflow on `main`. The
+          Watch Order Playlists plugin falls back to these files if a guide site is unavailable.
+
+          Data comes from, and all credit goes to:
+          - https://arrowverse.info/
+          - https://aaronperris.com/mcu/ (by Aaron Perris)
+
+          The files keep only what the plugin needs for ordering: show names, season and episode
+          numbers, dates, order positions, and movie titles. They contain no episode titles or
+          synopses.
+          EOF
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes."
+          else
+            git -c user.name="github-actions[bot]" -c user.email="41898299+github-actions[bot]@users.noreply.github.com" \
+              commit -q -m "Update guide data"
+            git push -q origin HEAD:data
+            echo "Backup updated."
+          fi
+
+      - name: Fail if a guide couldn't be refreshed
+        if: steps.refresh.outcome == 'failure'
+        run: |
+          echo "::error::A guide couldn't be refreshed (site down or looked broken). The existing backup was kept."
+          exit 1

@@ -1,12 +1,12 @@
 name: Build
 
-# Every push / PR: build + test.
+# Every push to main: build + test.
 # Push a tag like v1.0.1: also publishes a GitHub Release with the plugin zip.
+# Only people with write access can trigger this (no pull_request trigger, so outsiders can't).
 on:
   push:
     branches: [main]
     tags: ['v*']
-  pull_request:
   workflow_dispatch:
 
 permissions:

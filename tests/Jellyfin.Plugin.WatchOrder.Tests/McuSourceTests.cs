@@ -73,6 +73,15 @@ public class McuSourceTests
     }
 
     [Fact]
+    public void Episode_titles_are_dropped_at_parse_time()
+    {
+        var items = McuSource.ParseItems(Json);
+
+        Assert.All(items.Where(i => i.Show is not null), i => Assert.Null(i.Title));
+        Assert.Equal("Movie One", items.Single(i => i.Show is null && i.Canon && i.ReleaseDate!.Value.Year == 2010).Title);
+    }
+
+    [Fact]
     public void Empty_feed_throws_so_playlists_are_left_alone()
     {
         Assert.Throws<InvalidDataException>(() => McuSource.ParseItems("[]"));

@@ -1,8 +1,7 @@
-using Jellyfin.Data;
 using Jellyfin.Data.Enums;
-using Jellyfin.Database.Implementations.Enums;
 using Jellyfin.Plugin.WatchOrder.Configuration;
 using Jellyfin.Plugin.WatchOrder.Sources;
+using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Playlists;
 using MediaBrowser.Model.Playlists;
@@ -13,7 +12,10 @@ namespace Jellyfin.Plugin.WatchOrder.Sync;
 
 /// <summary>
 /// Scheduled task (Dashboard → Scheduled Tasks → Watch Order Playlists) that downloads the
-/// guides, matches them to the library, and creates/reorders the playlists.
+/// guides, matches them to the library, and creates/reorders each selected user's private playlists.
+///
+/// If a guide can't be downloaded (or looks broken), the newest backup is used instead: the
+/// copy saved on this server, or the copy the GitHub workflow keeps on the repo's data branch.
 ///
 /// Spoiler policy: logs only counts, show names, and season/episode codes — never
 /// episode titles, movie titles, or synopses.
@@ -23,6 +25,7 @@ public class SyncPlaylistsTask : IScheduledTask
     private readonly ILibraryManager _libraryManager;
     private readonly IPlaylistManager _playlistManager;
     private readonly IUserManager _userManager;
+    private readonly IUserDataManager _userDataManager;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<SyncPlaylistsTask> _logger;
 
@@ -30,12 +33,14 @@ public class SyncPlaylistsTask : IScheduledTask
         ILibraryManager libraryManager,
         IPlaylistManager playlistManager,
         IUserManager userManager,
+        IUserDataManager userDataManager,
         IHttpClientFactory httpClientFactory,
         ILogger<SyncPlaylistsTask> logger)
     {
         _libraryManager = libraryManager;
         _playlistManager = playlistManager;
         _userManager = userManager;
+        _userDataManager = userDataManager;
         _httpClientFactory = httpClientFactory;
         _logger = logger;
     }
@@ -56,25 +61,34 @@ public class SyncPlaylistsTask : IScheduledTask
 
     public async Task ExecuteAsync(IProgress<double> progress, CancellationToken cancellationToken)
     {
-        var config = Plugin.Instance?.Configuration ?? new PluginConfiguration();
-        var ownerId = ResolveOwner(config);
-        if (ownerId is null)
+        var plugin = Plugin.Instance;
+        var config = plugin?.Configuration ?? new PluginConfiguration();
+        var users = ManagedPlaylists.ResolveUsers(_userManager, config);
+        if (users.Count == 0)
         {
-            _logger.LogError("Watch Order: no playlist owner found. Pick a user on the plugin settings page.");
+            _logger.LogError("Watch Order: no users selected. Tick at least one user on the plugin settings page.");
             return;
         }
 
-        var lists = await DownloadListsAsync(config, cancellationToken).ConfigureAwait(false);
+        var store = new GuideSnapshotStore(plugin?.DataFolderPath ?? Path.GetTempPath());
+        var lists = await GetListsAsync(config, store, cancellationToken).ConfigureAwait(false);
         progress.Report(30);
 
         var matcher = new LibraryMatcher(_libraryManager, config.SeriesAliases);
+        var matched = lists.Select(l => (l.PlaylistName, Ids: MatchAndLog(l, matcher))).ToList();
         progress.Report(50);
 
-        for (var i = 0; i < lists.Count; i++)
+        var steps = users.Count * matched.Count;
+        var done = 0;
+        foreach (var userId in users)
         {
-            cancellationToken.ThrowIfCancellationRequested();
-            await SyncOneAsync(lists[i], matcher, ownerId.Value, config.MakePublic).ConfigureAwait(false);
-            progress.Report(50 + (50.0 * (i + 1) / lists.Count));
+            foreach (var (name, ids) in matched)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                var desired = config.RemoveWatched ? WithoutWatched(ids, userId) : ids;
+                await SyncOneAsync(name, desired, userId).ConfigureAwait(false);
+                progress.Report(50 + (50.0 * ++done / steps));
+            }
         }
 
         if (matcher.MissingSeries.Count > 0)
@@ -85,27 +99,22 @@ public class SyncPlaylistsTask : IScheduledTask
         }
     }
 
-    private async Task<List<WatchOrderList>> DownloadListsAsync(PluginConfiguration config, CancellationToken ct)
+    private async Task<List<WatchOrderList>> GetListsAsync(PluginConfiguration config, GuideSnapshotStore store, CancellationToken ct)
     {
         var lists = new List<WatchOrderList>();
         var http = _httpClientFactory.CreateClient();
-        http.DefaultRequestHeaders.UserAgent.ParseAdd("Jellyfin-WatchOrderPlaylists/1.0");
+        http.DefaultRequestHeaders.UserAgent.ParseAdd("Jellyfin-WatchOrderPlaylists/1.1");
 
         if (config.EnableArrowverse)
         {
-            try
+            var result = await GuideDownloader.ArrowverseAsync(http, store, config.BackupDataUrl, ct).ConfigureAwait(false);
+            LogOutcome("arrowverse.info", result.Outcome, result.SavedUtc, result.FreshCount, result.Error);
+            if (result.Items is not null)
             {
-                var html = await http.GetStringAsync(ArrowverseSource.Url, ct).ConfigureAwait(false);
-                lists.Add(ArrowverseSource.Parse(html));
-            }
-            catch (Exception ex) when (ex is HttpRequestException or InvalidDataException)
-            {
-                // Leave the existing playlist untouched rather than emptying it.
-                _logger.LogWarning(ex, "Watch Order: couldn't read arrowverse.info; Arrowverse playlist left as-is.");
+                lists.Add(new WatchOrderList(ArrowverseSource.PlaylistName, result.Items));
             }
         }
 
-        // Each MCU order has its own on/off switch and its own canon-only switch.
         var mcuOrders = new List<(McuOrder Order, bool CanonOnly)>();
         if (config.EnableMcuRelease)
         {
@@ -124,25 +133,44 @@ public class SyncPlaylistsTask : IScheduledTask
 
         if (mcuOrders.Count > 0)
         {
-            try
+            var result = await GuideDownloader.McuAsync(http, store, config.BackupDataUrl, ct).ConfigureAwait(false);
+            LogOutcome("the MCU guide", result.Outcome, result.SavedUtc, result.FreshCount, result.Error);
+            if (result.Items is not null)
             {
-                var json = await http.GetStringAsync(McuSource.Url, ct).ConfigureAwait(false);
-                var items = McuSource.ParseItems(json);
                 var today = DateOnly.FromDateTime(DateTime.Now);
-                lists.AddRange(mcuOrders.Select(o => McuSource.Build(items, o.Order, o.CanonOnly, today)));
-            }
-            catch (Exception ex) when (ex is HttpRequestException or InvalidDataException or System.Text.Json.JsonException)
-            {
-                _logger.LogWarning(ex, "Watch Order: couldn't read the MCU guide; MCU playlists left as-is.");
+                lists.AddRange(mcuOrders.Select(o => McuSource.Build(result.Items, o.Order, o.CanonOnly, today)));
             }
         }
 
         return lists;
     }
 
-    private async Task SyncOneAsync(WatchOrderList list, LibraryMatcher matcher, Guid ownerId, bool makePublic)
+    private void LogOutcome(string source, SnapshotOutcome outcome, DateTime? savedUtc, int? freshCount, string? error)
     {
-        var desired = new List<Guid>();
+        switch (outcome)
+        {
+            case SnapshotOutcome.UsedSavedCopy:
+                _logger.LogWarning("Watch Order: couldn't read {Source} ({Error}); using the saved copy from {Saved:u}.", source, error, savedUtc);
+                break;
+            case SnapshotOutcome.UsedGitHubCopy:
+                _logger.LogWarning("Watch Order: couldn't read {Source} ({Error}); using the GitHub backup copy from {Saved:u}.", source, error, savedUtc);
+                break;
+            case SnapshotOutcome.RejectedShrunkDownload:
+                _logger.LogWarning(
+                    "Watch Order: {Source} returned only {Count} entries, far fewer than the backup; it may be broken. Using the backup from {Saved:u}.",
+                    source,
+                    freshCount,
+                    savedUtc);
+                break;
+            case SnapshotOutcome.Unavailable:
+                _logger.LogWarning("Watch Order: couldn't read {Source} ({Error}) and there's no backup copy; its playlists were left as they are.", source, error);
+                break;
+        }
+    }
+
+    private List<Guid> MatchAndLog(WatchOrderList list, LibraryMatcher matcher)
+    {
+        var ids = new List<Guid>();
         var seen = new HashSet<Guid>();
         var missingEpisodes = 0;
         var missingMovies = 0;
@@ -152,7 +180,7 @@ public class SyncPlaylistsTask : IScheduledTask
             {
                 if (seen.Add(id))
                 {
-                    desired.Add(id);
+                    ids.Add(id);
                 }
             }
             else if (entry.IsEpisode)
@@ -168,14 +196,16 @@ public class SyncPlaylistsTask : IScheduledTask
         _logger.LogInformation(
             "Watch Order: {Playlist}: {Found} of {Total} in library ({MissingEp} episodes, {MissingMovies} movies/specials not found).",
             list.PlaylistName,
-            desired.Count,
+            ids.Count,
             list.Entries.Count,
             missingEpisodes,
             missingMovies);
+        return ids;
+    }
 
-        var existing = _playlistManager.GetPlaylists(ownerId)
-            .FirstOrDefault(p => string.Equals(p.Name, list.PlaylistName, StringComparison.OrdinalIgnoreCase));
-
+    private async Task SyncOneAsync(string playlistName, List<Guid> desired, Guid userId)
+    {
+        var existing = ManagedPlaylists.Find(_playlistManager, userId, playlistName);
         if (existing is null)
         {
             if (desired.Count == 0)
@@ -185,20 +215,22 @@ public class SyncPlaylistsTask : IScheduledTask
 
             await _playlistManager.CreatePlaylist(new PlaylistCreationRequest
             {
-                Name = list.PlaylistName,
+                Name = playlistName,
                 ItemIdList = desired,
                 MediaType = MediaType.Video,
-                UserId = ownerId,
-                Public = makePublic
+                UserId = userId,
+                Public = false
             }).ConfigureAwait(false);
-            _logger.LogInformation("Watch Order: created playlist {Playlist}.", list.PlaylistName);
+            _logger.LogInformation("Watch Order: created {Playlist} for user {UserId}.", playlistName, userId);
             return;
         }
 
         var current = existing.LinkedChildren.Select(c => c.ItemId ?? Guid.Empty).ToList();
         var orderChanged = !current.SequenceEqual(desired);
-        var sharingChanged = existing.OpenAccess != makePublic;
-        if (!orderChanged && !sharingChanged)
+
+        // Each user has their own copy now, so a shared (pre-1.1) playlist is made private.
+        var wasShared = existing.OpenAccess;
+        if (!orderChanged && !wasShared)
         {
             return;
         }
@@ -206,22 +238,28 @@ public class SyncPlaylistsTask : IScheduledTask
         await _playlistManager.UpdatePlaylist(new PlaylistUpdateRequest
         {
             Id = existing.Id,
-            UserId = ownerId,
+            UserId = userId,
             Ids = orderChanged ? desired : null,
-            Public = makePublic
+            Public = false
         }).ConfigureAwait(false);
-        _logger.LogInformation("Watch Order: updated playlist {Playlist}.", list.PlaylistName);
+        _logger.LogInformation("Watch Order: updated {Playlist} for user {UserId} ({Count} items).", playlistName, userId, desired.Count);
     }
 
-    private Guid? ResolveOwner(PluginConfiguration config)
+    /// <summary>Drops items the user has already watched, keeping order.</summary>
+    private List<Guid> WithoutWatched(List<Guid> ids, Guid userId)
     {
-        if (Guid.TryParse(config.OwnerUserId, out var id) && _userManager.GetUserById(id) is not null)
+        var user = _userManager.GetUserById(userId);
+        if (user is null || ids.Count == 0)
         {
-            return id;
+            return ids;
         }
 
-        return _userManager.GetUsers()
-            .FirstOrDefault(u => u.HasPermission(PermissionKind.IsAdministrator))
-            ?.Id;
+        var items = ids.Select(_libraryManager.GetItemById).OfType<BaseItem>().ToList();
+        var userData = _userDataManager.GetUserDataBatch(items, user);
+        var watched = items
+            .Where(i => userData.TryGetValue(i.Id, out var d) && d.Played)
+            .Select(i => i.Id)
+            .ToHashSet();
+        return ids.Where(id => !watched.Contains(id)).ToList();
     }
 }

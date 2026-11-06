@@ -36,6 +36,19 @@ public static class McuSource
             throw new InvalidDataException("mcu.json had no items; the data format may have changed.");
         }
 
+        // Episodes are matched by show/season/episode, so their titles are dropped immediately
+        // and never kept in memory, logs, or the saved copy.
+        foreach (var item in items.Where(i => i.Show is not null))
+        {
+            item.Title = null;
+        }
+
+        return Index(items);
+    }
+
+    /// <summary>Records each item's position in the feed (tie-break for same-day releases).</summary>
+    public static IReadOnlyList<McuItem> Index(IReadOnlyList<McuItem> items)
+    {
         for (var i = 0; i < items.Count; i++)
         {
             items[i].SourceIndex = i;
@@ -68,7 +81,7 @@ public static class McuSource
 
     public sealed class McuItem
     {
-        // Only used to match movies/specials to the library; never logged.
+        // Movies/specials only (cleared for episodes). Used to match the library; never logged.
         [JsonPropertyName("title")]
         public string? Title { get; set; }
 

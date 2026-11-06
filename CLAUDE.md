@@ -9,7 +9,9 @@ and aaronperris.com/mcu (`mcu.json`). See README.md for layout.
   (field names, counts, show names, SxxEyy codes) only.
 - Episodes are matched by show + season + episode number. Don't add title-based matching.
 - Unreleased MCU items (future `release_date`) must stay excluded.
-- Don't commit downloaded copies of the guide pages/JSON as fixtures.
+- Don't commit downloaded copies of the guide pages/JSON as fixtures. The only copy of guide
+  data in git is the stripped backup on the `data` branch, written by `update-data.yml`.
+  It may hold movie titles (needed for matching) but never episode titles or synopses.
 
 ## Build
 `dotnet` is installed per-user at `%LOCALAPPDATA%\Microsoft\dotnet\dotnet.exe` (not on PATH).

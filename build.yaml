@@ -1,6 +1,6 @@
 name: "Watch Order Playlists"
 guid: "6f0c9a51-2b7e-4d8a-9c3f-1e5a7b2d4c60"
-version: "1.0.1.0"
+version: "1.1.0.0"
 targetAbi: "12.4.0.0"
 framework: "net10.0"
 overview: "Spoiler-free playlists synced from arrowverse.info and aaronperris.com/mcu"
@@ -13,5 +13,7 @@ owner: "trumblejoe"
 artifacts:
 - "Jellyfin.Plugin.WatchOrder.dll"
 changelog: >
+  1.1.0.0 - Per-user private playlists; remove watched items so each user's playlist starts
+    at their next unwatched item; keep a last good copy of each guide in case a site goes offline.
   1.0.1.0 - Publish Jellyfin repository manifest.
   1.0.0.0 - Initial release.

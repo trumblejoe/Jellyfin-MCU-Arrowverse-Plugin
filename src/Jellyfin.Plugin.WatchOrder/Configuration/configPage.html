@@ -15,15 +15,16 @@
                         <a is="emby-linkbutton" class="button-link" href="https://aaronperris.com/mcu/" target="_blank">aaronperris.com/mcu</a>.
                         Only items already in your library are added. To sync now: Dashboard &rarr; Scheduled Tasks &rarr; <em>Sync watch-order playlists</em>.</p>
 
-                    <div class="selectContainer">
-                        <label class="selectLabel" for="OwnerUserId">Playlist owner</label>
-                        <select is="emby-select" id="OwnerUserId" name="OwnerUserId" class="emby-select-withcolor emby-select"></select>
-                    </div>
-                    <div class="checkboxContainer">
+                    <h3>Users</h3>
+                    <div class="fieldDescription">Each ticked user gets their own private copy of each playlist. If none are ticked, the first administrator gets them.</div>
+                    <div id="UserList"></div>
+
+                    <div class="checkboxContainer checkboxContainer-withDescription">
                         <label class="emby-checkbox-label">
-                            <input id="MakePublic" name="MakePublic" type="checkbox" is="emby-checkbox" />
-                            <span>Visible to all users</span>
+                            <input id="RemoveWatched" name="RemoveWatched" type="checkbox" is="emby-checkbox" />
+                            <span>Remove watched items</span>
                         </label>
+                        <div class="fieldDescription checkboxFieldDescription">Keeps each user's next unwatched item at the top, so pressing Play continues where they left off. Uses each user's own watched status. Items drop off as soon as they're watched; marking one unwatched puts it back.</div>
                     </div>
 
                     <h3>Playlists</h3>
@@ -72,6 +73,12 @@
                     <div class="fieldDescription">"Canon only" unchecked also includes the non-canon entries the guide lists (older Fox and animated series, etc.).</div>
 
                     <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="BackupDataUrl">Backup data URL (optional)</label>
+                        <input is="emby-input" type="text" id="BackupDataUrl" name="BackupDataUrl" />
+                        <div class="fieldDescription">Leave blank unless you run your own backup. Only contacted when a guide site is down or looks broken, or before the first good download. A copy of each guide is always kept on this server either way.</div>
+                    </div>
+
+                    <div class="inputContainer">
                         <label class="textareaLabel" for="SeriesAliases">Series aliases (optional)</label>
                         <textarea is="emby-textarea" id="SeriesAliases" name="SeriesAliases" rows="4" class="emby-textarea"></textarea>
                         <div class="fieldDescription">Only needed if a show you own is skipped because its name differs. One per line: <code>Name on guide = Name in Jellyfin</code>. Missing shows are listed in the server log after each sync.</div>
@@ -88,7 +95,7 @@
         <script type="text/javascript">
             var WatchOrderConfig = {
                 pluginUniqueId: '6f0c9a51-2b7e-4d8a-9c3f-1e5a7b2d4c60',
-                checkboxes: ['MakePublic', 'EnableArrowverse', 'EnableMcuRelease', 'EnableMcuChronological', 'EnableMcuSacredTimeline', 'McuReleaseCanonOnly', 'McuChronologicalCanonOnly', 'McuSacredTimelineCanonOnly']
+                checkboxes: ['RemoveWatched', 'EnableArrowverse', 'EnableMcuRelease', 'EnableMcuChronological', 'EnableMcuSacredTimeline', 'McuReleaseCanonOnly', 'McuChronologicalCanonOnly', 'McuSacredTimelineCanonOnly']
             };
 
             document.querySelector('#WatchOrderConfigPage').addEventListener('pageshow', function () {
@@ -100,21 +107,34 @@
                 ]).then(function (results) {
                     var config = results[0];
                     var users = results[1];
-                    var select = page.querySelector('#OwnerUserId');
-                    select.innerHTML = '<option value="">(first administrator)</option>' + users.map(function (u) {
-                        var opt = document.createElement('option');
-                        opt.value = u.Id;
-                        opt.textContent = u.Name;
-                        return opt.outerHTML;
-                    }).join('');
-                    select.value = (config.OwnerUserId || '').replace(/-/g, '');
-                    if (select.value === '' && config.OwnerUserId) {
-                        select.value = config.OwnerUserId;
-                    }
+                    var norm = function (id) { return (id || '').replace(/-/g, '').toLowerCase(); };
+                    // Before 1.1 there was a single owner; show them as ticked until saved.
+                    var selected = (config.UserIds && config.UserIds.length ? config.UserIds : [config.OwnerUserId]).map(norm);
+                    var list = page.querySelector('#UserList');
+                    list.innerHTML = '';
+                    users.forEach(function (u) {
+                        var wrap = document.createElement('div');
+                        wrap.className = 'checkboxContainer';
+                        var label = document.createElement('label');
+                        label.className = 'emby-checkbox-label';
+                        var box = document.createElement('input');
+                        box.type = 'checkbox';
+                        box.setAttribute('is', 'emby-checkbox');
+                        box.className = 'chkWatchOrderUser';
+                        box.value = u.Id;
+                        box.checked = selected.indexOf(norm(u.Id)) !== -1;
+                        var span = document.createElement('span');
+                        span.textContent = u.Name;
+                        label.appendChild(box);
+                        label.appendChild(span);
+                        wrap.appendChild(label);
+                        list.appendChild(wrap);
+                    });
                     WatchOrderConfig.checkboxes.forEach(function (id) {
                         page.querySelector('#' + id).checked = !!config[id];
                     });
                     page.querySelector('#SeriesAliases').value = config.SeriesAliases || '';
+                    page.querySelector('#BackupDataUrl').value = config.BackupDataUrl || '';
                     Dashboard.hideLoadingMsg();
                 });
             });
@@ -124,11 +144,12 @@
                 Dashboard.showLoadingMsg();
                 var form = this;
                 ApiClient.getPluginConfiguration(WatchOrderConfig.pluginUniqueId).then(function (config) {
-                    config.OwnerUserId = form.querySelector('#OwnerUserId').value;
+                    config.UserIds = Array.prototype.map.call(form.querySelectorAll('.chkWatchOrderUser:checked'), function (c) { return c.value; });
                     WatchOrderConfig.checkboxes.forEach(function (id) {
                         config[id] = form.querySelector('#' + id).checked;
                     });
                     config.SeriesAliases = form.querySelector('#SeriesAliases').value;
+                    config.BackupDataUrl = form.querySelector('#BackupDataUrl').value.trim();
                     ApiClient.updatePluginConfiguration(WatchOrderConfig.pluginUniqueId, config).then(function (result) {
                         Dashboard.processPluginConfigurationUpdateResult(result);
                     });

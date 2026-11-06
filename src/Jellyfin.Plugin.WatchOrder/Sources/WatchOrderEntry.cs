@@ -11,6 +11,7 @@ namespace Jellyfin.Plugin.WatchOrder.Sources;
 /// <param name="Year">Release/air year, used to tell apart same-named shows or movies.</param>
 public sealed record WatchOrderEntry(string? SeriesName, int? Season, int? Episode, string? MovieTitle, int? Year)
 {
+    [System.Text.Json.Serialization.JsonIgnore]
     public bool IsEpisode => SeriesName is not null && Season is not null && Episode is not null;
 }
 
