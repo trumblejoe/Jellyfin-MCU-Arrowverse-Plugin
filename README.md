@@ -29,20 +29,33 @@ available.
 
 Jellyfin **12.4** server (.NET 10). It's built against `Jellyfin.Controller` 12.4.0.
 
-## Build
+## Get the plugin
+
+**From GitHub (no .NET needed):** download the zip from the
+[Releases](../../releases) page. GitHub Actions builds and tests every push. To publish a
+new release, push a version tag:
 
 ```powershell
+git tag v1.0.1
+git push origin v1.0.1
+```
+
+**Build it yourself:**
+
+```powershell
+dotnet test -c Release                               # run the tests
 dotnet build src/Jellyfin.Plugin.WatchOrder -c Release
 ```
 
-Output: `src/Jellyfin.Plugin.WatchOrder/bin/Release/net10.0/Jellyfin.Plugin.WatchOrder.dll`
+The DLL ends up in `src/Jellyfin.Plugin.WatchOrder/bin/Release/net10.0/Jellyfin.Plugin.WatchOrder.dll`.
 
 ## Install
 
-1. Create the folder `<jellyfin data dir>/plugins/WatchOrderPlaylists_1.0.0.0/`. The data
+1. Create the folder `<jellyfin data dir>/plugins/WatchOrderPlaylists/`. The data
    dir is `C:\ProgramData\Jellyfin\Server` on Windows, `/var/lib/jellyfin` on Linux, and
    `/config` in Docker.
-2. Copy `Jellyfin.Plugin.WatchOrder.dll` into that folder.
+2. Copy `Jellyfin.Plugin.WatchOrder.dll` into that folder. If you downloaded the release
+   zip, unzip it there.
 3. Restart Jellyfin.
 4. Go to Dashboard → Plugins → **Watch Order Playlists**. Choose the owner and which
    playlists you want, then save.

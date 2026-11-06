@@ -13,7 +13,12 @@ and aaronperris.com/mcu (`mcu.json`). See README.md for layout.
 
 ## Build
 `dotnet` is installed per-user at `%LOCALAPPDATA%\Microsoft\dotnet\dotnet.exe` (not on PATH).
-`& "$env:LOCALAPPDATA\Microsoft\dotnet\dotnet.exe" build src/Jellyfin.Plugin.WatchOrder -c Release`
+`& "$env:LOCALAPPDATA\Microsoft\dotnet\dotnet.exe" test -c Release` (tests), then `build src/Jellyfin.Plugin.WatchOrder -c Release`.
+Tests use made-up sample data only, never real guide content.
+CI: `.github/workflows/build.yml` builds and tests on push. Pushing a `v*` tag publishes a GitHub Release zip.
+
+## Repo
+Public personal repo `trumblejoe/Jellyfin-MCU-Arrowverse-Plugin`. Repo-local git identity is trumblejoe.
 
 Jellyfin APIs change between majors. Check the source at the matching tag
 (e.g. github.com/jellyfin/jellyfin/tree/v12.4) rather than relying on memory.
