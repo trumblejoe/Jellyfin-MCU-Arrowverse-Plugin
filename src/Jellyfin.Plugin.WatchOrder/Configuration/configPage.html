@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Watch Order Playlists</title>
+</head>
+<body>
+    <div id="WatchOrderConfigPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-select,emby-checkbox,emby-textarea">
+        <div data-role="content">
+            <div class="content-primary">
+                <form id="WatchOrderConfigForm">
+                    <h2>Watch Order Playlists</h2>
+                    <p>Playlists are rebuilt daily (and at server start) from
+                        <a is="emby-linkbutton" class="button-link" href="https://arrowverse.info/" target="_blank">arrowverse.info</a> and
+                        <a is="emby-linkbutton" class="button-link" href="https://aaronperris.com/mcu/" target="_blank">aaronperris.com/mcu</a>.
+                        Only items already in your library are added. To sync now: Dashboard &rarr; Scheduled Tasks &rarr; <em>Sync watch-order playlists</em>.</p>
+
+                    <div class="selectContainer">
+                        <label class="selectLabel" for="OwnerUserId">Playlist owner</label>
+                        <select is="emby-select" id="OwnerUserId" name="OwnerUserId" class="emby-select-withcolor emby-select"></select>
+                    </div>
+                    <div class="checkboxContainer">
+                        <label class="emby-checkbox-label">
+                            <input id="MakePublic" name="MakePublic" type="checkbox" is="emby-checkbox" />
+                            <span>Visible to all users</span>
+                        </label>
+                    </div>
+
+                    <h3>Playlists</h3>
+                    <div class="checkboxContainer">
+                        <label class="emby-checkbox-label">
+                            <input id="EnableArrowverse" name="EnableArrowverse" type="checkbox" is="emby-checkbox" />
+                            <span>Arrowverse</span>
+                        </label>
+                    </div>
+                    <div class="checkboxContainer">
+                        <label class="emby-checkbox-label">
+                            <input id="EnableMcuRelease" name="EnableMcuRelease" type="checkbox" is="emby-checkbox" />
+                            <span>MCU - Release Order</span>
+                        </label>
+                    </div>
+                    <div class="checkboxContainer" style="margin-left:2em">
+                        <label class="emby-checkbox-label">
+                            <input id="McuReleaseCanonOnly" name="McuReleaseCanonOnly" type="checkbox" is="emby-checkbox" />
+                            <span>Canon only</span>
+                        </label>
+                    </div>
+                    <div class="checkboxContainer">
+                        <label class="emby-checkbox-label">
+                            <input id="EnableMcuChronological" name="EnableMcuChronological" type="checkbox" is="emby-checkbox" />
+                            <span>MCU - Chronological Order</span>
+                        </label>
+                    </div>
+                    <div class="checkboxContainer" style="margin-left:2em">
+                        <label class="emby-checkbox-label">
+                            <input id="McuChronologicalCanonOnly" name="McuChronologicalCanonOnly" type="checkbox" is="emby-checkbox" />
+                            <span>Canon only</span>
+                        </label>
+                    </div>
+                    <div class="checkboxContainer">
+                        <label class="emby-checkbox-label">
+                            <input id="EnableMcuSacredTimeline" name="EnableMcuSacredTimeline" type="checkbox" is="emby-checkbox" />
+                            <span>MCU - Sacred Timeline Order</span>
+                        </label>
+                    </div>
+                    <div class="checkboxContainer checkboxContainer-withDescription" style="margin-left:2em">
+                        <label class="emby-checkbox-label">
+                            <input id="McuSacredTimelineCanonOnly" name="McuSacredTimelineCanonOnly" type="checkbox" is="emby-checkbox" />
+                            <span>Canon only</span>
+                        </label>
+                    </div>
+                    <div class="fieldDescription">"Canon only" unchecked also includes the non-canon entries the guide lists (older Fox and animated series, etc.).</div>
+
+                    <div class="inputContainer">
+                        <label class="textareaLabel" for="SeriesAliases">Series aliases (optional)</label>
+                        <textarea is="emby-textarea" id="SeriesAliases" name="SeriesAliases" rows="4" class="emby-textarea"></textarea>
+                        <div class="fieldDescription">Only needed if a show you own is skipped because its name differs. One per line: <code>Name on guide = Name in Jellyfin</code>. Missing shows are listed in the server log after each sync.</div>
+                    </div>
+
+                    <div>
+                        <button is="emby-button" type="submit" class="raised button-submit block emby-button">
+                            <span>Save</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script type="text/javascript">
+            var WatchOrderConfig = {
+                pluginUniqueId: '6f0c9a51-2b7e-4d8a-9c3f-1e5a7b2d4c60',
+                checkboxes: ['MakePublic', 'EnableArrowverse', 'EnableMcuRelease', 'EnableMcuChronological', 'EnableMcuSacredTimeline', 'McuReleaseCanonOnly', 'McuChronologicalCanonOnly', 'McuSacredTimelineCanonOnly']
+            };
+
+            document.querySelector('#WatchOrderConfigPage').addEventListener('pageshow', function () {
+                Dashboard.showLoadingMsg();
+                var page = this;
+                Promise.all([
+                    ApiClient.getPluginConfiguration(WatchOrderConfig.pluginUniqueId),
+                    ApiClient.getUsers()
+                ]).then(function (results) {
+                    var config = results[0];
+                    var users = results[1];
+                    var select = page.querySelector('#OwnerUserId');
+                    select.innerHTML = '<option value="">(first administrator)</option>' + users.map(function (u) {
+                        var opt = document.createElement('option');
+                        opt.value = u.Id;
+                        opt.textContent = u.Name;
+                        return opt.outerHTML;
+                    }).join('');
+                    select.value = (config.OwnerUserId || '').replace(/-/g, '');
+                    if (select.value === '' && config.OwnerUserId) {
+                        select.value = config.OwnerUserId;
+                    }
+                    WatchOrderConfig.checkboxes.forEach(function (id) {
+                        page.querySelector('#' + id).checked = !!config[id];
+                    });
+                    page.querySelector('#SeriesAliases').value = config.SeriesAliases || '';
+                    Dashboard.hideLoadingMsg();
+                });
+            });
+
+            document.querySelector('#WatchOrderConfigForm').addEventListener('submit', function (e) {
+                e.preventDefault();
+                Dashboard.showLoadingMsg();
+                var form = this;
+                ApiClient.getPluginConfiguration(WatchOrderConfig.pluginUniqueId).then(function (config) {
+                    config.OwnerUserId = form.querySelector('#OwnerUserId').value;
+                    WatchOrderConfig.checkboxes.forEach(function (id) {
+                        config[id] = form.querySelector('#' + id).checked;
+                    });
+                    config.SeriesAliases = form.querySelector('#SeriesAliases').value;
+                    ApiClient.updatePluginConfiguration(WatchOrderConfig.pluginUniqueId, config).then(function (result) {
+                        Dashboard.processPluginConfigurationUpdateResult(result);
+                    });
+                });
+                return false;
+            });
+        </script>
+    </div>
+</body>
+</html>

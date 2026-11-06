@@ -1,0 +1,16 @@
+name: "Watch Order Playlists"
+guid: "6f0c9a51-2b7e-4d8a-9c3f-1e5a7b2d4c60"
+version: "1.0.0.0"
+targetAbi: "12.4.0.0"
+framework: "net10.0"
+overview: "Spoiler-free playlists synced from arrowverse.info and aaronperris.com/mcu"
+description: >
+  Creates and keeps up to date playlists for the Arrowverse and the MCU (release,
+  chronological and Sacred Timeline orders). Matches episodes by show, season and
+  episode number only; never reads or logs episode titles or synopses.
+category: "General"
+owner: "jtrumble"
+artifacts:
+- "Jellyfin.Plugin.WatchOrder.dll"
+changelog: >
+  1.0.0.0 - Initial release.
