@@ -37,6 +37,10 @@
                     <div id="McuPlaylistList"></div>
                     <div class="fieldDescription">Each order comes as a canon playlist and an <em>Extended</em> playlist, which adds the non-canon entries the guide lists (older Fox and animated series, etc.).</div>
 
+                    <h3>Built-in lists</h3>
+                    <div class="fieldDescription">Watch orders shipped with the plugin, for franchises without an online guide. They're updated with plugin releases.</div>
+                    <div id="BuiltInListList"></div>
+
                     <div class="inputContainer">
                         <label class="inputLabel inputLabelUnfocused" for="BackupDataUrl">Backup data URL (optional)</label>
                         <input is="emby-input" type="text" id="BackupDataUrl" name="BackupDataUrl" />
@@ -174,10 +178,35 @@
                 var page = this;
                 Promise.all([
                     ApiClient.getPluginConfiguration(WatchOrderConfig.pluginUniqueId),
-                    ApiClient.getUsers()
+                    ApiClient.getUsers(),
+                    ApiClient.getJSON(ApiClient.getUrl('WatchOrder/Lists'))
                 ]).then(function (results) {
                     var config = results[0];
                     var users = results[1];
+                    var builtIn = results[2] || [];
+                    var enabledLists = (config.EnabledLists || []).map(function (n) { return n.toLowerCase(); });
+                    var listBox = page.querySelector('#BuiltInListList');
+                    listBox.innerHTML = '';
+                    builtIn.forEach(function (l) {
+                        var name = l.Name !== undefined ? l.Name : l.name;
+                        var items = l.Items !== undefined ? l.Items : l.items;
+                        var wrap = document.createElement('div');
+                        wrap.className = 'checkboxContainer';
+                        var label = document.createElement('label');
+                        label.className = 'emby-checkbox-label';
+                        var box = document.createElement('input');
+                        box.type = 'checkbox';
+                        box.setAttribute('is', 'emby-checkbox');
+                        box.className = 'chkWatchOrderList';
+                        box.value = name;
+                        box.checked = enabledLists.indexOf(name.toLowerCase()) !== -1;
+                        var span = document.createElement('span');
+                        span.textContent = name + ' (' + items + ' items)';
+                        label.appendChild(box);
+                        label.appendChild(span);
+                        wrap.appendChild(label);
+                        listBox.appendChild(wrap);
+                    });
                     var norm = function (id) { return (id || '').replace(/-/g, '').toLowerCase(); };
                     // Before 1.1 there was a single owner; show them as ticked until saved.
                     var selected = (config.UserIds && config.UserIds.length ? config.UserIds : [config.OwnerUserId]).map(norm);
@@ -217,6 +246,7 @@
                 var form = this;
                 ApiClient.getPluginConfiguration(WatchOrderConfig.pluginUniqueId).then(function (config) {
                     config.UserIds = Array.prototype.map.call(form.querySelectorAll('.chkWatchOrderUser:checked'), function (c) { return c.value; });
+                    config.EnabledLists = Array.prototype.map.call(form.querySelectorAll('.chkWatchOrderList:checked'), function (c) { return c.value; });
                     WatchOrderConfig.checkboxes.forEach(function (id) {
                         config[id] = form.querySelector('#' + id).checked;
                     });

@@ -26,6 +26,8 @@
   <ItemGroup>
     <None Remove="Configuration\configPage.html" />
     <EmbeddedResource Include="Configuration\configPage.html" />
+    <!-- Built-in watch orders (see Sources/BuiltInLists.cs for the format). -->
+    <EmbeddedResource Include="Lists\*.txt" />
   </ItemGroup>
 
 </Project>

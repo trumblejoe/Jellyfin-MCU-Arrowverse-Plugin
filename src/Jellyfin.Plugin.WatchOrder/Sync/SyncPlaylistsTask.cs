@@ -116,6 +116,8 @@ public class SyncPlaylistsTask : IScheduledTask
             }
         }
 
+        lists.AddRange(EnabledBuiltInLists(config));
+
         var mcuPlaylists = EnabledMcuPlaylists(config);
         if (mcuPlaylists.Count > 0)
         {
@@ -130,6 +132,10 @@ public class SyncPlaylistsTask : IScheduledTask
 
         return lists;
     }
+
+    /// <summary>The built-in lists ticked in settings.</summary>
+    internal static IEnumerable<WatchOrderList> EnabledBuiltInLists(PluginConfiguration config) =>
+        BuiltInLists.All.Where(l => (config.EnabledLists ?? []).Contains(l.PlaylistName, StringComparer.OrdinalIgnoreCase));
 
     /// <summary>The MCU playlists ticked in settings, as (order, extended) pairs.</summary>
     internal static List<(McuOrder Order, bool Extended)> EnabledMcuPlaylists(PluginConfiguration config)

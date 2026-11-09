@@ -1,0 +1,73 @@
+using Jellyfin.Plugin.WatchOrder.Sources;
+using Jellyfin.Plugin.WatchOrder.Sync;
+
+namespace Jellyfin.Plugin.WatchOrder.Tests;
+
+public class BuiltInListsTests
+{
+    [Fact]
+    public void Parses_shows_codes_ranges_movies_and_years()
+    {
+        var list = BuiltInLists.Parse("""
+            # comment
+            playlist: Test List
+
+            @ Show A
+            S01E03
+            S01E01-E02
+            @ Show B (2014)
+            S02E05-S02E06
+            movie: Some Movie (1993)
+            """);
+
+        Assert.Equal("Test List", list.PlaylistName);
+        Assert.Equal(
+            ["Show A 1x3", "Show A 1x1", "Show A 1x2", "Show B 2x5 2014", "Show B 2x6 2014", "movie 1993"],
+            list.Entries.Select(e => e.IsEpisode ? $"{e.SeriesName} {e.Season}x{e.Episode}{(e.Year is null ? "" : " " + e.Year)}" : $"movie {e.Year}"));
+        Assert.Equal("Some Movie", list.Entries[^1].MovieTitle);
+    }
+
+    [Theory]
+    [InlineData("@ Show\nS01E01")]                               // no playlist line
+    [InlineData("playlist: X\nS01E01")]                          // code before any show
+    [InlineData("playlist: X\n@ Show\nS01E05-E02")]              // backwards range
+    [InlineData("playlist: X\n@ Show\nS01E01-S02E03")]           // range across seasons
+    [InlineData("playlist: X\n@ Show\nsomething else")]          // unknown line
+    public void Rejects_malformed_lists(string text)
+    {
+        Assert.Throws<InvalidDataException>(() => BuiltInLists.Parse(text));
+    }
+
+    [Fact]
+    public void Every_shipped_list_loads_with_a_unique_name_and_no_duplicate_episodes()
+    {
+        Assert.NotEmpty(BuiltInLists.All);
+        Assert.Equal(BuiltInLists.All.Count, BuiltInLists.All.Select(l => l.PlaylistName.ToLowerInvariant()).Distinct().Count());
+        foreach (var list in BuiltInLists.All)
+        {
+            var episodes = list.Entries.Where(e => e.IsEpisode).Select(e => (e.SeriesName, e.Season, e.Episode)).ToList();
+            Assert.Equal(episodes.Count, episodes.Distinct().Count());
+        }
+    }
+
+    [Fact]
+    public void Batman_list_has_every_episode_of_both_shows_plus_the_two_movie_specials()
+    {
+        var list = BuiltInLists.All.Single(l => l.PlaylistName == "Batman TAS Fan Order");
+        var btas = list.Entries.Where(e => e.SeriesName == "Batman: The Animated Series").ToList();
+        var tnba = list.Entries.Where(e => e.SeriesName == "The New Batman Adventures").ToList();
+
+        Assert.Equal(111, list.Entries.Count);
+        Assert.Equal(87, btas.Count);                                     // 85 episodes + 2 specials
+        Assert.Equal(2, btas.Count(e => e.Season == 0));
+        Assert.Equal(new[] { 60, 10, 10, 5 }, new[] { 1, 2, 3, 4 }.Select(s => btas.Count(e => e.Season == s)));
+        Assert.Equal(new[] { 13, 11 }, new[] { 1, 2 }.Select(s => tnba.Count(e => e.Season == s)));
+        Assert.All(list.Entries.Skip(87), e => Assert.Equal("The New Batman Adventures", e.SeriesName)); // TNBA comes last
+    }
+
+    [Fact]
+    public void Built_in_playlists_are_managed()
+    {
+        Assert.Contains("Batman TAS Fan Order", ManagedPlaylists.Names);
+    }
+}

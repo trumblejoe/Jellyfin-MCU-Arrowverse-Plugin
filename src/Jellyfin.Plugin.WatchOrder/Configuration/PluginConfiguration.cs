@@ -34,6 +34,9 @@ public class PluginConfiguration : BasePluginConfiguration
 
     public bool EnableMcuSacredTimelineExtended { get; set; }
 
+    /// <summary>Playlist names of the built-in lists (Lists/*.txt) that are turned on.</summary>
+    public string[] EnabledLists { get; set; } = [];
+
     // Pre-1.2 per-order "canon only" switches. Only read by MigrateLegacyCanonSettings.
     public bool McuReleaseCanonOnly { get; set; } = true;
 

@@ -87,6 +87,33 @@ plugin isn't loaded twice.
 | Backup data URL | empty | Optional GitHub backup to fall back on (see below) |
 | Series aliases | empty | `Name on guide = Name in Jellyfin`, one per line. Only needed if a show you own gets skipped; the server log lists any unmatched show names |
 
+## Built-in lists
+
+Some franchises have no online guide with a data feed, so their watch orders ship inside the
+plugin as small text files in `src/Jellyfin.Plugin.WatchOrder/Lists/`. Each one becomes a
+checkbox under **Built-in lists** on the settings page. They work like the other playlists:
+per-user copies, watched items removed, and missing items reported. They change only with
+plugin releases, and nothing is downloaded.
+
+| List | Covers |
+|---|---|
+| Batman TAS Fan Order | A fan-curated order across Batman: The Animated Series (including its two movies, as show specials S00E02/S00E03) and The New Batman Adventures; 111 items |
+
+**List format.** One item per line. Blank lines and lines starting with `#` are ignored.
+
+```
+playlist: My List Name          # playlist name (required)
+@ Some Show                     # show for the codes below; "@ Some Show (2014)" picks between same-named shows
+S01E13                          # one episode
+S01E02-E05                      # a range within one season
+movie: Some Movie (1993)        # a movie from the Movies library, by title and year
+```
+
+- **Episode codes must match your library's numbering.** The Batman list uses TheTVDB aired
+  order.
+- **Lists contain no episode titles or notes,** to keep them spoiler-free.
+- **Adding a list:** add a `.txt` file to that folder and release. No code changes needed.
+
 ## Missing from your library
 
 The bottom of the plugin's settings page lists what your ticked playlists include that isn't
@@ -117,6 +144,7 @@ fixed alias shows up right after you save, with no sync needed.
 - `Sources/GuideDownloader.cs` + `Sources/GuideSnapshotStore.cs` download each guide and pick the
   site or the newest backup (see below). `tools/GuideDataUpdater` is the same code run by the
   GitHub workflow.
+- `Sources/BuiltInLists.cs` reads the built-in `Lists/*.txt` watch orders.
 - `Sync/MissingReport.cs` + `Api/WatchOrderController.cs` (admin-only `GET /WatchOrder/Missing`)
   build the settings page's "Missing from your library" section.
 - `Sync/SyncPlaylistsTask.cs` finds each user's own playlist by name, then creates it,

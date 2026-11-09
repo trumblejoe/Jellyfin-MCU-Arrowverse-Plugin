@@ -55,7 +55,23 @@ public class WatchOrderController : ControllerBase
                 .Select(p => McuSource.Build(mcu.Items, p.Order, p.Extended, today)));
         }
 
+        var builtIn = SyncPlaylistsTask.EnabledBuiltInLists(config).ToList();
+        lists.AddRange(builtIn);
+
         var matcher = new LibraryMatcher(_libraryManager, config.SeriesAliases);
-        return MissingReport.Build(lists, matcher.Match, matcher.HasSeries, arrowverse?.SavedUtc, mcu?.SavedUtc);
+        var report = MissingReport.Build(lists, matcher.Match, matcher.HasSeries, arrowverse?.SavedUtc, mcu?.SavedUtc);
+
+        // Built-in lists need no sync to be checked, so they count as data too.
+        return builtIn.Count > 0 && !report.HasData
+            ? new MissingReport { HasData = true, Playlists = report.Playlists, Shows = report.Shows, MissingMovies = report.MissingMovies }
+            : report;
     }
+
+    /// <summary>The built-in lists shipped with the plugin, for the settings page's checkboxes.</summary>
+    [HttpGet("Lists")]
+    [Produces(MediaTypeNames.Application.Json)]
+    public ActionResult<IEnumerable<BuiltInListInfo>> GetLists() =>
+        BuiltInLists.All.Select(l => new BuiltInListInfo(l.PlaylistName, l.Entries.Count)).ToList();
+
+    public sealed record BuiltInListInfo(string Name, int Items);
 }

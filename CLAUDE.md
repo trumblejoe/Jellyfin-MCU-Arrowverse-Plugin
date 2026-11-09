@@ -9,6 +9,10 @@ and aaronperris.com/mcu (`mcu.json`). See README.md for layout.
   (field names, counts, show names, SxxEyy codes) only.
 - Episodes are matched by show + season + episode number. Don't add title-based matching.
 - Unreleased MCU items (future `release_date`) must stay excluded.
+- Built-in lists (`src/.../Lists/*.txt`) hold show names, SxxEyy codes and movie title+year
+  only: never episode titles or the curator's notes. To build one from a titled list, map
+  titles to codes privately (scratch files, print codes/counts only) against the numbering
+  the user's library uses (TheTVDB aired order for Batman), and verify counts per season.
 - Don't commit downloaded copies of the guide pages/JSON as fixtures. The only copy of guide
   data in git is the stripped backup on the `data` branch, written by `update-data.yml`.
   It may hold movie titles (needed for matching) but never episode titles or synopses.
