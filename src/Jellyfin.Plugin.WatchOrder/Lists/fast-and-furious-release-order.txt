@@ -2,7 +2,8 @@
 # The Fast & Furious films (including Hobbs & Shaw) in release order. Alternate titles after "|".
 
 playlist: Fast & Furious Release
-updates: ongoing
+updates: auto
+upcoming: Fast X: Part 2 - check release date (2027-01-01)
 
 movie: The Fast and the Furious (2001) | The Fast and the Furious (2001)
 movie: 2 Fast 2 Furious (2003)

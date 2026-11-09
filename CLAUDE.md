@@ -21,6 +21,12 @@ and aaronperris.com/mcu (`mcu.json`). See README.md for layout.
 `dotnet` is installed per-user at `%LOCALAPPDATA%\Microsoft\dotnet\dotnet.exe` (not on PATH).
 `& "$env:LOCALAPPDATA\Microsoft\dotnet\dotnet.exe" test -c Release` (tests), then `build src/Jellyfin.Plugin.WatchOrder -c Release`.
 Tests use made-up sample data only, never real guide content.
+List upkeep: `.github/workflows/update-lists.yml` (weekly) runs `tools/lists/update_lists.py`: appends
+newly aired episodes to `updates: auto` lists and auto-releases; reports `ongoing` lists, new specials
+and due `upcoming:` lines in one issue labelled `list-updates`. When asked to handle that issue: place
+the reported codes in the right lists (hand-ordered = follow the list's source), update/remove the
+`upcoming:` lines, add any new show to tools/lists/shows.json, run tests, commit.
+Tests for `auto` lists use "at least" counts (those lists grow on their own).
 CI: `.github/workflows/build.yml` builds and tests on push. Pushing a `v*` tag publishes a GitHub Release zip.
 
 ## Repo

@@ -3,7 +3,8 @@
 # in release order (series episodes by air date). Episode codes use TheTVDB aired order. No titles or notes here, to keep the list spoiler-free.
 
 playlist: Middle-earth Release
-updates: ongoing
+updates: auto
+upcoming: The Lord of the Rings: The Hunt for Gollum (2027-12-17)
 
 movie: The Lord of the Rings: The Fellowship of the Ring (2001)
 movie: The Lord of the Rings: The Two Towers (2002)

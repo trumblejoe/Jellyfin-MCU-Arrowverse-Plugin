@@ -3,7 +3,8 @@
 # Sept 2026). Unreleased titles are left out until they release. Episode codes use TheTVDB aired order. No titles or notes here, to keep the list spoiler-free.
 
 playlist: DCU Release
-updates: ongoing
+updates: auto
+upcoming: Man of Tomorrow (2027-07-09)
 
 @ Peacemaker
 S01E01-E08

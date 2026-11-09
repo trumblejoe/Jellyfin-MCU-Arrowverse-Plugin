@@ -100,6 +100,14 @@ public class BuiltInListsTests
         Assert.True(List("One Chicago Release").Ongoing);
         Assert.False(List("The Wire Release").Ongoing);
         Assert.Throws<InvalidDataException>(() => BuiltInLists.Parse("playlist: X\nupdates: maybe"));
+        Assert.True(BuiltInLists.Parse("playlist: X\nupdates: auto").Ongoing);
+    }
+
+    [Fact]
+    public void Upcoming_lines_are_not_playlist_items_but_need_a_date()
+    {
+        Assert.Empty(BuiltInLists.Parse("playlist: X\nupcoming: Some Movie (2027-05-28)\nupcoming: Other (2027)").Entries);
+        Assert.Throws<InvalidDataException>(() => BuiltInLists.Parse("playlist: X\nupcoming: No Date"));
     }
 
     [Fact]
@@ -124,40 +132,42 @@ public class BuiltInListsTests
     [Fact]
     public void Newer_lists_have_the_expected_size()
     {
-        Assert.Equal(303, List("Doctor Who Release").Entries.Count);
-        Assert.Equal(21, List("Doctor Who Release").Entries.Count(e => e.SeriesYear == 2023)); // 16 episodes + 5 specials
-        Assert.Equal(810, List("One Chicago Release").Entries.Count);
+        Assert.True(List("Doctor Who Release").Entries.Count >= 303); // auto-updated lists only grow
+        Assert.True(List("Doctor Who Release").Entries.Count(e => e.SeriesYear == 2023) >= 21); // 16 episodes + 5 specials
+        Assert.True(List("One Chicago Release").Entries.Count >= 810);
         Assert.Equal(4, Count(List("One Chicago Release"), "Law & Order: Special Victims Unit"));
         Assert.Equal(126, List("Battlestar Galactica Release").Entries.Count);
         Assert.Equal(126, List("Breaking Bad Release").Entries.Count);
-        Assert.Equal(23, List("Middle-earth Release").Entries.Count);
-        Assert.Equal(23, List("Middle-earth Chronological").Entries.Count);
-        Assert.Equal(11, List("Wizarding World Release").Entries.Count);
-        Assert.Equal(11, List("Fast & Furious Chronological").Entries.Count);
+        Assert.True(List("Middle-earth Release").Entries.Count >= 23);
+        Assert.True(List("Middle-earth Chronological").Entries.Count >= 23);
+        Assert.True(List("Wizarding World Release").Entries.Count >= 11);
+        Assert.True(List("Fast & Furious Chronological").Entries.Count >= 11);
     }
 
     [Fact]
-    public void Chronological_and_release_versions_contain_the_same_items()
+    public void Release_versions_cover_everything_in_chronological_versions()
     {
         foreach (var franchise in new[] { "Middle-earth", "Wizarding World", "Fast & Furious" })
         {
             var release = List(franchise + " Release").Entries.Select(e => e.IsEpisode ? $"{e.SeriesName}|{e.Season}|{e.Episode}" : e.MovieTitle!).Order();
             var chrono = List(franchise + " Chronological").Entries.Select(e => e.IsEpisode ? $"{e.SeriesName}|{e.Season}|{e.Episode}" : e.MovieTitle!).Order();
-            Assert.Equal(release, chrono);
+            // The release list is auto-updated and can run ahead until new items are placed in chronological.
+            Assert.Subset(release.ToHashSet(), chrono.ToHashSet());
         }
     }
 
     [Fact]
-    public void Star_wars_release_and_chronological_cover_the_same_episodes_and_movies()
+    public void Star_wars_release_covers_everything_in_chronological()
     {
         static HashSet<string> Keys(WatchOrderList l) =>
             l.Entries.Select(e => e.IsEpisode ? $"{e.SeriesName}|{e.Season}|{e.Episode}" : $"movie|{e.MovieTitle}|{e.Year}").ToHashSet();
 
         var release = List("Star Wars Release");
         var chrono = List("Star Wars Chronological");
-        Assert.Equal(414, release.Entries.Count);
-        Assert.Equal(414, chrono.Entries.Count);
-        Assert.True(Keys(release).SetEquals(Keys(chrono)));
+        Assert.True(release.Entries.Count >= 414);
+        Assert.True(chrono.Entries.Count >= 414);
+        // Release is auto-updated and may be ahead until new items are placed in chronological.
+        Assert.True(Keys(release).IsSupersetOf(Keys(chrono)));
         Assert.Equal(133, Count(chrono, "Star Wars: The Clone Wars"));
     }
 
@@ -179,7 +189,7 @@ public class BuiltInListsTests
     public void Smaller_lists_have_the_expected_size()
     {
         Assert.Equal(8, List("Harry Potter Release").Entries.Count);
-        Assert.Equal(35, List("DCU Release").Entries.Count);
+        Assert.True(List("DCU Release").Entries.Count >= 35);
         Assert.Equal(87, List("Saved by the Bell Chronological").Entries.Count);
         Assert.Equal(86, Count(List("Saved by the Bell Chronological"), "Saved by the Bell"));
 

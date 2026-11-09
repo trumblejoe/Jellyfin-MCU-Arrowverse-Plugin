@@ -4,6 +4,7 @@
 
 playlist: Middle-earth Chronological
 updates: ongoing
+upcoming: The Lord of the Rings: The Hunt for Gollum (2027-12-17)
 
 @ The Lord of the Rings: The Rings of Power
 S01E01-E08

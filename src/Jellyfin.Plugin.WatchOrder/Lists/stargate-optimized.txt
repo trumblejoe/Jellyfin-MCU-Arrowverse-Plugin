@@ -4,6 +4,7 @@
 
 playlist: Stargate Optimized
 updates: ongoing
+upcoming: New Stargate series (Amazon) - check premiere date (2027-01-01)
 
 # Part 1
 movie: Stargate (1994)

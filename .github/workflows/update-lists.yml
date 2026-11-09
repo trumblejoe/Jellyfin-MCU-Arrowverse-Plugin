@@ -1,0 +1,89 @@
+name: Update lists
+
+# Weekly maintenance of the built-in watch-order lists (src/Jellyfin.Plugin.WatchOrder/Lists).
+#  - 'updates: auto' lists: newly aired episodes are appended; tests run; then a commit to main
+#    and a new patch release (Jellyfin's "Update Plugins" task installs it).
+#  - 'updates: ongoing' lists and due 'upcoming:' lines: reported in ONE GitHub issue
+#    (label: list-updates), which emails the repo owner. Closed automatically once nothing's left.
+# Only show names and episode codes are ever written to logs, commits and issues.
+on:
+  schedule:
+    - cron: '23 7 * * 1'   # Mondays, 07:23 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write   # commit list updates, push the release tag
+  issues: write     # open/update/close the list-updates issue
+  actions: write    # start the Build workflow for the new tag
+
+concurrency:
+  group: update-lists
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0   # need tags to pick the next version
+
+      - name: Check and update lists
+        id: lists
+        run: python3 -I tools/lists/update_lists.py --report report.md
+
+      - uses: actions/setup-dotnet@v6
+        if: steps.lists.outputs.changed == 'true'
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Test the updated lists
+        if: steps.lists.outputs.changed == 'true'
+        run: dotnet test -c Release
+
+      - name: Commit and release
+        if: steps.lists.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898299+github-actions[bot]@users.noreply.github.com"
+          git add src/Jellyfin.Plugin.WatchOrder/Lists
+          git commit -q -m "Update lists: newly aired episodes" -m "$(sed -n '/## Added automatically/,/## Needs a person/p' report.md | grep '^- ')"
+          git push -q origin HEAD:main
+
+          last=$(git tag -l 'v*' --sort=-v:refname | head -1)
+          IFS=. read -r major minor patch <<< "${last#v}"
+          tag="v${major}.${minor}.$((patch + 1))"
+          git tag -a "$tag" -m "$tag (automatic list update)"
+          git push -q origin "$tag"
+
+          # Tags pushed with GITHUB_TOKEN don't trigger workflows, so start the release build directly.
+          gh workflow run build.yml --ref "$tag"
+          echo "Released $tag"
+
+      - name: Open or update the list-updates issue
+        if: steps.lists.outputs.attention == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create list-updates --color FBCA04 --description "Built-in watch-order lists need a person" --force >/dev/null
+          issue=$(gh issue list --label list-updates --state open --json number --jq '.[0].number')
+          if [ -z "$issue" ]; then
+            gh issue create --title "Watch-order lists need updates" --label list-updates --body-file report.md
+          else
+            old=$(gh issue view "$issue" --json body --jq .body)
+            if [ "$old" != "$(cat report.md)" ]; then
+              gh issue edit "$issue" --body-file report.md
+              gh issue comment "$issue" --body "The list report changed this week. See the updated description above."
+            fi
+          fi
+
+      - name: Close the issue when nothing is left
+        if: steps.lists.outputs.attention == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for issue in $(gh issue list --label list-updates --state open --json number --jq '.[].number'); do
+            gh issue close "$issue" --comment "Nothing left to place this week; closing."
+          done

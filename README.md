@@ -138,6 +138,33 @@ movie: Main Title (2001) | Other Title   # alternate titles after "|"
 - **Lists contain no episode titles or notes,** to keep them spoiler-free.
 - **Adding a list:** add a `.txt` file to that folder and release. No code changes needed.
 
+### Keeping lists current
+
+Each list says how it's maintained:
+
+| `updates:` | Meaning |
+|---|---|
+| `finished` | The franchise is done. Never checked. |
+| `auto` | A release-order list. Newly aired episodes of its shows are added automatically each week. |
+| `ongoing` | A hand-ordered list. Newly aired episodes are reported for a person to place. |
+
+`upcoming: Some Movie (2027-05-28)` lines name announced movies and series that TVDB can't
+track. They're reported once their date passes. A guessed date only means an early reminder.
+
+The **Update lists** workflow (`.github/workflows/update-lists.yml`) runs every Monday, and can
+be run by hand from the Actions tab:
+
+1. For `auto` lists, it appends newly aired episodes in air order, using air times to order
+   shared nights like One Chicago crossovers. It then runs the tests, commits, and publishes a
+   new patch release. Jellyfin's **Update Plugins** scheduled task installs it.
+2. For `ongoing` lists, new specials, and due `upcoming:` lines, it opens or updates one GitHub
+   issue labelled `list-updates`, which emails you. The issue holds show names and episode codes
+   only. Ask Claude to handle it. Once nothing is left, the issue closes itself.
+
+The updater is `tools/lists/update_lists.py`. `tools/lists/shows.json` maps each checked show
+to its TheTVDB page. Try it locally with
+`python -I tools/lists/update_lists.py --dry-run [--today 2026-12-31]`.
+
 ## Missing from your library
 
 The bottom of the plugin's settings page lists what your ticked playlists include that isn't

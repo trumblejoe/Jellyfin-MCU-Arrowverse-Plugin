@@ -11,8 +11,10 @@ namespace Jellyfin.Plugin.WatchOrder.Sources;
 /// File format (one item per line; blank lines and <c># comments</c> ignored):
 /// <code>
 /// playlist: Batman TAS Fan Order        the playlist name (required, once)
-/// updates: finished                     'finished' (franchise is done) or 'ongoing' (new titles
-///                                       expected; only these are checked for list updates)
+/// updates: finished                     'finished' (never checked), 'auto' (release-order list: newly
+///                                       aired episodes are appended automatically each week) or
+///                                       'ongoing' (hand-ordered: new episodes are reported, not added)
+/// upcoming: Some Movie (2027-05-28)     an announced title; reported when its date passes (not played)
 /// @ Batman: The Animated Series         the show for the codes that follow
 /// @ Doctor Who (2023)                   optional premiere year: only a series that premiered then matches
 /// S01E13                                one episode
@@ -35,6 +37,9 @@ public static partial class BuiltInLists
 
     [GeneratedRegex(@"^(.*?)\s*\((\d{4})\)$")]
     private static partial Regex NameYearRegex();
+
+    [GeneratedRegex(@"^.+\(\d{4}(-\d{2}-\d{2})?\)$")]
+    private static partial Regex UpcomingRegex();
 
     public static WatchOrderList Parse(string text)
     {
@@ -63,10 +68,18 @@ public static partial class BuiltInLists
                 // For the repo's list-update checks only; the plugin doesn't use it.
                 ongoing = line["updates:".Length..].Trim().ToLowerInvariant() switch
                 {
-                    "ongoing" => true,
+                    "auto" or "ongoing" => true,
                     "finished" => false,
-                    _ => throw new InvalidDataException($"Line {lineNumber}: updates must be 'ongoing' or 'finished'.")
+                    _ => throw new InvalidDataException($"Line {lineNumber}: updates must be 'auto', 'ongoing' or 'finished'.")
                 };
+            }
+            else if (line.StartsWith("upcoming:", StringComparison.OrdinalIgnoreCase))
+            {
+                // Announced titles, for the repo's update checks only; not a playlist item.
+                if (!UpcomingRegex().IsMatch(line["upcoming:".Length..].Trim()))
+                {
+                    throw new InvalidDataException($"Line {lineNumber}: upcoming needs a date, e.g. 'upcoming: Title (2027-05-28)'.");
+                }
             }
             else if (line.StartsWith('@'))
             {

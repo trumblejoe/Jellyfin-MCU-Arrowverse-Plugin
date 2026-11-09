@@ -5,6 +5,7 @@
 
 playlist: Star Wars Chronological
 updates: ongoing
+upcoming: Star Wars: Starfighter (2027-05-28)
 
 
 # Part 1

@@ -2,7 +2,8 @@
 # The Harry Potter and Fantastic Beasts films in release order. Alternate titles after "|".
 
 playlist: Wizarding World Release
-updates: ongoing
+updates: auto
+upcoming: Harry Potter HBO series - check premiere date (2027-01-01)
 
 movie: Harry Potter and the Philosopher's Stone (2001) | Harry Potter and the Sorcerer's Stone
 movie: Harry Potter and the Chamber of Secrets (2002)
