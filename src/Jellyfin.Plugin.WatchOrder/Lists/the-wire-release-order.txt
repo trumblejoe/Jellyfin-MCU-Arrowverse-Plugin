@@ -1,10 +1,12 @@
 # The Wire - Release Order
-# The Wire, followed by We Own This City (David Simon's later Baltimore miniseries).
+# David Simon's Baltimore: The Corner, The Wire, then We Own This City, in release order.
 # Episode codes use TheTVDB aired order. No titles or notes here, to keep the list spoiler-free.
 
 playlist: The Wire Release
 updates: finished
 
+@ The Corner (2000)
+S01E01-E06
 @ The Wire
 S01E01-E13
 S02E01-E12

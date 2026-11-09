@@ -103,12 +103,13 @@ public class BuiltInListsTests
     }
 
     [Fact]
-    public void The_wire_is_followed_by_we_own_this_city()
+    public void The_wire_list_runs_the_corner_then_the_wire_then_we_own_this_city()
     {
         var wire = List("The Wire Release");
-        Assert.Equal(66, wire.Entries.Count);
-        Assert.Equal(60, Count(wire, "The Wire"));
-        Assert.All(wire.Entries.Skip(60), e => Assert.Equal("We Own This City", e.SeriesName));
+        Assert.Equal(72, wire.Entries.Count);
+        Assert.All(wire.Entries.Take(6), e => Assert.Equal(("The Corner", 2000), (e.SeriesName!, e.SeriesYear!.Value)));
+        Assert.All(wire.Entries.Skip(6).Take(60), e => Assert.Equal("The Wire", e.SeriesName));
+        Assert.All(wire.Entries.Skip(66), e => Assert.Equal("We Own This City", e.SeriesName));
     }
 
     [Fact]
