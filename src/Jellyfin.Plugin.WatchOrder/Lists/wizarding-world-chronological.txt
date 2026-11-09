@@ -4,7 +4,7 @@
 
 playlist: Wizarding World Chronological
 updates: ongoing
-upcoming: Harry Potter HBO series - check premiere date (2027-01-01)
+upcoming: Harry Potter HBO series - add once it has aired episodes (2027-01-01)
 
 movie: Fantastic Beasts and Where to Find Them (2016)
 movie: Fantastic Beasts: The Crimes of Grindelwald (2018)

@@ -21,12 +21,14 @@ and aaronperris.com/mcu (`mcu.json`). See README.md for layout.
 `dotnet` is installed per-user at `%LOCALAPPDATA%\Microsoft\dotnet\dotnet.exe` (not on PATH).
 `& "$env:LOCALAPPDATA\Microsoft\dotnet\dotnet.exe" test -c Release` (tests), then `build src/Jellyfin.Plugin.WatchOrder -c Release`.
 Tests use made-up sample data only, never real guide content.
-List upkeep: `.github/workflows/update-lists.yml` (weekly) runs `tools/lists/update_lists.py`: appends
-newly aired episodes to `updates: auto` lists and auto-releases; reports `ongoing` lists, new specials
-and due `upcoming:` lines in one issue labelled `list-updates`. When asked to handle that issue: place
-the reported codes in the right lists (hand-ordered = follow the list's source), update/remove the
-`upcoming:` lines, add any new show to tools/lists/shows.json, run tests, commit.
-Tests for `auto` lists use "at least" counts (those lists grow on their own).
+List upkeep: `.github/workflows/update-lists.yml` (weekly) runs `tools/lists/update_lists.py`, which ADDS
+(never just reports) wherever a safe rule exists: `auto` lists append new episodes; `ongoing` lists insert
+them after the show's last episode; due `upcoming: movie: ... | after: X` lines become movie entries;
+new 40+-minute specials for shows whose specials a list uses. Then it tests, commits and auto-releases.
+Only things with no rule (plain `upcoming:` reminders such as brand-new series) go to the `list-updates`
+issue. When asked to handle that issue: add the new series/movie in the right place, add its show to
+tools/lists/shows.json, remove or re-date the reminder, run tests, commit. The user won't edit lists by hand.
+Tests for `auto`/`ongoing` lists use "at least" counts (those lists grow on their own).
 CI: `.github/workflows/build.yml` builds and tests on push. Pushing a `v*` tag publishes a GitHub Release zip.
 
 ## Repo

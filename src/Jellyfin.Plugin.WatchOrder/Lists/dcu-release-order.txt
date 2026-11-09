@@ -4,7 +4,7 @@
 
 playlist: DCU Release
 updates: auto
-upcoming: Man of Tomorrow (2027-07-09)
+upcoming: movie: Man of Tomorrow (2027-07-09)
 
 @ Peacemaker
 S01E01-E08

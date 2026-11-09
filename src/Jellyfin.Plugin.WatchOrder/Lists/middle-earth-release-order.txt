@@ -4,7 +4,7 @@
 
 playlist: Middle-earth Release
 updates: auto
-upcoming: The Lord of the Rings: The Hunt for Gollum (2027-12-17)
+upcoming: movie: The Lord of the Rings: The Hunt for Gollum (2027-12-17) | alt: The Hunt for Gollum
 
 movie: The Lord of the Rings: The Fellowship of the Ring (2001)
 movie: The Lord of the Rings: The Two Towers (2002)

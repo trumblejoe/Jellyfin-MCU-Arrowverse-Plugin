@@ -4,7 +4,7 @@
 
 playlist: Star Wars Release
 updates: auto
-upcoming: Star Wars: Starfighter (2027-05-28)
+upcoming: movie: Star Wars: Starfighter (2027-05-28)
 
 movie: Star Wars (1977) | Star Wars: Episode IV - A New Hope | A New Hope
 movie: The Empire Strikes Back (1980) | Star Wars: Episode V - The Empire Strikes Back

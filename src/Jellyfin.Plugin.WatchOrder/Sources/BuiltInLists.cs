@@ -12,9 +12,11 @@ namespace Jellyfin.Plugin.WatchOrder.Sources;
 /// <code>
 /// playlist: Batman TAS Fan Order        the playlist name (required, once)
 /// updates: finished                     'finished' (never checked), 'auto' (release-order list: newly
-///                                       aired episodes are appended automatically each week) or
-///                                       'ongoing' (hand-ordered: new episodes are reported, not added)
-/// upcoming: Some Movie (2027-05-28)     an announced title; reported when its date passes (not played)
+///                                       aired episodes are appended each week) or 'ongoing' (hand-
+///                                       ordered: new episodes go right after that show's last one)
+/// upcoming: movie: Some Movie (2027-05-28) | alt: Other Title | after: Earlier Movie
+///                                       added as a movie entry once its date passes (not played before)
+/// upcoming: New series (2027-01-01)     a reminder only, reported when its date passes
 /// @ Batman: The Animated Series         the show for the codes that follow
 /// @ Doctor Who (2023)                   optional premiere year: only a series that premiered then matches
 /// S01E13                                one episode
@@ -38,7 +40,7 @@ public static partial class BuiltInLists
     [GeneratedRegex(@"^(.*?)\s*\((\d{4})\)$")]
     private static partial Regex NameYearRegex();
 
-    [GeneratedRegex(@"^.+\(\d{4}(-\d{2}-\d{2})?\)$")]
+    [GeneratedRegex(@"^.+\(\d{4}(-\d{2}-\d{2})?\)(\s*\|.*)?$")]
     private static partial Regex UpcomingRegex();
 
     public static WatchOrderList Parse(string text)

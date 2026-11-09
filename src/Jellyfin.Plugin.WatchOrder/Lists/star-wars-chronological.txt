@@ -5,7 +5,7 @@
 
 playlist: Star Wars Chronological
 updates: ongoing
-upcoming: Star Wars: Starfighter (2027-05-28)
+upcoming: movie: Star Wars: Starfighter (2027-05-28) | after: Star Wars: The Rise of Skywalker
 
 
 # Part 1

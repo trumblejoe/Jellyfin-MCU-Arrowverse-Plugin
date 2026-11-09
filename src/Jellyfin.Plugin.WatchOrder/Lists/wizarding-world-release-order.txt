@@ -3,7 +3,7 @@
 
 playlist: Wizarding World Release
 updates: auto
-upcoming: Harry Potter HBO series - check premiere date (2027-01-01)
+upcoming: Harry Potter HBO series - add once it has aired episodes (2027-01-01)
 
 movie: Harry Potter and the Philosopher's Stone (2001) | Harry Potter and the Sorcerer's Stone
 movie: Harry Potter and the Chamber of Secrets (2002)

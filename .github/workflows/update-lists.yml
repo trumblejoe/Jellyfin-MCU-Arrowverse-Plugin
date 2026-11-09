@@ -1,9 +1,11 @@
 name: Update lists
 
 # Weekly maintenance of the built-in watch-order lists (src/Jellyfin.Plugin.WatchOrder/Lists).
-#  - 'updates: auto' lists: newly aired episodes are appended; tests run; then a commit to main
-#    and a new patch release (Jellyfin's "Update Plugins" task installs it).
-#  - 'updates: ongoing' lists and due 'upcoming:' lines: reported in ONE GitHub issue
+#  - 'updates: auto' lists get newly aired episodes appended; 'updates: ongoing' lists get them
+#    placed right after the show's last episode; due 'upcoming: movie:' lines become movies.
+#    Tests run, then a commit to main and a new patch release (Jellyfin's "Update Plugins"
+#    task installs it).
+#  - Anything with no safe rule (e.g. a brand-new series) is reported in ONE GitHub issue
 #    (label: list-updates), which emails the repo owner. Closed automatically once nothing's left.
 # Only show names and episode codes are ever written to logs, commits and issues.
 on:
@@ -49,7 +51,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898299+github-actions[bot]@users.noreply.github.com"
           git add src/Jellyfin.Plugin.WatchOrder/Lists
-          git commit -q -m "Update lists: newly aired episodes" -m "$(sed -n '/## Added automatically/,/## Needs a person/p' report.md | grep '^- ')"
+          git commit -q -m "Update lists: newly aired episodes and released movies" -m "$(sed -n '/## Added automatically/,/## Needs Claude/p' report.md | grep '^- ')"
           git push -q origin HEAD:main
 
           last=$(git tag -l 'v*' --sort=-v:refname | head -1)

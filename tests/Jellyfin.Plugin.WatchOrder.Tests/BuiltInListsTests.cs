@@ -106,7 +106,9 @@ public class BuiltInListsTests
     [Fact]
     public void Upcoming_lines_are_not_playlist_items_but_need_a_date()
     {
-        Assert.Empty(BuiltInLists.Parse("playlist: X\nupcoming: Some Movie (2027-05-28)\nupcoming: Other (2027)").Entries);
+        Assert.Empty(BuiltInLists.Parse(
+            "playlist: X\nupcoming: Some Movie (2027-05-28)\nupcoming: Other (2027)\n" +
+            "upcoming: movie: Third (2027-03-17) | alt: 3rd | after: Earlier Movie").Entries);
         Assert.Throws<InvalidDataException>(() => BuiltInLists.Parse("playlist: X\nupcoming: No Date"));
     }
 

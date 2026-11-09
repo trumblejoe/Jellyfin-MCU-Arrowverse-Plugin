@@ -145,25 +145,33 @@ Each list says how it's maintained:
 | `updates:` | Meaning |
 |---|---|
 | `finished` | The franchise is done. Never checked. |
-| `auto` | A release-order list. Newly aired episodes of its shows are added automatically each week. |
-| `ongoing` | A hand-ordered list. Newly aired episodes are reported for a person to place. |
+| `auto` | A release-order list. Newly aired episodes of its shows are **added at the end** each week. |
+| `ongoing` | A hand-ordered list. Newly aired episodes of a show are **added right after that show's last episode**, keeping each show's run where the guide placed it. |
 
-`upcoming: Some Movie (2027-05-28)` lines name announced movies and series that TVDB can't
-track. They're reported once their date passes. A guessed date only means an early reminder.
+Announced titles that TVDB can't track are written as `upcoming:` lines:
+
+- `upcoming: movie: Title (2027-05-28) | alt: Other Title | after: Earlier Movie` becomes a
+  playlist movie once its date passes. In `auto` lists it goes at the end; in `ongoing` lists it
+  goes after the named movie. If the date slips, the movie simply shows as missing until it's
+  in your library.
+- `upcoming: New series (2027-01-01)` is only a reminder, for things with no safe rule yet,
+  like a brand-new series.
+
+For shows whose specials a list uses (e.g. Doctor Who), new specials of 40+ minutes are added
+too. Concerts, documentaries and behind-the-scenes specials are skipped.
 
 The **Update lists** workflow (`.github/workflows/update-lists.yml`) runs every Monday, and can
 be run by hand from the Actions tab:
 
-1. For `auto` lists, it appends newly aired episodes in air order, using air times to order
-   shared nights like One Chicago crossovers. It then runs the tests, commits, and publishes a
-   new patch release. Jellyfin's **Update Plugins** scheduled task installs it.
-2. For `ongoing` lists, new specials, and due `upcoming:` lines, it opens or updates one GitHub
-   issue labelled `list-updates`, which emails you. The issue holds show names and episode codes
-   only. Ask Claude to handle it. Once nothing is left, the issue closes itself.
+1. It adds everything above, runs the tests, commits, and publishes a new patch release.
+   Jellyfin's **Update Plugins** scheduled task installs it.
+2. Anything with no safe rule (due reminders, a show missing from `tools/lists/shows.json`) goes
+   into one GitHub issue labelled `list-updates`, which emails you. It holds show names and
+   episode codes only. Ask Claude to "handle the open list-update issue". The issue closes itself
+   once nothing is left.
 
-The updater is `tools/lists/update_lists.py`. `tools/lists/shows.json` maps each checked show
-to its TheTVDB page. Try it locally with
-`python -I tools/lists/update_lists.py --dry-run [--today 2026-12-31]`.
+The updater is `tools/lists/update_lists.py`. Try it locally with
+`python -I tools/lists/update_lists.py --dry-run [--today 2027-12-31]`.
 
 ## Missing from your library
 
