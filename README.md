@@ -81,7 +81,7 @@ plugin isn't loaded twice.
 | Setting | Default | Notes |
 |---|---|---|
 | Users | first admin | Each ticked user gets their own private copy of each playlist |
-| Remove watched items | on | Keeps each user's next unwatched item first, so Play picks up where they left off. Items drop off as soon as that user finishes them; marking one unwatched puts it back |
+| Start at my next unwatched item | on | Each user's playlists drop watched items from the front, so Play picks up where they left off. Something watched out of order further down stays in its place until they get there. To skip an item, mark it watched; marking one unwatched moves the start back |
 | Arrowverse | on | |
 | MCU playlists | MCU Release on | Six checkboxes: `MCU Release`, `MCU Chronological`, `MCU Sacred Timeline` (canon only), each with an `... Extended` version that also includes the guide's non-canon entries. The names sort in canon/Extended pairs on Jellyfin's playlist page |
 | Backup data URL | empty | Optional GitHub backup to fall back on (see below) |

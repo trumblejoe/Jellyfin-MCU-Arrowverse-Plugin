@@ -14,8 +14,9 @@ public class PluginConfiguration : BasePluginConfiguration
     public string OwnerUserId { get; set; } = string.Empty;
 
     /// <summary>
-    /// Leave out anything the user has watched, so the first item is always their next one.
-    /// Watched items drop off as soon as they're finished; un-marking puts them back.
+    /// "Start at my next unwatched item": each user's playlists drop watched items from the front
+    /// (up to the first unwatched one), so Play continues where they left off. Items watched out
+    /// of order further down stay in place. (Property name kept from 1.1 for existing settings.)
     /// </summary>
     public bool RemoveWatched { get; set; } = true;
 

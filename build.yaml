@@ -21,6 +21,8 @@ changelog: >
     Star Wars Release, Stargate Optimized, Doctor Who Release, One Chicago Release, Battlestar
     Galactica Release, Breaking Bad Release, and release/chronological Middle-earth, Wizarding World
     and Fast & Furious, The Wire Release. Movies can also match a show's specials.
+    "Start at my next unwatched item": playlists drop watched items only from the front, so
+    something watched out of order stays in its place. Lists update themselves weekly.
   1.1.0.0 - Per-user private playlists; remove watched items so each user's playlist starts
     at their next unwatched item; keep a last good copy of each guide in case a site goes offline.
   1.0.1.0 - Publish Jellyfin repository manifest.

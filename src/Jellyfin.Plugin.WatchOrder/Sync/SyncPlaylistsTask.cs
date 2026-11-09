@@ -86,7 +86,7 @@ public class SyncPlaylistsTask : IScheduledTask
             foreach (var (name, ids) in matched)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                var desired = config.RemoveWatched ? WithoutWatched(ids, userId) : ids;
+                var desired = config.RemoveWatched ? FromNextUnwatched(ids, userId) : ids;
                 await SyncOneAsync(name, desired, userId).ConfigureAwait(false);
                 progress.Report(50 + (50.0 * ++done / steps));
             }
@@ -286,8 +286,8 @@ public class SyncPlaylistsTask : IScheduledTask
         _logger.LogInformation("Watch Order: updated {Playlist} for user {UserId} ({Count} items).", playlistName, userId, desired.Count);
     }
 
-    /// <summary>Drops items the user has already watched, keeping order.</summary>
-    private List<Guid> WithoutWatched(List<Guid> ids, Guid userId)
+    /// <summary>The playlist from the user's next unwatched item onward (see <see cref="WatchProgress"/>).</summary>
+    private List<Guid> FromNextUnwatched(List<Guid> ids, Guid userId)
     {
         var user = _userManager.GetUserById(userId);
         if (user is null || ids.Count == 0)
@@ -301,6 +301,6 @@ public class SyncPlaylistsTask : IScheduledTask
             .Where(i => userData.TryGetValue(i.Id, out var d) && d.Played)
             .Select(i => i.Id)
             .ToHashSet();
-        return ids.Where(id => !watched.Contains(id)).ToList();
+        return WatchProgress.FromNextUnwatched(ids, watched.Contains);
     }
 }
