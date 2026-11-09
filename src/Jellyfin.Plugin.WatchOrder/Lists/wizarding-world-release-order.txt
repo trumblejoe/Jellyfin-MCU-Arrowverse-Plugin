@@ -3,7 +3,6 @@
 
 playlist: Wizarding World Release
 updates: auto
-upcoming: Harry Potter HBO series - add once it has aired episodes (2027-01-01)
 
 movie: Harry Potter and the Philosopher's Stone (2001) | Harry Potter and the Sorcerer's Stone
 movie: Harry Potter and the Chamber of Secrets (2002)
@@ -16,3 +15,6 @@ movie: Harry Potter and the Deathly Hallows: Part 2 (2011)
 movie: Fantastic Beasts and Where to Find Them (2016)
 movie: Fantastic Beasts: The Crimes of Grindelwald (2018)
 movie: Fantastic Beasts: The Secrets of Dumbledore (2022)
+
+# HBO series (premieres Dec 2026): pre-registered, episodes are added automatically as they air.
+@ Harry Potter (2026)

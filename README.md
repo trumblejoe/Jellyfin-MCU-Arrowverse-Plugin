@@ -155,7 +155,12 @@ Announced titles that TVDB can't track are written as `upcoming:` lines:
   goes after the named movie. If the date slips, the movie simply shows as missing until it's
   in your library.
 - `upcoming: New series (2027-01-01)` is only a reminder, for things with no safe rule yet,
-  like a brand-new series.
+  like a brand-new series that has no TVDB page.
+
+A new series that already has a TVDB page can be **pre-registered**. Add just its
+`@ Show (year)` line where it belongs, and its TVDB slug to `tools/lists/shows.json`, and its
+episodes are added automatically as they air. For example, HBO's Harry Potter series
+(`@ Harry Potter (2026)`) sits at the end of both Wizarding World lists.
 
 For shows whose specials a list uses (e.g. Doctor Who), new specials of 40+ minutes are added
 too. Concerts, documentaries and behind-the-scenes specials are skipped.

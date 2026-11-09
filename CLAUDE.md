@@ -26,8 +26,9 @@ List upkeep: `.github/workflows/update-lists.yml` (weekly) runs `tools/lists/upd
 them after the show's last episode; due `upcoming: movie: ... | after: X` lines become movie entries;
 new 40+-minute specials for shows whose specials a list uses. Then it tests, commits and auto-releases.
 Only things with no rule (plain `upcoming:` reminders such as brand-new series) go to the `list-updates`
-issue. When asked to handle that issue: add the new series/movie in the right place, add its show to
-tools/lists/shows.json, remove or re-date the reminder, run tests, commit. The user won't edit lists by hand.
+issue. When asked to handle that issue: if a new series now has a TVDB page, pre-register it (add just its
+`@ Show (year)` line where it belongs + its slug in tools/lists/shows.json; episodes then flow in on their
+own); add new movies as `upcoming: movie:` lines with placement; remove or re-date the reminder; run tests, commit. The user won't edit lists by hand.
 Tests for `auto`/`ongoing` lists use "at least" counts (those lists grow on their own).
 CI: `.github/workflows/build.yml` builds and tests on push. Pushing a `v*` tag publishes a GitHub Release zip.
 

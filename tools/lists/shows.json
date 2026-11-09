@@ -11,13 +11,11 @@
     "Creature Commandos": "creature-commandos",
     "Doctor Who (2005)": "doctor-who-2005",
     "Doctor Who (2023)": "doctor-who-2023",
+    "Harry Potter (2026)": "harry-potter",
     "Lanterns": "lanterns",
     "Law & Order: Special Victims Unit": "law-and-order-special-victims-unit",
     "Obi-Wan Kenobi": "obi-wan-kenobi",
     "Peacemaker": "peacemaker-2021",
-    "Stargate Atlantis": "stargate-atlantis",
-    "Stargate SG-1": "stargate-sg-1",
-    "Stargate Universe": "stargate-universe",
     "Star Wars Rebels": "star-wars-rebels",
     "Star Wars Resistance": "star-wars-resistance",
     "Star Wars: Maul - Shadow Lord": "star-wars-maul-shadow-lord",
@@ -27,6 +25,9 @@
     "Star Wars: Tales of the Underworld": "star-wars-tales-of-the-underworld",
     "Star Wars: The Bad Batch": "the-bad-batch",
     "Star Wars: The Clone Wars": "star-wars-the-clone-wars",
+    "Stargate Atlantis": "stargate-atlantis",
+    "Stargate SG-1": "stargate-sg-1",
+    "Stargate Universe": "stargate-universe",
     "The Acolyte": "the-acolyte",
     "The Book of Boba Fett": "the-book-of-boba-fett",
     "The Lord of the Rings: The Rings of Power": "the-lord-of-the-rings",
@@ -36,6 +37,8 @@
     "Torchwood": "torchwood"
   },
   "partial": {
-    "One Chicago Release": ["Law & Order: Special Victims Unit"]
+    "One Chicago Release": [
+      "Law & Order: Special Victims Unit"
+    ]
   }
 }

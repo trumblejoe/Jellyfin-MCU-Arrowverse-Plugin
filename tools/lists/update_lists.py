@@ -6,6 +6,8 @@ For every built-in list (src/Jellyfin.Plugin.WatchOrder/Lists/*.txt):
                         order (same-day episodes by TVmaze air time).
   updates: ongoing   -> hand-ordered list: newly aired episodes of a show are INSERTED right after
                         that show's last episode in the list, keeping each show's run together.
+A show can be pre-registered before it premieres by adding just its '@ Show (year)' line where
+it belongs (and its TheTVDB slug to shows.json); its episodes then flow in automatically.
 Both also get:
   - new full-length Season 0 specials (aired in the last 120 days, 40+ minutes, not a concert/
     documentary/behind-the-scenes entry) of shows whose specials the list already uses;
@@ -68,7 +70,9 @@ class ListFile:
         return next((l.split(":", 1)[1].strip() for l in self.lines if l.startswith(key + ":")), None)
 
     def scan(self):
-        """shows (in order), codes per show, and index of each show's last code line."""
+        """shows (in order), codes per show, and where each show's next episodes go: after its
+        last code line, or right after its '@' line if it has no episodes yet (a show
+        pre-registered before it premieres)."""
         shows, have, last = [], {}, {}
         show = None
         for i, line in enumerate(self.lines):
@@ -78,6 +82,7 @@ class ListFile:
                 if show not in have:
                     shows.append(show)
                     have[show] = set()
+                    last[show] = i
             elif (m := CODE.match(s)) and show:
                 season, first = int(m[1]), int(m[2])
                 for e in range(first, (int(m[4]) if m[4] else first) + 1):
@@ -163,7 +168,12 @@ def process(lf, today, partial, changes, notes):
         for _, show, _, s, e in sorted(new, key=lambda x: (x[0], x[3], x[4])):
             added.setdefault(show, []).append((s, e))
         if mode == "auto":
-            lf.append(blocks(new, shows))
+            new_lines = blocks(new, shows)
+            # Don't repeat a show header that's already the list's last line (a pre-registered show).
+            last_line = next((l.strip() for l in reversed(lf.lines) if l.strip()), "")
+            if new_lines and new_lines[0] == last_line:
+                new_lines = new_lines[1:]
+            lf.append(new_lines)
         else:  # ongoing: keep each show's run together
             for show, codes in added.items():
                 _, _, last = lf.scan()
