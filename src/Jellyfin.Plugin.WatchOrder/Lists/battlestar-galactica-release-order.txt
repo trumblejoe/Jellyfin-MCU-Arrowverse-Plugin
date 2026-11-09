@@ -1,0 +1,32 @@
+# Battlestar Galactica - Release Order
+# The 2003 miniseries, Battlestar Galactica seasons 1-4, the canon webisodes and
+# minisodes (TVDB specials), Razor, The Plan, Caprica and Blood & Chrome, in first
+# release order (release dates from TheTVDB). The miniseries and Razor appear both
+# as a movie line and as their two-part specials so either library layout matches.
+# Episode codes use TheTVDB aired order. No titles or notes here, to keep the list
+# spoiler-free.
+
+playlist: Battlestar Galactica Release
+
+movie: Battlestar Galactica (2003) | Battlestar Galactica: The Miniseries | Battlestar Galactica: Miniseries | Battlestar Galactica Miniseries
+@ Battlestar Galactica (2003)
+S00E01-E02
+S01E01-E13
+S02E01-E20
+S00E23-E32
+S03E01-E20
+S00E33-E39
+
+movie: Battlestar Galactica: Razor (2007) | Razor | Battlestar Galactica Razor
+@ Battlestar Galactica (2003)
+S00E04-E05
+S04E01-E10
+S00E10-E19
+S04E11-E20
+
+movie: Battlestar Galactica: The Plan (2009) | The Plan | Battlestar Galactica The Plan
+
+@ Caprica
+S01E01-E18
+
+movie: Battlestar Galactica: Blood & Chrome (2012) | Blood & Chrome | Battlestar Galactica: Blood and Chrome

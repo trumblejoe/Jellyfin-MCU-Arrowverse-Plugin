@@ -45,7 +45,7 @@ public class BuiltInListsTests
         Assert.Equal(BuiltInLists.All.Count, BuiltInLists.All.Select(l => l.PlaylistName.ToLowerInvariant()).Distinct().Count());
         foreach (var list in BuiltInLists.All)
         {
-            var episodes = list.Entries.Where(e => e.IsEpisode).Select(e => (e.SeriesName, e.Season, e.Episode)).ToList();
+            var episodes = list.Entries.Where(e => e.IsEpisode).Select(e => (e.SeriesName, e.SeriesYear, e.Season, e.Episode)).ToList();
             Assert.Equal(episodes.Count, episodes.Distinct().Count());
         }
     }
@@ -83,8 +83,49 @@ public class BuiltInListsTests
     public void Ships_every_requested_list()
     {
         Assert.Equal(
-            ["Batman TAS Fan Order", "DCAU Release", "DCU Release", "Harry Potter Release", "Saved by the Bell Chronological", "Star Wars Chronological", "Star Wars Release", "Stargate Optimized"],
+            [
+                "Batman TAS Fan Order", "Battlestar Galactica Release", "Breaking Bad Release", "DCAU Release", "DCU Release",
+                "Doctor Who Release", "Fast & Furious Chronological", "Fast & Furious Release", "Harry Potter Release",
+                "Middle-earth Chronological", "Middle-earth Release", "One Chicago Release", "Saved by the Bell Chronological",
+                "Star Wars Chronological", "Star Wars Release", "Stargate Optimized", "Wizarding World Chronological",
+                "Wizarding World Release"
+            ],
             BuiltInLists.All.Select(l => l.PlaylistName).Order(StringComparer.Ordinal));
+    }
+
+    [Fact]
+    public void Show_line_year_becomes_a_strict_premiere_year()
+    {
+        var list = BuiltInLists.Parse("playlist: X\n@ Doctor Who (2023)\nS01E01\n@ Torchwood\nS01E01");
+
+        Assert.Equal(("Doctor Who", 2023), (list.Entries[0].SeriesName, list.Entries[0].SeriesYear));
+        Assert.Null(list.Entries[1].SeriesYear);
+    }
+
+    [Fact]
+    public void Newer_lists_have_the_expected_size()
+    {
+        Assert.Equal(303, List("Doctor Who Release").Entries.Count);
+        Assert.Equal(21, List("Doctor Who Release").Entries.Count(e => e.SeriesYear == 2023)); // 16 episodes + 5 specials
+        Assert.Equal(810, List("One Chicago Release").Entries.Count);
+        Assert.Equal(4, Count(List("One Chicago Release"), "Law & Order: Special Victims Unit"));
+        Assert.Equal(126, List("Battlestar Galactica Release").Entries.Count);
+        Assert.Equal(126, List("Breaking Bad Release").Entries.Count);
+        Assert.Equal(23, List("Middle-earth Release").Entries.Count);
+        Assert.Equal(23, List("Middle-earth Chronological").Entries.Count);
+        Assert.Equal(11, List("Wizarding World Release").Entries.Count);
+        Assert.Equal(11, List("Fast & Furious Chronological").Entries.Count);
+    }
+
+    [Fact]
+    public void Chronological_and_release_versions_contain_the_same_items()
+    {
+        foreach (var franchise in new[] { "Middle-earth", "Wizarding World", "Fast & Furious" })
+        {
+            var release = List(franchise + " Release").Entries.Select(e => e.IsEpisode ? $"{e.SeriesName}|{e.Season}|{e.Episode}" : e.MovieTitle!).Order();
+            var chrono = List(franchise + " Chronological").Entries.Select(e => e.IsEpisode ? $"{e.SeriesName}|{e.Season}|{e.Episode}" : e.MovieTitle!).Order();
+            Assert.Equal(release, chrono);
+        }
     }
 
     [Fact]

@@ -17,8 +17,14 @@ public sealed record WatchOrderEntry(
     string? MovieTitle,
     int? Year,
     [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
-    IReadOnlyList<string>? MovieAltTitles = null)
+    IReadOnlyList<string>? MovieAltTitles = null,
+    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    int? SeriesYear = null)
 {
+    // SeriesYear: the show's premiere year, from a built-in list's "@ Show (2023)" line. Unlike
+    // Year (a hint), it's strict: only a series that premiered that year matches, so e.g.
+    // "Doctor Who (2023)" can never match "Doctor Who (2005)" and play the wrong episodes.
+
     [System.Text.Json.Serialization.JsonIgnore]
     public bool IsEpisode => SeriesName is not null && Season is not null && Episode is not null;
 }

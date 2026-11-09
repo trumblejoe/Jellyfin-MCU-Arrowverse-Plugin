@@ -18,7 +18,9 @@ changelog: >
     Settings page now lists what's missing from your library (shows by name, movies by count).
     Built-in lists for franchises without an online guide: Batman TAS Fan Order, DCAU Release,
     DCU Release, Harry Potter Release, Saved by the Bell Chronological, Star Wars Chronological,
-    Star Wars Release, Stargate Optimized. Movies can also match a show's specials.
+    Star Wars Release, Stargate Optimized, Doctor Who Release, One Chicago Release, Battlestar
+    Galactica Release, Breaking Bad Release, and release/chronological Middle-earth, Wizarding World
+    and Fast & Furious. Movies can also match a show's specials.
   1.1.0.0 - Per-user private playlists; remove watched items so each user's playlist starts
     at their next unwatched item; keep a last good copy of each guide in case a site goes offline.
   1.0.1.0 - Publish Jellyfin repository manifest.

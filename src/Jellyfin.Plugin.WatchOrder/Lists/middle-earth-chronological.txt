@@ -1,0 +1,16 @@
+# Middle-earth - Chronological Order
+# In-world order: The Rings of Power (Second Age), then The War of the Rohirrim, The Hobbit
+# and The Lord of the Rings films (Third Age). Episode codes use TheTVDB aired order. No titles or notes here, to keep the list spoiler-free.
+
+playlist: Middle-earth Chronological
+
+@ The Lord of the Rings: The Rings of Power
+S01E01-E08
+S02E01-E08
+movie: The Lord of the Rings: The War of the Rohirrim (2024)
+movie: The Hobbit: An Unexpected Journey (2012)
+movie: The Hobbit: The Desolation of Smaug (2013)
+movie: The Hobbit: The Battle of the Five Armies (2014)
+movie: The Lord of the Rings: The Fellowship of the Ring (2001)
+movie: The Lord of the Rings: The Two Towers (2002)
+movie: The Lord of the Rings: The Return of the King (2003)

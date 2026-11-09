@@ -36,17 +36,17 @@ public sealed class MissingReport
 
     /// <param name="lists">The enabled playlists, built from the saved guide copies.</param>
     /// <param name="match">Library item for an entry, or null if missing.</param>
-    /// <param name="hasSeries">Whether the library has the show (by guide name and air year).</param>
+    /// <param name="hasSeries">Whether the library has the entry's show.</param>
     public static MissingReport Build(
         IReadOnlyList<WatchOrderList> lists,
         Func<WatchOrderEntry, Guid?> match,
-        Func<string, int?, bool> hasSeries,
+        Func<WatchOrderEntry, bool> hasSeries,
         DateTime? arrowverseSavedUtc,
         DateTime? mcuSavedUtc)
     {
         var playlists = new List<PlaylistSummary>();
         var missingEpisodes = new HashSet<(string Show, int Season, int Episode)>();
-        var showYears = new Dictionary<string, int?>();
+        var showEntry = new Dictionary<string, WatchOrderEntry>();
         var missingMovies = new HashSet<(string? Title, int? Year)>();
 
         foreach (var list in lists)
@@ -61,8 +61,11 @@ public sealed class MissingReport
                 else if (entry.IsEpisode)
                 {
                     eps++;
-                    missingEpisodes.Add((entry.SeriesName!, entry.Season!.Value, entry.Episode!.Value));
-                    showYears.TryAdd(entry.SeriesName!, entry.Year);
+
+                    // "Doctor Who (2023)" and "Doctor Who (2005)" are different shows.
+                    var show = entry.SeriesYear is { } y ? $"{entry.SeriesName} ({y})" : entry.SeriesName!;
+                    missingEpisodes.Add((show, entry.Season!.Value, entry.Episode!.Value));
+                    showEntry.TryAdd(show, entry);
                 }
                 else
                 {
@@ -78,7 +81,7 @@ public sealed class MissingReport
             .GroupBy(e => e.Show)
             .Select(g => new ShowSummary(
                 g.Key,
-                hasSeries(g.Key, showYears[g.Key]),
+                hasSeries(showEntry[g.Key]),
                 g.Count(),
                 g.Select(e => e.Season).Distinct().Order().ToList()))
             .OrderBy(s => s.InLibrary)

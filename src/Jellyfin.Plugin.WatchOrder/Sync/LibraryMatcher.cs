@@ -87,7 +87,9 @@ public sealed partial class LibraryMatcher
     {
         if (entry.IsEpisode)
         {
-            var series = FindSeries(entry.SeriesName!, entry.Year);
+            var series = entry.SeriesYear is { } premiered
+                ? FindSeriesPremiered(entry.SeriesName!, premiered)
+                : FindSeries(entry.SeriesName!, entry.Year);
             if (series is null)
             {
                 MissingSeries.Add(entry.SeriesName!);
@@ -134,8 +136,29 @@ public sealed partial class LibraryMatcher
 
     private sealed record Special(Guid Id, int? Year);
 
+    /// <summary>Whether the library has this entry's show (strict premiere year if the list gives one).</summary>
+    public bool HasSeries(WatchOrderEntry entry) =>
+        entry.SeriesYear is { } premiered
+            ? FindSeriesPremiered(entry.SeriesName!, premiered) is not null
+            : FindSeries(entry.SeriesName!, entry.Year) is not null;
+
     /// <summary>Whether the library has this show (by the guide's name, honoring Series Aliases).</summary>
     public bool HasSeries(string siteName, int? year) => FindSeries(siteName, year) is not null;
+
+    /// <summary>
+    /// Strict lookup for a built-in list's "@ Show (2023)": only a series that premiered within a
+    /// year of that matches, never a same-named series from another era.
+    /// </summary>
+    private Series? FindSeriesPremiered(string siteName, int premiered)
+    {
+        var name = _aliases.TryGetValue(Normalize(siteName), out var alias) ? alias : Normalize(siteName);
+        return _seriesByName.TryGetValue(name, out var candidates)
+            ? candidates
+                .Where(s => (s.PremiereDate?.Year ?? s.ProductionYear) is { } y && Math.Abs(y - premiered) <= 1)
+                .OrderBy(s => Math.Abs((s.PremiereDate?.Year ?? s.ProductionYear)!.Value - premiered))
+                .FirstOrDefault()
+            : null;
+    }
 
     private Series? FindSeries(string siteName, int? year)
     {

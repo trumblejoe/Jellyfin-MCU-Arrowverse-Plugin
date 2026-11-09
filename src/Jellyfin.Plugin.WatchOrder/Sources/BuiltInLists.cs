@@ -12,7 +12,7 @@ namespace Jellyfin.Plugin.WatchOrder.Sources;
 /// <code>
 /// playlist: Batman TAS Fan Order        the playlist name (required, once)
 /// @ Batman: The Animated Series         the show for the codes that follow
-/// @ The Flash (2014)                    optional premiere year, for same-named shows
+/// @ Doctor Who (2023)                   optional premiere year: only a series that premiered then matches
 /// S01E13                                one episode
 /// S01E02-E05                            a range within one season (also S01E02-S01E05)
 /// movie: Some Movie (1993)              a movie, by title and year (Movies library, or a show's specials)
@@ -93,7 +93,7 @@ public static partial class BuiltInLists
 
                 for (var e = first; e <= last; e++)
                 {
-                    entries.Add(new WatchOrderEntry(show, season, e, null, showYear));
+                    entries.Add(new WatchOrderEntry(show, season, e, null, showYear, SeriesYear: showYear));
                 }
             }
             else

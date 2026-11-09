@@ -15,7 +15,7 @@ public class MissingReportTests
     private static Guid? Match(WatchOrderEntry e) =>
         (e.SeriesName == "Owned Show" && e.Season == 1 && e.Episode == 1) || e.MovieTitle == "Owned Movie" ? Guid.NewGuid() : null;
 
-    private static bool HasSeries(string name, int? year) => name == "Owned Show";
+    private static bool HasSeries(WatchOrderEntry e) => e.SeriesName == "Owned Show";
 
     private static MissingReport Build(params WatchOrderList[] lists) =>
         MissingReport.Build(lists, Match, HasSeries, DateTime.UtcNow, null);

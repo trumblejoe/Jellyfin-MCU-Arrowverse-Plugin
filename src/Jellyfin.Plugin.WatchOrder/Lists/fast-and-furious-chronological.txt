@@ -1,0 +1,16 @@
+# Fast & Furious - Chronological Order
+# The widely used story order, which differs from release order. Alternate titles after "|".
+
+playlist: Fast & Furious Chronological
+
+movie: The Fast and the Furious (2001) | The Fast and the Furious (2001)
+movie: 2 Fast 2 Furious (2003)
+movie: Fast & Furious (2009) | Fast and Furious | Fast & Furious 4
+movie: Fast Five (2011) | Fast & Furious 5
+movie: Fast & Furious 6 (2013) | Furious 6
+movie: The Fast and the Furious: Tokyo Drift (2006) | Tokyo Drift
+movie: Furious 7 (2015) | Fast & Furious 7
+movie: The Fate of the Furious (2017) | Fast & Furious 8 | The Fate of the Furious: Fast & Furious 8
+movie: Fast & Furious Presents: Hobbs & Shaw (2019) | Hobbs & Shaw
+movie: F9 (2021) | F9: The Fast Saga | Fast & Furious 9
+movie: Fast X (2023) | Fast & Furious 10

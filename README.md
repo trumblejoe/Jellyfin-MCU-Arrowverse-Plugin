@@ -98,13 +98,24 @@ plugin releases, and nothing is downloaded.
 | List | Covers |
 |---|---|
 | Batman TAS Fan Order | A fan-curated order across Batman: The Animated Series (including its two movies, as show specials S00E02/S00E03) and The New Batman Adventures; 111 items |
+| Battlestar Galactica Release | The 2003 miniseries, the 2004 series, its webisodes/minisodes, Razor, The Plan, Caprica and Blood & Chrome, by release date; 126 entries (the miniseries and Razor are listed both as movies and as TVDB specials, so either library layout works) |
+| Breaking Bad Release | Breaking Bad, Better Call Saul and El Camino, by air date; 126 items |
 | DCAU Release | Every DC Animated Universe series (Batman TAS, Superman TAS, The New Batman Adventures, Batman Beyond, Static Shock, The Zeta Project, Justice League and Unlimited) and its 4 movies, by air date; 388 items |
 | DCU Release | DC Studios' DCU in release order, per [JustWatch's guide](https://guides.justwatch.com/us/james-gunn-dcu-in-order) (Sept 2026); 35 items. Needs updating as new titles release |
+| Doctor Who Release | The modern era (2005 on) with Torchwood, The Sarah Jane Adventures, Class and The War Between the Land and the Sea, by air date, with the full-length specials; 303 items. TheTVDB files 2023 onward as a separate series, "Doctor Who (2023)", so your library needs it as its own show |
+| Fast & Furious Release / Chronological | The 11 films (including Hobbs & Shaw), in release order and in the widely used story order |
 | Harry Potter Release | The 8 films in release order |
+| Middle-earth Release / Chronological | The Lord of the Rings and Hobbit films, The War of the Rohirrim and The Rings of Power, in release order and in story order |
+| One Chicago Release | Chicago Fire, P.D., Med and Justice plus the Law & Order: SVU crossover episodes, in broadcast order down to the time slot so crossover nights play correctly; 810 items |
 | Saved by the Bell Chronological | Chronological (production) order from IJBall's Saved by the Bell FAQ, including the Hawaiian Style TV movie; 87 items |
 | Star Wars Chronological | Canon films and series in story order, per [StarWars.com's viewing guide](https://www.starwars.com/news/star-wars-movies-and-series-guide) and its [official Clone Wars episode order](https://www.starwars.com/news/star-wars-the-clone-wars-chronological-episodeorder); 414 items. Needs updating as new titles release |
 | Star Wars Release | The same canon films and series in release order, by air date; 414 items |
 | Stargate Optimized | [GateWorld's Optimized Stargate Watch Order](https://gateworld.net/news/2024/09/optimized-stargate-watch-order) (SG-1, Atlantis, Universe including its kino web shorts as specials, and 4 movies); 392 items |
+
+| Wizarding World Release / Chronological | The Harry Potter and Fantastic Beasts films, in release order and in story order |
+
+A year on a show line, as in `@ Doctor Who (2023)`, is strict: only a series that premiered
+that year matches, so same-named shows from different eras can't be mixed up.
 
 **Movies** are found in the Movies library by title and year (alternate titles after `|`),
 or among a show's specials if that's where your library files them.
