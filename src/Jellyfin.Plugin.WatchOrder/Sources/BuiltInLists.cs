@@ -15,7 +15,8 @@ namespace Jellyfin.Plugin.WatchOrder.Sources;
 /// @ The Flash (2014)                    optional premiere year, for same-named shows
 /// S01E13                                one episode
 /// S01E02-E05                            a range within one season (also S01E02-S01E05)
-/// movie: Some Movie (1993)              a movie in the Movies library, by title and year
+/// movie: Some Movie (1993)              a movie, by title and year (Movies library, or a show's specials)
+/// movie: Main Title (2001) | Other Title  alternate titles after "|"
 /// </code>
 /// Episode codes must match the library's numbering (TheTVDB/TMDB aired order).
 /// Lists never contain episode titles or notes, to stay spoiler-free.
@@ -60,8 +61,15 @@ public static partial class BuiltInLists
             }
             else if (line.StartsWith("movie:", StringComparison.OrdinalIgnoreCase))
             {
-                var (title, year) = SplitYear(line["movie:".Length..].Trim());
-                entries.Add(new WatchOrderEntry(null, null, null, title, year));
+                // movie: Main Title (Year) | Alternate Title | Another Title
+                var parts = line["movie:".Length..].Split('|', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+                if (parts.Length == 0)
+                {
+                    throw new InvalidDataException($"Line {lineNumber}: movie needs a title.");
+                }
+
+                var (title, year) = SplitYear(parts[0]);
+                entries.Add(new WatchOrderEntry(null, null, null, title, year, parts.Length > 1 ? parts[1..] : null));
             }
             else if (CodeRegex().Match(line) is { Success: true } m)
             {

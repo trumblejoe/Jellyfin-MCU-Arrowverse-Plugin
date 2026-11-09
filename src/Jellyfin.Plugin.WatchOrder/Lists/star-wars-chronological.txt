@@ -1,0 +1,97 @@
+# Star Wars Chronological Order
+# In-universe order per StarWars.com (sources: https://www.starwars.com/news/star-wars-movies-and-series-guide ,
+# https://www.starwars.com/news/star-wars-the-clone-wars-chronological-episodeorder ). Episode codes use TheTVDB
+# aired order. No titles or notes here, to keep the list spoiler-free.
+
+playlist: Star Wars Chronological
+
+
+# Part 1
+@ The Acolyte
+S01E01-E08
+
+# Part 2
+movie: Star Wars: Episode I - The Phantom Menace (1999) | The Phantom Menace
+movie: Star Wars: Episode II - Attack of the Clones (2002) | Attack of the Clones
+@ Star Wars: The Clone Wars
+S02E16
+S01E16
+movie: Star Wars: The Clone Wars (2008)
+@ Star Wars: The Clone Wars
+S03E01
+S03E03
+S01E01-E15
+S01E17-E21
+S02E01-E03
+S02E17-E19
+S02E04-E14
+S02E20-E22
+S03E05-E07
+S03E02
+S03E04
+S03E08
+S01E22
+S03E09-E11
+S02E15
+S03E12-E22
+S04E01-E22
+S05E02-E13
+S05E01
+S05E14-E20
+S06E01-E13
+S07E05-E08
+S07E01-E04
+S07E09-E12
+@ Star Wars: Tales of the Jedi
+S01E01-E06
+movie: Star Wars: Episode III - Revenge of the Sith (2005) | Revenge of the Sith
+
+# Part 3
+@ Star Wars: Tales of the Empire
+S01E01-E06
+@ Star Wars: Tales of the Underworld
+S01E01-E06
+@ Star Wars: The Bad Batch
+S01E01-E16
+S02E01-E16
+S03E01-E15
+@ Star Wars: Maul - Shadow Lord
+S01E01-E10
+movie: Solo: A Star Wars Story (2018) | Solo
+@ Obi-Wan Kenobi
+S01E01-E06
+
+# Part 4
+@ Andor
+S01E01-E12
+S02E01-E12
+@ Star Wars Rebels
+S01E01-E13
+S02E01-E20
+S03E01-E21
+S04E01-E16
+movie: Rogue One: A Star Wars Story (2016) | Rogue One
+movie: Star Wars (1977) | Star Wars: Episode IV - A New Hope | A New Hope
+movie: The Empire Strikes Back (1980) | Star Wars: Episode V - The Empire Strikes Back
+movie: Return of the Jedi (1983) | Star Wars: Episode VI - Return of the Jedi
+
+# Part 5
+@ The Mandalorian
+S01E01-E08
+S02E01-E08
+S03E01-E08
+@ The Book of Boba Fett
+S01E01-E07
+@ Ahsoka
+S01E01-E08
+@ Star Wars: Skeleton Crew
+S01E01-E08
+movie: The Mandalorian and Grogu (2026) | The Mandalorian & Grogu
+
+# Part 6
+@ Star Wars Resistance
+S01E01-E20
+S02E01-E18
+movie: Star Wars: The Force Awakens (2015) | Star Wars: Episode VII - The Force Awakens
+movie: Star Wars: The Last Jedi (2017) | Star Wars: Episode VIII - The Last Jedi
+movie: Star Wars: The Rise of Skywalker (2019) | Star Wars: Episode IX - The Rise of Skywalker

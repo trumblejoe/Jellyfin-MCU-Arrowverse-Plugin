@@ -1,0 +1,126 @@
+# Star Wars - Release Order
+# Canon Star Wars films and series in the order they released; series that aired at
+# the same time are interleaved by air date. Alternate movie titles after "|". Episode codes use TheTVDB aired order. No titles or notes here, to keep the list spoiler-free.
+
+playlist: Star Wars Release
+
+movie: Star Wars (1977) | Star Wars: Episode IV - A New Hope | A New Hope
+movie: The Empire Strikes Back (1980) | Star Wars: Episode V - The Empire Strikes Back
+movie: Return of the Jedi (1983) | Star Wars: Episode VI - Return of the Jedi
+movie: Star Wars: Episode I - The Phantom Menace (1999) | The Phantom Menace
+movie: Star Wars: Episode II - Attack of the Clones (2002) | Attack of the Clones
+movie: Star Wars: Episode III - Revenge of the Sith (2005) | Revenge of the Sith
+movie: Star Wars: The Clone Wars (2008)
+@ Star Wars: The Clone Wars
+S01E01-E22
+S02E01-E22
+S03E01-E22
+S04E01-E22
+S05E01-E20
+S06E01-E13
+@ Star Wars Rebels
+S01E01-E13
+S02E01-E09
+movie: Star Wars: The Force Awakens (2015) | Star Wars: Episode VII - The Force Awakens
+@ Star Wars Rebels
+S02E10-E20
+S03E01-E10
+movie: Rogue One: A Star Wars Story (2016) | Rogue One
+@ Star Wars Rebels
+S03E11-E21
+S04E01-E09
+movie: Star Wars: The Last Jedi (2017) | Star Wars: Episode VIII - The Last Jedi
+@ Star Wars Rebels
+S04E10-E16
+movie: Solo: A Star Wars Story (2018) | Solo
+@ Star Wars Resistance
+S01E01-E20
+S02E01-E06
+@ The Mandalorian
+S01E01-E02
+@ Star Wars Resistance
+S02E07
+@ The Mandalorian
+S01E03
+@ Star Wars Resistance
+S02E08
+@ The Mandalorian
+S01E04
+@ Star Wars Resistance
+S02E09
+@ The Mandalorian
+S01E05
+@ Star Wars Resistance
+S02E10
+@ The Mandalorian
+S01E06
+@ Star Wars Resistance
+S02E11
+@ The Mandalorian
+S01E07
+movie: Star Wars: The Rise of Skywalker (2019) | Star Wars: Episode IX - The Rise of Skywalker
+@ Star Wars Resistance
+S02E12
+@ The Mandalorian
+S01E08
+@ Star Wars Resistance
+S02E13-E18
+@ Star Wars: The Clone Wars
+S07E01-E12
+@ The Mandalorian
+S02E01-E08
+@ Star Wars: The Bad Batch
+S01E01-E16
+@ The Book of Boba Fett
+S01E01-E07
+@ Obi-Wan Kenobi
+S01E01-E06
+@ Andor
+S01E01-E08
+@ Star Wars: Tales of the Jedi
+S01E01-E06
+@ Andor
+S01E09-E12
+@ Star Wars: The Bad Batch
+S02E01-E10
+@ The Mandalorian
+S03E01
+@ Star Wars: The Bad Batch
+S02E11
+@ The Mandalorian
+S03E02
+@ Star Wars: The Bad Batch
+S02E12
+@ The Mandalorian
+S03E03
+@ Star Wars: The Bad Batch
+S02E13
+@ The Mandalorian
+S03E04
+@ Star Wars: The Bad Batch
+S02E14
+@ The Mandalorian
+S03E05
+@ Star Wars: The Bad Batch
+S02E15-E16
+@ The Mandalorian
+S03E06-E08
+@ Ahsoka
+S01E01-E08
+@ Star Wars: The Bad Batch
+S03E01-E15
+@ Star Wars: Tales of the Empire
+S01E01-E06
+@ The Acolyte
+S01E01-E08
+@ Star Wars: Skeleton Crew
+S01E01-E08
+@ Andor
+S02E01-E06
+@ Star Wars: Tales of the Underworld
+S01E01-E06
+@ Andor
+S02E07-E12
+@ Star Wars: Maul - Shadow Lord
+S01E01-E10
+movie: The Mandalorian and Grogu (2026) | The Mandalorian & Grogu

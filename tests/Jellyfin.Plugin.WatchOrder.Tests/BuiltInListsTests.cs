@@ -66,6 +66,71 @@ public class BuiltInListsTests
     }
 
     [Fact]
+    public void Movie_alternate_titles_are_parsed()
+    {
+        var list = BuiltInLists.Parse("playlist: X\nmovie: Main Title (2001) | Other Title | Third");
+        var movie = Assert.Single(list.Entries);
+
+        Assert.Equal(("Main Title", 2001), (movie.MovieTitle, movie.Year));
+        Assert.Equal(["Other Title", "Third"], movie.MovieAltTitles!);
+    }
+
+    private static WatchOrderList List(string name) => BuiltInLists.All.Single(l => l.PlaylistName == name);
+
+    private static int Count(WatchOrderList list, string show) => list.Entries.Count(e => e.SeriesName == show);
+
+    [Fact]
+    public void Ships_every_requested_list()
+    {
+        Assert.Equal(
+            ["Batman TAS Fan Order", "DCAU Release", "DCU Release", "Harry Potter Release", "Saved by the Bell Chronological", "Star Wars Chronological", "Star Wars Release", "Stargate Optimized"],
+            BuiltInLists.All.Select(l => l.PlaylistName).Order(StringComparer.Ordinal));
+    }
+
+    [Fact]
+    public void Star_wars_release_and_chronological_cover_the_same_episodes_and_movies()
+    {
+        static HashSet<string> Keys(WatchOrderList l) =>
+            l.Entries.Select(e => e.IsEpisode ? $"{e.SeriesName}|{e.Season}|{e.Episode}" : $"movie|{e.MovieTitle}|{e.Year}").ToHashSet();
+
+        var release = List("Star Wars Release");
+        var chrono = List("Star Wars Chronological");
+        Assert.Equal(414, release.Entries.Count);
+        Assert.Equal(414, chrono.Entries.Count);
+        Assert.True(Keys(release).SetEquals(Keys(chrono)));
+        Assert.Equal(133, Count(chrono, "Star Wars: The Clone Wars"));
+    }
+
+    [Fact]
+    public void Dcau_has_every_episode_of_every_series_plus_four_movies()
+    {
+        var dcau = List("DCAU Release");
+        Assert.Equal(85, Count(dcau, "Batman: The Animated Series"));
+        Assert.Equal(54, Count(dcau, "Superman: The Animated Series"));
+        Assert.Equal(24, Count(dcau, "The New Batman Adventures"));
+        Assert.Equal(52, Count(dcau, "Batman Beyond"));
+        Assert.Equal(52, Count(dcau, "Static Shock"));
+        Assert.Equal(26, Count(dcau, "The Zeta Project"));
+        Assert.Equal(91, Count(dcau, "Justice League")); // includes Unlimited (TVDB seasons 3-5)
+        Assert.Equal(4, dcau.Entries.Count(e => !e.IsEpisode));
+    }
+
+    [Fact]
+    public void Smaller_lists_have_the_expected_size()
+    {
+        Assert.Equal(8, List("Harry Potter Release").Entries.Count);
+        Assert.Equal(35, List("DCU Release").Entries.Count);
+        Assert.Equal(87, List("Saved by the Bell Chronological").Entries.Count);
+        Assert.Equal(86, Count(List("Saved by the Bell Chronological"), "Saved by the Bell"));
+
+        var stargate = List("Stargate Optimized");
+        Assert.Equal(392, stargate.Entries.Count);
+        Assert.Equal(214, Count(stargate, "Stargate SG-1"));
+        Assert.Equal(100, Count(stargate, "Stargate Atlantis"));
+        Assert.Equal(74, Count(stargate, "Stargate Universe")); // 40 episodes + 34 kino specials
+    }
+
+    [Fact]
     public void Built_in_playlists_are_managed()
     {
         Assert.Contains("Batman TAS Fan Order", ManagedPlaylists.Names);

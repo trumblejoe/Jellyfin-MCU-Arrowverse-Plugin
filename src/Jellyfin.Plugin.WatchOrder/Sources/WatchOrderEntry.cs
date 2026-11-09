@@ -9,7 +9,15 @@ namespace Jellyfin.Plugin.WatchOrder.Sources;
 /// <param name="Episode">Episode number for episodes.</param>
 /// <param name="MovieTitle">Movie title, only set for non-episode entries.</param>
 /// <param name="Year">Release/air year, used to tell apart same-named shows or movies.</param>
-public sealed record WatchOrderEntry(string? SeriesName, int? Season, int? Episode, string? MovieTitle, int? Year)
+/// <param name="MovieAltTitles">Other titles the movie is known by (e.g. regional titles).</param>
+public sealed record WatchOrderEntry(
+    string? SeriesName,
+    int? Season,
+    int? Episode,
+    string? MovieTitle,
+    int? Year,
+    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    IReadOnlyList<string>? MovieAltTitles = null)
 {
     [System.Text.Json.Serialization.JsonIgnore]
     public bool IsEpisode => SeriesName is not null && Season is not null && Episode is not null;

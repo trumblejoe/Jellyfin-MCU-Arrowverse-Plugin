@@ -98,6 +98,16 @@ plugin releases, and nothing is downloaded.
 | List | Covers |
 |---|---|
 | Batman TAS Fan Order | A fan-curated order across Batman: The Animated Series (including its two movies, as show specials S00E02/S00E03) and The New Batman Adventures; 111 items |
+| DCAU Release | Every DC Animated Universe series (Batman TAS, Superman TAS, The New Batman Adventures, Batman Beyond, Static Shock, The Zeta Project, Justice League and Unlimited) and its 4 movies, by air date; 388 items |
+| DCU Release | DC Studios' DCU in release order, per [JustWatch's guide](https://guides.justwatch.com/us/james-gunn-dcu-in-order) (Sept 2026); 35 items. Needs updating as new titles release |
+| Harry Potter Release | The 8 films in release order |
+| Saved by the Bell Chronological | Chronological (production) order from IJBall's Saved by the Bell FAQ, including the Hawaiian Style TV movie; 87 items |
+| Star Wars Chronological | Canon films and series in story order, per [StarWars.com's viewing guide](https://www.starwars.com/news/star-wars-movies-and-series-guide) and its [official Clone Wars episode order](https://www.starwars.com/news/star-wars-the-clone-wars-chronological-episodeorder); 414 items. Needs updating as new titles release |
+| Star Wars Release | The same canon films and series in release order, by air date; 414 items |
+| Stargate Optimized | [GateWorld's Optimized Stargate Watch Order](https://gateworld.net/news/2024/09/optimized-stargate-watch-order) (SG-1, Atlantis, Universe including its kino web shorts as specials, and 4 movies); 392 items |
+
+**Movies** are found in the Movies library by title and year (alternate titles after `|`),
+or among a show's specials if that's where your library files them.
 
 **List format.** One item per line. Blank lines and lines starting with `#` are ignored.
 
@@ -106,7 +116,8 @@ playlist: My List Name          # playlist name (required)
 @ Some Show                     # show for the codes below; "@ Some Show (2014)" picks between same-named shows
 S01E13                          # one episode
 S01E02-E05                      # a range within one season
-movie: Some Movie (1993)        # a movie from the Movies library, by title and year
+movie: Some Movie (1993)        # a movie by title and year (Movies library, or a show's specials)
+movie: Main Title (2001) | Other Title   # alternate titles after "|"
 ```
 
 - **Episode codes must match your library's numbering.** The Batman list uses TheTVDB aired

@@ -11,13 +11,15 @@ namespace Jellyfin.Plugin.WatchOrder.Sync;
 
 /// <summary>
 /// Maps watch-order entries to items that actually exist (not virtual/missing) in the library.
-/// Episodes match on show name + season + episode number. Movies match on title + year.
+/// Episodes match on show name + season + episode number. Movies match on title + year, in the
+/// Movies library first, then among shows' specials (a movie filed as Season 0 of a series).
 /// </summary>
 public sealed partial class LibraryMatcher
 {
     private readonly Dictionary<string, List<Series>> _seriesByName = new();
     private readonly Dictionary<(Guid SeriesId, int Season, int Episode), Guid> _episodes = new();
     private readonly Dictionary<string, List<Movie>> _moviesByTitle = new();
+    private readonly Dictionary<string, List<Special>> _specialsByTitle = new();
     private readonly Dictionary<string, string> _aliases;
 
     public LibraryMatcher(ILibraryManager libraryManager, string aliasText)
@@ -55,6 +57,12 @@ public sealed partial class LibraryMatcher
             {
                 _episodes.TryAdd((e.SeriesId, season, n), e.Id);
             }
+
+            // Specials can be movies filed under a show (e.g. a series' feature film).
+            if (season == 0)
+            {
+                Add(_specialsByTitle, Normalize(e.Name), new Special(e.Id, e.PremiereDate?.Year ?? e.ProductionYear));
+            }
         }
 
         foreach (var m in libraryManager.GetItemList(new InternalItemsQuery
@@ -89,23 +97,42 @@ public sealed partial class LibraryMatcher
             return _episodes.TryGetValue((series.Id, entry.Season!.Value, entry.Episode!.Value), out var id) ? id : null;
         }
 
-        if (entry.MovieTitle is null || !_moviesByTitle.TryGetValue(Normalize(entry.MovieTitle), out var movies))
+        if (entry.MovieTitle is null)
         {
             return null;
         }
 
-        if (entry.Year is not { } year)
+        var titles = new[] { entry.MovieTitle }.Concat(entry.MovieAltTitles ?? []).Select(Normalize).Distinct().ToList();
+
+        // Movies library first, then movies filed as a show's specials (Season 0).
+        return titles.Select(t => Pick(_moviesByTitle, t, entry.Year, m => m.ProductionYear, m => m.Id)).FirstOrDefault(id => id is not null)
+            ?? titles.Select(t => Pick(_specialsByTitle, t, entry.Year, s => s.Year, s => s.Id)).FirstOrDefault(id => id is not null);
+    }
+
+    /// <summary>
+    /// The item with this title, if any. With a year, the item's year must be within one
+    /// (the same title can exist across decades, e.g. remakes); unknown years are allowed.
+    /// </summary>
+    private static Guid? Pick<T>(Dictionary<string, List<T>> byTitle, string title, int? year, Func<T, int?> yearOf, Func<T, Guid> idOf)
+    {
+        if (!byTitle.TryGetValue(title, out var candidates))
         {
-            return movies[0].Id;
+            return null;
         }
 
-        // Same title can exist across decades (remakes); require the year to be within one.
-        return movies
-            .Where(m => m.ProductionYear is null || Math.Abs(m.ProductionYear.Value - year) <= 1)
-            .OrderBy(m => m.ProductionYear is null ? 99 : Math.Abs(m.ProductionYear.Value - year))
-            .Select(m => (Guid?)m.Id)
+        if (year is null)
+        {
+            return idOf(candidates[0]);
+        }
+
+        return candidates
+            .Where(c => yearOf(c) is null || Math.Abs(yearOf(c)!.Value - year.Value) <= 1)
+            .OrderBy(c => yearOf(c) is null ? 99 : Math.Abs(yearOf(c)!.Value - year.Value))
+            .Select(c => (Guid?)idOf(c))
             .FirstOrDefault();
     }
+
+    private sealed record Special(Guid Id, int? Year);
 
     /// <summary>Whether the library has this show (by the guide's name, honoring Series Aliases).</summary>
     public bool HasSeries(string siteName, int? year) => FindSeries(siteName, year) is not null;

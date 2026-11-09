@@ -1,0 +1,225 @@
+# Stargate Optimized Order
+# GateWorld's optimized watch order (gateworld.net, Sept 2024). Episode codes use
+# TheTVDB aired order. No titles or notes here, to keep the list spoiler-free.
+
+playlist: Stargate Optimized
+
+# Part 1
+movie: Stargate (1994)
+
+# Part 2
+@ Stargate SG-1
+S01E01-E22
+S02E01-E22
+S03E01-E22
+S04E01-E22
+S05E01-E22
+S06E01-E22
+S07E01-E22
+
+# Part 3
+@ Stargate SG-1
+S08E01-E02
+@ Stargate Atlantis
+S01E01-E02
+@ Stargate SG-1
+S08E03
+@ Stargate Atlantis
+S01E03
+@ Stargate SG-1
+S08E04
+@ Stargate Atlantis
+S01E04
+@ Stargate SG-1
+S08E05
+@ Stargate Atlantis
+S01E05
+@ Stargate SG-1
+S08E06
+@ Stargate Atlantis
+S01E06
+@ Stargate SG-1
+S08E08
+@ Stargate Atlantis
+S01E07
+@ Stargate SG-1
+S08E07
+@ Stargate Atlantis
+S01E08
+@ Stargate SG-1
+S08E09
+@ Stargate Atlantis
+S01E09
+@ Stargate SG-1
+S08E10
+@ Stargate Atlantis
+S01E10-E11
+@ Stargate SG-1
+S08E11
+@ Stargate Atlantis
+S01E12
+@ Stargate SG-1
+S08E12
+@ Stargate Atlantis
+S01E13
+@ Stargate SG-1
+S08E14
+@ Stargate Atlantis
+S01E14
+@ Stargate SG-1
+S08E15
+@ Stargate Atlantis
+S01E15
+@ Stargate SG-1
+S08E13
+S08E16-E20
+@ Stargate Atlantis
+S01E16-E20
+S02E01
+@ Stargate SG-1
+S09E01-E03
+@ Stargate Atlantis
+S02E02-E03
+@ Stargate SG-1
+S09E04
+@ Stargate Atlantis
+S02E04
+@ Stargate SG-1
+S09E05
+@ Stargate Atlantis
+S02E05
+@ Stargate SG-1
+S09E06
+@ Stargate Atlantis
+S02E06
+@ Stargate SG-1
+S09E07
+@ Stargate Atlantis
+S02E07
+@ Stargate SG-1
+S09E08
+@ Stargate Atlantis
+S02E08
+@ Stargate SG-1
+S09E09
+@ Stargate Atlantis
+S02E09
+@ Stargate SG-1
+S09E10-E11
+@ Stargate Atlantis
+S02E10-E11
+@ Stargate SG-1
+S09E12
+@ Stargate Atlantis
+S02E12
+@ Stargate SG-1
+S09E13
+@ Stargate Atlantis
+S02E13
+@ Stargate SG-1
+S09E14
+@ Stargate Atlantis
+S02E14
+@ Stargate SG-1
+S09E15
+@ Stargate Atlantis
+S02E15
+@ Stargate SG-1
+S09E16
+@ Stargate Atlantis
+S02E16
+@ Stargate SG-1
+S09E17
+@ Stargate Atlantis
+S02E17
+@ Stargate SG-1
+S09E18
+@ Stargate Atlantis
+S02E18-E19
+@ Stargate SG-1
+S09E19-E20
+S10E01
+@ Stargate Atlantis
+S02E20
+S03E01-E02
+@ Stargate SG-1
+S10E02-E03
+@ Stargate Atlantis
+S03E03
+@ Stargate SG-1
+S10E04
+@ Stargate Atlantis
+S03E04
+@ Stargate SG-1
+S10E05
+@ Stargate Atlantis
+S03E05-E06
+@ Stargate SG-1
+S10E06-E07
+@ Stargate Atlantis
+S03E07
+@ Stargate SG-1
+S10E08
+@ Stargate Atlantis
+S03E08
+@ Stargate SG-1
+S10E09
+@ Stargate Atlantis
+S03E09
+@ Stargate SG-1
+S10E10-E11
+@ Stargate Atlantis
+S03E10-E11
+@ Stargate SG-1
+S10E12
+@ Stargate Atlantis
+S03E12
+@ Stargate SG-1
+S10E13
+@ Stargate Atlantis
+S03E13
+@ Stargate SG-1
+S10E14
+@ Stargate Atlantis
+S03E14
+@ Stargate SG-1
+S10E15
+@ Stargate Atlantis
+S03E15
+@ Stargate SG-1
+S10E16
+@ Stargate Atlantis
+S03E16
+@ Stargate SG-1
+S10E17
+@ Stargate Atlantis
+S03E17
+@ Stargate SG-1
+S10E18
+@ Stargate Atlantis
+S03E18
+@ Stargate SG-1
+S10E19
+@ Stargate Atlantis
+S03E19
+@ Stargate SG-1
+S10E20
+movie: Stargate: The Ark of Truth (2008)
+@ Stargate Atlantis
+S03E20
+S04E01-E20
+S05E01
+movie: Stargate: Continuum (2008)
+@ Stargate Atlantis
+S05E02-E20
+
+# Part 4
+@ Stargate Universe
+S01E01-E17
+S00E02-E31
+S00E33-E36
+S01E18-E20
+S02E01-E20
+
+# Part 5
+movie: Stargate Origins: Catherine (2018)
