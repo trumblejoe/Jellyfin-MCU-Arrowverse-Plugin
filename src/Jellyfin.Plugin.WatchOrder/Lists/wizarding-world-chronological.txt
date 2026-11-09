@@ -3,6 +3,7 @@
 # Alternate titles after "|".
 
 playlist: Wizarding World Chronological
+updates: ongoing
 
 movie: Fantastic Beasts and Where to Find Them (2016)
 movie: Fantastic Beasts: The Crimes of Grindelwald (2018)

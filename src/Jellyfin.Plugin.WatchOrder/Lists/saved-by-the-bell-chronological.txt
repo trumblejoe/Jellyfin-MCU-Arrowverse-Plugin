@@ -5,6 +5,7 @@
 # TheTVDB aired order. No titles or notes here, to keep the list spoiler-free.
 
 playlist: Saved by the Bell Chronological
+updates: finished
 
 @ Saved by the Bell
 S01E15

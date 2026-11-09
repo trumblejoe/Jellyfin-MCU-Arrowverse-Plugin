@@ -4,6 +4,7 @@
 # Episode codes use TheTVDB aired order. No titles or notes here, to keep the list spoiler-free.
 
 playlist: One Chicago Release
+updates: ongoing
 
 @ Chicago Fire
 S01E01-E24

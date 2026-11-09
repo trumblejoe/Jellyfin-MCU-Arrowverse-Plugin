@@ -3,6 +3,7 @@
 # the same time are interleaved by air date. Alternate movie titles after "|". Episode codes use TheTVDB aired order. No titles or notes here, to keep the list spoiler-free.
 
 playlist: Star Wars Release
+updates: ongoing
 
 movie: Star Wars (1977) | Star Wars: Episode IV - A New Hope | A New Hope
 movie: The Empire Strikes Back (1980) | Star Wars: Episode V - The Empire Strikes Back

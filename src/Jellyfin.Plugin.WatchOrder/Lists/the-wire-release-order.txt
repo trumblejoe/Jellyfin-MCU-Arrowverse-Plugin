@@ -1,0 +1,15 @@
+# The Wire - Release Order
+# The Wire, followed by We Own This City (David Simon's later Baltimore miniseries).
+# Episode codes use TheTVDB aired order. No titles or notes here, to keep the list spoiler-free.
+
+playlist: The Wire Release
+updates: finished
+
+@ The Wire
+S01E01-E13
+S02E01-E12
+S03E01-E12
+S04E01-E13
+S05E01-E10
+@ We Own This City
+S01E01-E06

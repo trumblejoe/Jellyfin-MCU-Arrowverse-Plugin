@@ -11,6 +11,8 @@ namespace Jellyfin.Plugin.WatchOrder.Sources;
 /// File format (one item per line; blank lines and <c># comments</c> ignored):
 /// <code>
 /// playlist: Batman TAS Fan Order        the playlist name (required, once)
+/// updates: finished                     'finished' (franchise is done) or 'ongoing' (new titles
+///                                       expected; only these are checked for list updates)
 /// @ Batman: The Animated Series         the show for the codes that follow
 /// @ Doctor Who (2023)                   optional premiere year: only a series that premiered then matches
 /// S01E13                                one episode
@@ -37,6 +39,7 @@ public static partial class BuiltInLists
     public static WatchOrderList Parse(string text)
     {
         string? playlist = null;
+        bool? ongoing = null;
         string? show = null;
         int? showYear = null;
         var entries = new List<WatchOrderEntry>();
@@ -54,6 +57,16 @@ public static partial class BuiltInLists
             if (line.StartsWith("playlist:", StringComparison.OrdinalIgnoreCase))
             {
                 playlist = line["playlist:".Length..].Trim();
+            }
+            else if (line.StartsWith("updates:", StringComparison.OrdinalIgnoreCase))
+            {
+                // For the repo's list-update checks only; the plugin doesn't use it.
+                ongoing = line["updates:".Length..].Trim().ToLowerInvariant() switch
+                {
+                    "ongoing" => true,
+                    "finished" => false,
+                    _ => throw new InvalidDataException($"Line {lineNumber}: updates must be 'ongoing' or 'finished'.")
+                };
             }
             else if (line.StartsWith('@'))
             {
@@ -107,7 +120,7 @@ public static partial class BuiltInLists
             throw new InvalidDataException("Missing 'playlist:' line.");
         }
 
-        return new WatchOrderList(playlist, entries);
+        return new WatchOrderList(playlist, entries) { Ongoing = ongoing };
     }
 
     private static int Int(Group g) => int.Parse(g.Value, CultureInfo.InvariantCulture);

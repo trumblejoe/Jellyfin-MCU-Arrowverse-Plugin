@@ -5,6 +5,7 @@
 # No titles or notes here, to keep the list spoiler-free.
 
 playlist: Batman TAS Fan Order
+updates: finished
 
 # Part 1 - "Batman Begins"
 @ Batman: The Animated Series

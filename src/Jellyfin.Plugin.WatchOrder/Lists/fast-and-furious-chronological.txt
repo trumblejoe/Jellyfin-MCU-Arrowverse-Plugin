@@ -2,6 +2,7 @@
 # The widely used story order, which differs from release order. Alternate titles after "|".
 
 playlist: Fast & Furious Chronological
+updates: ongoing
 
 movie: The Fast and the Furious (2001) | The Fast and the Furious (2001)
 movie: 2 Fast 2 Furious (2003)

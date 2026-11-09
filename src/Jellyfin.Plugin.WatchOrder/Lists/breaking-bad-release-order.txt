@@ -3,6 +3,7 @@
 # Episode codes use TheTVDB aired order. No titles or notes here, to keep the list spoiler-free.
 
 playlist: Breaking Bad Release
+updates: finished
 
 @ Breaking Bad
 S01E01-E07

@@ -4,6 +4,7 @@
 # aired order. No titles or notes here, to keep the list spoiler-free.
 
 playlist: Star Wars Chronological
+updates: ongoing
 
 
 # Part 1

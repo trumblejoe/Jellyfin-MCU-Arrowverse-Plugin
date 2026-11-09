@@ -30,4 +30,8 @@ public sealed record WatchOrderEntry(
 }
 
 /// <summary>A playlist to build: its name and its ordered entries.</summary>
-public sealed record WatchOrderList(string PlaylistName, IReadOnlyList<WatchOrderEntry> Entries);
+public sealed record WatchOrderList(string PlaylistName, IReadOnlyList<WatchOrderEntry> Entries)
+{
+    /// <summary>Built-in lists only: true if the franchise has more coming, false if finished.</summary>
+    public bool? Ongoing { get; init; }
+}

@@ -87,10 +87,28 @@ public class BuiltInListsTests
                 "Batman TAS Fan Order", "Battlestar Galactica Release", "Breaking Bad Release", "DCAU Release", "DCU Release",
                 "Doctor Who Release", "Fast & Furious Chronological", "Fast & Furious Release", "Harry Potter Release",
                 "Middle-earth Chronological", "Middle-earth Release", "One Chicago Release", "Saved by the Bell Chronological",
-                "Star Wars Chronological", "Star Wars Release", "Stargate Optimized", "Wizarding World Chronological",
-                "Wizarding World Release"
+                "Star Wars Chronological", "Star Wars Release", "Stargate Optimized", "The Wire Release",
+                "Wizarding World Chronological", "Wizarding World Release"
             ],
             BuiltInLists.All.Select(l => l.PlaylistName).Order(StringComparer.Ordinal));
+    }
+
+    [Fact]
+    public void Every_list_says_whether_it_is_ongoing_or_finished()
+    {
+        Assert.All(BuiltInLists.All, l => Assert.NotNull(l.Ongoing));
+        Assert.True(List("One Chicago Release").Ongoing);
+        Assert.False(List("The Wire Release").Ongoing);
+        Assert.Throws<InvalidDataException>(() => BuiltInLists.Parse("playlist: X\nupdates: maybe"));
+    }
+
+    [Fact]
+    public void The_wire_is_followed_by_we_own_this_city()
+    {
+        var wire = List("The Wire Release");
+        Assert.Equal(66, wire.Entries.Count);
+        Assert.Equal(60, Count(wire, "The Wire"));
+        Assert.All(wire.Entries.Skip(60), e => Assert.Equal("We Own This City", e.SeriesName));
     }
 
     [Fact]

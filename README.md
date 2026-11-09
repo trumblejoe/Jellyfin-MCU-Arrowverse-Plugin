@@ -112,6 +112,7 @@ plugin releases, and nothing is downloaded.
 | Star Wars Release | The same canon films and series in release order, by air date; 414 items |
 | Stargate Optimized | [GateWorld's Optimized Stargate Watch Order](https://gateworld.net/news/2024/09/optimized-stargate-watch-order) (SG-1, Atlantis, Universe including its kino web shorts as specials, and 4 movies); 392 items |
 
+| The Wire Release | The Wire, followed by We Own This City; 66 episodes |
 | Wizarding World Release / Chronological | The Harry Potter and Fantastic Beasts films, in release order and in story order |
 
 A year on a show line, as in `@ Doctor Who (2023)`, is strict: only a series that premiered
@@ -124,6 +125,7 @@ or among a show's specials if that's where your library files them.
 
 ```
 playlist: My List Name          # playlist name (required)
+updates: finished               # 'finished', or 'ongoing' if new titles are still coming (only those get checked for updates)
 @ Some Show                     # show for the codes below; "@ Some Show (2014)" picks between same-named shows
 S01E13                          # one episode
 S01E02-E05                      # a range within one season

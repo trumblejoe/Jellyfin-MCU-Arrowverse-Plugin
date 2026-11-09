@@ -3,6 +3,7 @@
 # TheTVDB aired order. No titles or notes here, to keep the list spoiler-free.
 
 playlist: Stargate Optimized
+updates: ongoing
 
 # Part 1
 movie: Stargate (1994)
