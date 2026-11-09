@@ -1,6 +1,6 @@
 name: "Watch Order Playlists"
 guid: "6f0c9a51-2b7e-4d8a-9c3f-1e5a7b2d4c60"
-version: "1.2.0.0"
+version: "1.3.0.0"
 targetAbi: "12.4.0.0"
 framework: "net10.0"
 overview: "Spoiler-free playlists synced from arrowverse.info and aaronperris.com/mcu"
@@ -13,6 +13,8 @@ owner: "trumblejoe"
 artifacts:
 - "Jellyfin.Plugin.WatchOrder.dll"
 changelog: >
+  1.3.0.0 - Built-in lists update without a plugin release or restart: with a Backup data URL
+    set, the daily sync downloads the latest lists (validated; the last good copy is kept).
   1.2.0.0 - Canon and Extended (canon + non-canon) MCU playlists, renamed to sort in pairs
     (MCU Release / MCU Release Extended, ...). Existing playlists and settings convert automatically.
     Settings page now lists what's missing from your library (shows by name, movies by count).

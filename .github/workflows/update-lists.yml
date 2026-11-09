@@ -3,8 +3,9 @@ name: Update lists
 # Weekly maintenance of the built-in watch-order lists (src/Jellyfin.Plugin.WatchOrder/Lists).
 #  - 'updates: auto' lists get newly aired episodes appended; 'updates: ongoing' lists get them
 #    placed right after the show's last episode; due 'upcoming: movie:' lines become movies.
-#    Tests run, then a commit to main and a new patch release (Jellyfin's "Update Plugins"
-#    task installs it).
+#    Tests run, then a commit to main. The lists are then published to the 'data' branch
+#    (lists/*.txt + lists/index.json), where servers with a Backup data URL pick them up on
+#    their next daily sync: no plugin release and no Jellyfin restart needed.
 #  - Anything with no safe rule (e.g. a brand-new series) is reported in ONE GitHub issue
 #    (label: list-updates), which emails the repo owner. Closed automatically once nothing's left.
 # Only show names and episode codes are ever written to logs, commits and issues.
@@ -12,14 +13,16 @@ on:
   schedule:
     - cron: '23 7 * * 1'   # Mondays, 07:23 UTC
   workflow_dispatch:
+  push:                    # publish hand edits to the lists too
+    branches: [main]
+    paths: ['src/Jellyfin.Plugin.WatchOrder/Lists/**']
 
 permissions:
-  contents: write   # commit list updates, push the release tag
+  contents: write   # commit list updates to main; publish them to the data branch
   issues: write     # open/update/close the list-updates issue
-  actions: write    # start the Build workflow for the new tag
 
 concurrency:
-  group: update-lists
+  group: data-branch   # shared with update-data.yml: one writer to the data branch at a time
   cancel-in-progress: false
 
 jobs:
@@ -27,8 +30,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-        with:
-          fetch-depth: 0   # need tags to pick the next version
 
       - name: Check and update lists
         id: lists
@@ -43,10 +44,8 @@ jobs:
         if: steps.lists.outputs.changed == 'true'
         run: dotnet test -c Release
 
-      - name: Commit and release
+      - name: Commit the updated lists
         if: steps.lists.outputs.changed == 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898299+github-actions[bot]@users.noreply.github.com"
@@ -54,15 +53,25 @@ jobs:
           git commit -q -m "Update lists: newly aired episodes and released movies" -m "$(sed -n '/## Added automatically/,/## Needs Claude/p' report.md | grep '^- ')"
           git push -q origin HEAD:main
 
-          last=$(git tag -l 'v*' --sort=-v:refname | head -1)
-          IFS=. read -r major minor patch <<< "${last#v}"
-          tag="v${major}.${minor}.$((patch + 1))"
-          git tag -a "$tag" -m "$tag (automatic list update)"
-          git push -q origin "$tag"
-
-          # Tags pushed with GITHUB_TOKEN don't trigger workflows, so start the release build directly.
-          gh workflow run build.yml --ref "$tag"
-          echo "Released $tag"
+      - name: Publish the lists to the data branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898299+github-actions[bot]@users.noreply.github.com"
+          git fetch -q --depth=1 origin data
+          git worktree add -B data data-branch FETCH_HEAD
+          mkdir -p data-branch/lists
+          rm -f data-branch/lists/*.txt
+          cp src/Jellyfin.Plugin.WatchOrder/Lists/*.txt data-branch/lists/
+          python3 -I -c "import json,os; print(json.dumps(sorted(f[:-4] for f in os.listdir('data-branch/lists') if f.endswith('.txt'))))" > data-branch/lists/index.json
+          cd data-branch
+          git add -A lists
+          if git diff --cached --quiet; then
+            echo "Lists on the data branch are already current."
+          else
+            git commit -q -m "Publish lists"
+            git push -q origin HEAD:data
+            echo "Published lists to the data branch."
+          fi
 
       - name: Open or update the list-updates issue
         if: steps.lists.outputs.attention == 'true'

@@ -104,7 +104,7 @@ public class SyncPlaylistsTask : IScheduledTask
     {
         var lists = new List<WatchOrderList>();
         var http = _httpClientFactory.CreateClient();
-        http.DefaultRequestHeaders.UserAgent.ParseAdd("Jellyfin-WatchOrderPlaylists/1.1");
+        http.DefaultRequestHeaders.UserAgent.ParseAdd("Jellyfin-WatchOrderPlaylists/1.3");
 
         if (config.EnableArrowverse)
         {
@@ -113,6 +113,23 @@ public class SyncPlaylistsTask : IScheduledTask
             if (result.Items is not null)
             {
                 lists.Add(new WatchOrderList(ArrowverseSource.PlaylistName, result.Items));
+            }
+        }
+
+        // Pick up list updates published by the weekly workflow (only with a Backup data URL).
+        if (BuiltInLists.DownloadFolder is { } listFolder)
+        {
+            var refreshed = await ListDownloader.RefreshAsync(http, config.BackupDataUrl, listFolder, ct).ConfigureAwait(false);
+            if (refreshed.Error is not null)
+            {
+                _logger.LogWarning("Watch Order: couldn't check for list updates ({Error}); using the lists already on this server.", refreshed.Error);
+            }
+            else if (refreshed.Updated > 0 || refreshed.Rejected > 0)
+            {
+                _logger.LogInformation(
+                    "Watch Order: list updates: {Updated} updated, {Rejected} rejected (kept the previous copy).",
+                    refreshed.Updated,
+                    refreshed.Rejected);
             }
         }
 

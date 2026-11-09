@@ -24,7 +24,9 @@ Tests use made-up sample data only, never real guide content.
 List upkeep: `.github/workflows/update-lists.yml` (weekly) runs `tools/lists/update_lists.py`, which ADDS
 (never just reports) wherever a safe rule exists: `auto` lists append new episodes; `ongoing` lists insert
 them after the show's last episode; due `upcoming: movie: ... | after: X` lines become movie entries;
-new 40+-minute specials for shows whose specials a list uses. Then it tests, commits and auto-releases.
+new 40+-minute specials for shows whose specials a list uses. Then it tests, commits to main, and publishes
+the lists to the data branch (lists/*.txt + index.json); servers with a Backup data URL download them daily,
+so list changes need NO release or restart (pushing hand edits to Lists/ also republishes them).
 Only things with no rule (plain `upcoming:` reminders such as brand-new series) go to the `list-updates`
 issue. When asked to handle that issue: if a new series now has a TVDB page, pre-register it (add just its
 `@ Show (year)` line where it belongs + its slug in tools/lists/shows.json; episodes then flow in on their

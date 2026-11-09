@@ -84,7 +84,7 @@ plugin isn't loaded twice.
 | Start at my next unwatched item | on | Each user's playlists drop watched items from the front, so Play picks up where they left off. Something watched out of order further down stays in its place until they get there. To skip an item, mark it watched; marking one unwatched moves the start back |
 | Arrowverse | on | |
 | MCU playlists | MCU Release on | Six checkboxes: `MCU Release`, `MCU Chronological`, `MCU Sacred Timeline` (canon only), each with an `... Extended` version that also includes the guide's non-canon entries. The names sort in canon/Extended pairs on Jellyfin's playlist page |
-| Backup data URL | empty | Optional GitHub backup to fall back on (see below) |
+| Backup data URL | empty | Optional: where to download list updates from, and a fallback copy of the guides (see below) |
 | Series aliases | empty | `Name on guide = Name in Jellyfin`, one per line. Only needed if a show you own gets skipped; the server log lists any unmatched show names |
 
 ## Built-in lists
@@ -168,8 +168,10 @@ too. Concerts, documentaries and behind-the-scenes specials are skipped.
 The **Update lists** workflow (`.github/workflows/update-lists.yml`) runs every Monday, and can
 be run by hand from the Actions tab:
 
-1. It adds everything above, runs the tests, commits, and publishes a new patch release.
-   Jellyfin's **Update Plugins** scheduled task installs it.
+1. It adds everything above, runs the tests, commits, and publishes the lists to the `data`
+   branch (`lists/*.txt` + `lists/index.json`). Servers with a **Backup data URL** set download
+   them on their next daily sync. No plugin release and no Jellyfin restart needed. Servers
+   without the URL keep the lists built into the plugin, which update with releases.
 2. Anything with no safe rule (due reminders, a show missing from `tools/lists/shows.json`) goes
    into one GitHub issue labelled `list-updates`, which emails you. It holds show names and
    episode codes only. Ask Claude to "handle the open list-update issue". The issue closes itself

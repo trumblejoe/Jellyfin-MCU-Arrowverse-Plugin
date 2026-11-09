@@ -10,8 +10,11 @@ namespace Jellyfin.Plugin.WatchOrder.Sync;
 /// <summary>Shared helpers: which users get playlists and which playlists this plugin manages.</summary>
 public static class ManagedPlaylists
 {
-    /// <summary>Every playlist name the plugin manages, including pre-1.2 names awaiting rename.</summary>
-    public static readonly IReadOnlySet<string> Names = new HashSet<string>(
+    /// <summary>
+    /// Every playlist name the plugin manages, including pre-1.2 names awaiting rename. Worked out
+    /// each time, since downloaded list updates can add playlists without a restart.
+    /// </summary>
+    public static IReadOnlySet<string> Names => new HashSet<string>(
         Enum.GetValues<McuOrder>()
             .SelectMany(o => new[]
             {

@@ -6,7 +6,8 @@ namespace Jellyfin.Plugin.WatchOrder.Sources;
 
 /// <summary>
 /// Watch orders shipped inside the plugin (the <c>Lists/*.txt</c> files), for franchises whose
-/// guides have no data feed. Nothing is downloaded; lists change only with plugin releases.
+/// guides have no data feed. If the server admin set a Backup data URL, newer copies are
+/// downloaded daily (see <see cref="ListDownloader"/>) so list updates need no plugin release.
 ///
 /// File format (one item per line; blank lines and <c># comments</c> ignored):
 /// <code>
@@ -29,10 +30,12 @@ namespace Jellyfin.Plugin.WatchOrder.Sources;
 /// </summary>
 public static partial class BuiltInLists
 {
-    private static readonly Lazy<IReadOnlyList<WatchOrderList>> Loaded = new(LoadEmbedded);
-
-    /// <summary>Every list shipped with the plugin, sorted by playlist name.</summary>
-    public static IReadOnlyList<WatchOrderList> All => Loaded.Value;
+    /// <summary>
+    /// Every list in effect, sorted by playlist name: the ones shipped with the plugin, updated by
+    /// any newer copies downloaded to the server (read fresh each time, so updates apply without
+    /// a restart).
+    /// </summary>
+    public static IReadOnlyList<WatchOrderList> All => LoadEmbedded();
 
     [GeneratedRegex(@"^S(\d+)E(\d+)(?:-(?:S(\d+))?E(\d+))?$", RegexOptions.IgnoreCase)]
     private static partial Regex CodeRegex();
@@ -145,15 +148,58 @@ public static partial class BuiltInLists
             ? (m.Groups[1].Value, Int(m.Groups[2]))
             : (value, null);
 
-    private static IReadOnlyList<WatchOrderList> LoadEmbedded()
+    /// <summary>
+    /// The lists shipped inside the plugin, by file key (e.g. "batman-tas-fan-order").
+    /// </summary>
+    public static IReadOnlyDictionary<string, WatchOrderList> Embedded => EmbeddedByKey.Value;
+
+    private static readonly Lazy<IReadOnlyDictionary<string, WatchOrderList>> EmbeddedByKey = new(() =>
     {
+        const string Marker = ".Lists.";
         var assembly = typeof(BuiltInLists).Assembly;
         return assembly.GetManifestResourceNames()
-            .Where(n => n.Contains(".Lists.", StringComparison.Ordinal) && n.EndsWith(".txt", StringComparison.OrdinalIgnoreCase))
-            .Select(n => Parse(Read(assembly, n)))
-            .OrderBy(l => l.PlaylistName, StringComparer.OrdinalIgnoreCase)
-            .ToList();
+            .Where(n => n.Contains(Marker, StringComparison.Ordinal) && n.EndsWith(".txt", StringComparison.OrdinalIgnoreCase))
+            .ToDictionary(
+                n => n[(n.IndexOf(Marker, StringComparison.Ordinal) + Marker.Length)..^".txt".Length],
+                n => Parse(Read(assembly, n)),
+                StringComparer.OrdinalIgnoreCase);
+    });
+
+    /// <summary>
+    /// The lists in effect: the embedded ones, each replaced by a downloaded copy in
+    /// <paramref name="downloadFolder"/> when one exists and parses (see <see cref="ListDownloader"/>),
+    /// plus any list that only exists as a download. Sorted by playlist name.
+    /// </summary>
+    public static IReadOnlyList<WatchOrderList> Load(string? downloadFolder) =>
+        LoadByKey(downloadFolder).Values.OrderBy(l => l.PlaylistName, StringComparer.OrdinalIgnoreCase).ToList();
+
+    /// <summary>The lists in effect, by file key (embedded, replaced by valid downloaded copies).</summary>
+    public static Dictionary<string, WatchOrderList> LoadByKey(string? downloadFolder)
+    {
+        var lists = new Dictionary<string, WatchOrderList>(Embedded, StringComparer.OrdinalIgnoreCase);
+        if (downloadFolder is not null && Directory.Exists(downloadFolder))
+        {
+            foreach (var file in Directory.EnumerateFiles(downloadFolder, "*.txt"))
+            {
+                try
+                {
+                    lists[Path.GetFileNameWithoutExtension(file)] = Parse(File.ReadAllText(file));
+                }
+                catch (Exception ex) when (ex is IOException or InvalidDataException or UnauthorizedAccessException)
+                {
+                    // A bad download never replaces a good list.
+                }
+            }
+        }
+
+        return lists;
     }
+
+    private static IReadOnlyList<WatchOrderList> LoadEmbedded() => Load(DownloadFolder);
+
+    /// <summary>Where downloaded list updates live: the plugin's data folder on the server.</summary>
+    public static string? DownloadFolder =>
+        Plugin.Instance?.DataFolderPath is { } data ? Path.Combine(data, "lists") : null;
 
     private static string Read(Assembly assembly, string name)
     {

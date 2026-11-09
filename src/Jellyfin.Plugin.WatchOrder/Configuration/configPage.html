@@ -38,13 +38,13 @@
                     <div class="fieldDescription">Each order comes as a canon playlist and an <em>Extended</em> playlist, which adds the non-canon entries the guide lists (older Fox and animated series, etc.).</div>
 
                     <h3>Built-in lists</h3>
-                    <div class="fieldDescription">Watch orders shipped with the plugin, for franchises without an online guide. They're updated with plugin releases.</div>
+                    <div class="fieldDescription">Watch orders shipped with the plugin, for franchises without an online guide. With a Backup data URL set, they update automatically; otherwise they update with plugin releases.</div>
                     <div id="BuiltInListList"></div>
 
                     <div class="inputContainer">
                         <label class="inputLabel inputLabelUnfocused" for="BackupDataUrl">Backup data URL (optional)</label>
                         <input is="emby-input" type="text" id="BackupDataUrl" name="BackupDataUrl" />
-                        <div class="fieldDescription">Leave blank unless you run your own backup. Only contacted when a guide site is down or looks broken, or before the first good download. A copy of each guide is always kept on this server either way.</div>
+                        <div class="fieldDescription">Leave blank unless you run your own backup. When set, the daily sync also picks up updated built-in lists from it (no plugin update or restart needed), and it's used as a fallback when a guide site is down or looks broken. A copy of each guide and list is always kept on this server.</div>
                     </div>
 
                     <div class="inputContainer">
