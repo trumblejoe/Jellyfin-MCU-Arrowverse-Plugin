@@ -3,3 +3,6 @@ obj/
 .vs/
 *.user
 *.zip
+__pycache__/
+*.pyc
+report.md
