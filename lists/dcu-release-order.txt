@@ -1,0 +1,20 @@
+# DC Universe (DC Studios) - Release Order
+# Release order per JustWatch's DCU guide (guides.justwatch.com/us/james-gunn-dcu-in-order,
+# Sept 2026). Unreleased titles are left out until they release. Episode codes use TheTVDB aired order. No titles or notes here, to keep the list spoiler-free.
+
+playlist: DCU Release
+updates: auto
+upcoming: movie: Man of Tomorrow (2027-07-09)
+
+@ Peacemaker
+S01E01-E08
+movie: Blue Beetle (2023)
+@ Creature Commandos
+S01E01-E07
+movie: Superman (2025)
+@ Peacemaker
+S02E01-E08
+movie: Supergirl (2026) | Supergirl: Woman of Tomorrow
+@ Lanterns
+S01E01-E08
+movie: Clayface (2026)

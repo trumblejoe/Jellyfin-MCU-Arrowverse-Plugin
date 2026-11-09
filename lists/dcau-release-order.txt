@@ -1,0 +1,219 @@
+# DC Animated Universe - Release Order
+# Every DCAU series and movie in the order it first aired or released; shows that
+# aired at the same time are interleaved by air date. Justice League Unlimited is
+# Justice League seasons 3-5 on TheTVDB. Episode codes use TheTVDB aired order. No titles or notes here, to keep the list spoiler-free.
+
+playlist: DCAU Release
+updates: finished
+
+@ Batman: The Animated Series
+S01E01-E60
+S02E01-E05
+movie: Batman: Mask of the Phantasm (1993)
+@ Batman: The Animated Series
+S02E06-E10
+S03E01-E10
+S04E01-E05
+@ Superman: The Animated Series
+S01E01-E13
+S02E01-E05
+@ The New Batman Adventures
+S01E01
+@ Superman: The Animated Series
+S02E06-E09
+@ The New Batman Adventures
+S01E02
+@ Superman: The Animated Series
+S02E10-E21
+@ The New Batman Adventures
+S01E03
+@ Superman: The Animated Series
+S02E22
+@ The New Batman Adventures
+S01E04
+@ Superman: The Animated Series
+S02E23
+@ The New Batman Adventures
+S01E05
+@ Superman: The Animated Series
+S02E24
+@ The New Batman Adventures
+S01E06
+@ Superman: The Animated Series
+S02E25-E26
+@ The New Batman Adventures
+S01E07-E08
+movie: Batman & Mr. Freeze: SubZero (1998)
+@ The New Batman Adventures
+S01E09
+@ Superman: The Animated Series
+S02E27-E28
+@ The New Batman Adventures
+S01E10-E13
+S02E01-E02
+@ Superman: The Animated Series
+S03E01
+@ The New Batman Adventures
+S02E03-E05
+@ Superman: The Animated Series
+S03E02
+@ The New Batman Adventures
+S02E06-E08
+@ Superman: The Animated Series
+S03E03
+@ The New Batman Adventures
+S02E09-E10
+@ Superman: The Animated Series
+S03E04-E05
+@ Batman Beyond
+S01E01-E02
+@ Superman: The Animated Series
+S03E06
+@ The New Batman Adventures
+S02E11
+@ Batman Beyond
+S01E03
+@ Superman: The Animated Series
+S03E07
+@ Batman Beyond
+S01E04-E05
+@ Superman: The Animated Series
+S03E08
+@ Batman Beyond
+S01E06-E10
+@ Superman: The Animated Series
+S03E09
+@ Batman Beyond
+S01E11
+@ Superman: The Animated Series
+S03E10
+@ Batman Beyond
+S01E12-E13
+@ Superman: The Animated Series
+S04E01
+@ Batman Beyond
+S02E01-E14
+@ Superman: The Animated Series
+S04E02
+@ Batman Beyond
+S02E15
+@ Superman: The Animated Series
+S04E03
+@ Batman Beyond
+S02E16-E26
+S03E01-E02
+@ Static Shock
+S01E01
+@ Batman Beyond
+S03E03
+@ Static Shock
+S01E02
+@ Batman Beyond
+S03E04
+@ Static Shock
+S01E03-E04
+@ Batman Beyond
+S03E05-E07
+@ Static Shock
+S01E05
+@ Batman Beyond
+S03E08
+@ Static Shock
+S01E06-E07
+@ Batman Beyond
+S03E09
+@ Static Shock
+S01E08
+movie: Batman Beyond: Return of the Joker (2000)
+@ Static Shock
+S01E09-E10
+@ The Zeta Project
+S01E01
+@ Batman Beyond
+S03E10
+@ The Zeta Project
+S01E02
+@ Batman Beyond
+S03E11
+@ Static Shock
+S01E11
+@ The Zeta Project
+S01E03-E05
+@ Static Shock
+S01E12
+@ The Zeta Project
+S01E06-E07
+@ Batman Beyond
+S03E12
+@ The Zeta Project
+S01E08-E10
+@ Static Shock
+S01E13
+@ The Zeta Project
+S01E11-E12
+@ Justice League
+S01E01-E07
+@ Batman Beyond
+S03E13
+@ Justice League
+S01E08
+@ Static Shock
+S02E01
+@ Justice League
+S01E09
+@ Static Shock
+S02E02-E05
+@ Justice League
+S01E10
+@ Static Shock
+S02E06
+@ Justice League
+S01E11
+@ Static Shock
+S02E07
+@ Justice League
+S01E12-E13
+@ Static Shock
+S02E08
+@ The Zeta Project
+S02E01-E02
+@ Static Shock
+S02E09
+@ The Zeta Project
+S02E03
+@ Justice League
+S01E14
+@ The Zeta Project
+S02E04
+@ Justice League
+S01E15
+@ The Zeta Project
+S02E05
+@ Justice League
+S01E16
+@ Static Shock
+S02E10
+@ The Zeta Project
+S02E06
+@ Justice League
+S01E17
+@ Static Shock
+S02E11
+@ The Zeta Project
+S02E07-E14
+@ Justice League
+S01E18-E26
+@ Static Shock
+S03E01-E15
+@ Justice League
+S02E01-E08
+movie: Batman: Mystery of the Batwoman (2003)
+@ Justice League
+S02E09-E23
+@ Static Shock
+S04E01-E13
+@ Justice League
+S02E24-E26
+S03E01-E13
+S04E01-E13
+S05E01-E13

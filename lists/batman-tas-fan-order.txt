@@ -1,0 +1,137 @@
+# Batman TAS Fan Order
+# A fan-curated order across Batman: The Animated Series, its two movies, and
+# The New Batman Adventures. Episode codes use TheTVDB aired order; the movies
+# are Batman: The Animated Series specials (TVDB S00E02 and S00E03).
+# No titles or notes here, to keep the list spoiler-free.
+
+playlist: Batman TAS Fan Order
+updates: finished
+
+# Part 1 - "Batman Begins"
+@ Batman: The Animated Series
+S01E13
+S01E02
+S01E25
+S01E06
+S01E12
+S01E27
+S01E23
+S01E32
+
+# Part 2 - "Batman Returns"
+@ Batman: The Animated Series
+S01E11
+S01E09
+S01E10
+S01E17
+S01E01
+S01E08
+S01E03
+S01E20
+S01E04
+S01E05
+S01E21
+S01E18
+S01E24
+S01E14
+S01E22
+S00E02
+
+# Part 3 - "The Dark Knight"
+@ Batman: The Animated Series
+S01E28
+S01E26
+S01E33
+S01E16
+S01E15
+S01E19
+S01E31
+S01E36
+S01E30
+S01E37
+S01E39
+S01E40
+S01E41
+S01E07
+S01E42
+S01E38
+S01E43
+S01E29
+S01E55
+
+# Part 4 - "TDK Rises"
+@ Batman: The Animated Series
+S01E44
+S01E45
+S01E46
+S01E49
+S01E47
+S01E50
+S01E59
+S01E56
+S01E51
+S01E53
+S01E54
+S01E34
+S01E48
+S01E52
+S01E35
+S01E60
+S01E57
+S01E58
+
+# Part 5 - "Batman Forever"
+@ Batman: The Animated Series
+S02E01
+S02E02
+S03E01
+S02E03
+S02E10
+S03E06
+S03E07
+S02E07
+S03E02
+S03E03
+S03E10
+S02E04
+S02E05
+S03E04
+S04E01
+S03E05
+S04E05
+S04E03
+S02E09
+S03E09
+S02E06
+S04E04
+S02E08
+S04E02
+S03E08
+S00E03
+
+# Part 6 - "Batman Triumphant"
+@ The New Batman Adventures
+S01E02
+S01E05
+S01E08
+S01E01
+S01E03
+S01E06
+S01E04
+S01E07
+S01E09
+S01E10
+S02E01
+S02E02
+S02E04
+S01E12
+S02E06
+S02E07
+S01E13
+S02E08
+S02E03
+S02E10
+S02E09
+S02E05
+S02E11
+S01E11

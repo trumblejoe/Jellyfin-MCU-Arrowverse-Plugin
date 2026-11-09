@@ -1,0 +1,131 @@
+# Doctor Who - Release Order
+# Modern Doctor Who franchise (2005 revival onward, plus Torchwood, The Sarah Jane Adventures, Class, The War Between
+# the Land and the Sea) in first-broadcast order; full-length narrative specials included. Source = TheTVDB air dates.
+# Episode codes use TheTVDB aired order. No titles or notes here, to keep the list spoiler-free.
+
+playlist: Doctor Who Release
+updates: auto
+
+@ Doctor Who (2005)
+S01E01-E13
+S00E02
+S02E01-E13
+
+@ Torchwood
+S01E01-E11
+
+@ Doctor Who (2005)
+S00E04
+
+@ The Sarah Jane Adventures
+S00E01
+
+@ Torchwood
+S01E12-E13
+
+@ Doctor Who (2005)
+S03E01-E13
+
+@ The Sarah Jane Adventures
+S01E01-E10
+
+@ Doctor Who (2005)
+S00E07
+
+@ Torchwood
+S02E01-E13
+
+@ Doctor Who (2005)
+S04E01-E13
+
+@ The Sarah Jane Adventures
+S02E01-E12
+
+@ Doctor Who (2005)
+S00E09
+S00E13
+
+@ Torchwood
+S03E01-E05
+
+@ The Sarah Jane Adventures
+S03E01-E10
+
+@ Doctor Who (2005)
+S00E14
+
+@ The Sarah Jane Adventures
+S03E11-E12
+
+@ Doctor Who (2005)
+S00E16-E17
+S05E01-E13
+
+@ The Sarah Jane Adventures
+S04E01-E12
+
+@ Doctor Who (2005)
+S00E34
+S06E01-E07
+
+@ Torchwood
+S04E01-E07
+
+@ Doctor Who (2005)
+S06E08
+
+@ Torchwood
+S04E08
+
+@ Doctor Who (2005)
+S06E09
+
+@ Torchwood
+S04E09
+
+@ Doctor Who (2005)
+S06E10
+
+@ Torchwood
+S04E10
+
+@ Doctor Who (2005)
+S06E11-E13
+
+@ The Sarah Jane Adventures
+S05E01-E06
+
+@ Doctor Who (2005)
+S00E48
+S07E01-E05
+S00E66
+S07E06-E13
+S00E83-E84
+S08E01-E12
+S00E142
+S09E01-E12
+S00E148
+
+@ Class
+S01E01-E08
+
+@ Doctor Who (2005)
+S00E149
+S10E01-E12
+S00E154
+S11E01-E10
+S00E156
+S12E01-E10
+S00E157
+S13E01-E06
+S00E158-E159
+S00E161
+
+@ Doctor Who (2023)
+S00E01-E04
+S01E01-E08
+S00E05
+S02E01-E08
+
+@ The War Between the Land and the Sea
+S01E01-E05

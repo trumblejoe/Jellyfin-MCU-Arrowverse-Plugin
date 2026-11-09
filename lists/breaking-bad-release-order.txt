@@ -1,0 +1,22 @@
+# Breaking Bad Universe - Release Order
+# Breaking Bad, Better Call Saul and El Camino in release order (episodes by air date).
+# Episode codes use TheTVDB aired order. No titles or notes here, to keep the list spoiler-free.
+
+playlist: Breaking Bad Release
+updates: finished
+
+@ Breaking Bad
+S01E01-E07
+S02E01-E13
+S03E01-E13
+S04E01-E13
+S05E01-E16
+@ Better Call Saul
+S01E01-E10
+S02E01-E10
+S03E01-E10
+S04E01-E10
+movie: El Camino: A Breaking Bad Movie (2019) | El Camino
+@ Better Call Saul
+S05E01-E10
+S06E01-E13
