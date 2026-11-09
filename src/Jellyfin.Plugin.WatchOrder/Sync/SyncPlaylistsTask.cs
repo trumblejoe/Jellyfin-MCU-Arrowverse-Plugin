@@ -132,7 +132,7 @@ public class SyncPlaylistsTask : IScheduledTask
     }
 
     /// <summary>The MCU playlists ticked in settings, as (order, extended) pairs.</summary>
-    private static List<(McuOrder Order, bool Extended)> EnabledMcuPlaylists(PluginConfiguration config)
+    internal static List<(McuOrder Order, bool Extended)> EnabledMcuPlaylists(PluginConfiguration config)
     {
         var all = new (McuOrder Order, bool Extended, bool Enabled)[]
         {

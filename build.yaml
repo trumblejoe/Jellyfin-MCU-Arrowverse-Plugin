@@ -15,6 +15,7 @@ artifacts:
 changelog: >
   1.2.0.0 - Canon and Extended (canon + non-canon) MCU playlists, renamed to sort in pairs
     (MCU Release / MCU Release Extended, ...). Existing playlists and settings convert automatically.
+    Settings page now lists what's missing from your library (shows by name, movies by count).
   1.1.0.0 - Per-user private playlists; remove watched items so each user's playlist starts
     at their next unwatched item; keep a last good copy of each guide in case a site goes offline.
   1.0.1.0 - Publish Jellyfin repository manifest.

@@ -107,6 +107,9 @@ public sealed partial class LibraryMatcher
             .FirstOrDefault();
     }
 
+    /// <summary>Whether the library has this show (by the guide's name, honoring Series Aliases).</summary>
+    public bool HasSeries(string siteName, int? year) => FindSeries(siteName, year) is not null;
+
     private Series? FindSeries(string siteName, int? year)
     {
         var name = _aliases.TryGetValue(Normalize(siteName), out var alias) ? alias : Normalize(siteName);

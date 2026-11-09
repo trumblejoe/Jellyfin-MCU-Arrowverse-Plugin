@@ -87,6 +87,22 @@ plugin isn't loaded twice.
 | Backup data URL | empty | Optional GitHub backup to fall back on (see below) |
 | Series aliases | empty | `Name on guide = Name in Jellyfin`, one per line. Only needed if a show you own gets skipped; the server log lists any unmatched show names |
 
+## Missing from your library
+
+The bottom of the plugin's settings page lists what your ticked playlists include that isn't
+in your library:
+
+- **Playlist table:** for each playlist, how many items you have, and how many episodes and
+  movies/specials are missing.
+- **Shows not in your library:** shown by the guide's spelling. If you have a show under a
+  different name, add a Series Alias with the name shown.
+- **Shows with missing episodes:** the show, how many episodes are missing, and which seasons.
+- **Movies and specials:** a count only, with titles hidden to avoid spoilers.
+
+It's worked out when you open the page (or click Refresh, or save) from the guides saved at
+the last sync and your current library. It doesn't download anything or store anything. A
+fixed alias shows up right after you save, with no sync needed.
+
 ## How it works
 
 - `Sources/ArrowverseSource.cs` parses the `#episode-list` table, reading only the
@@ -101,6 +117,8 @@ plugin isn't loaded twice.
 - `Sources/GuideDownloader.cs` + `Sources/GuideSnapshotStore.cs` download each guide and pick the
   site or the newest backup (see below). `tools/GuideDataUpdater` is the same code run by the
   GitHub workflow.
+- `Sync/MissingReport.cs` + `Api/WatchOrderController.cs` (admin-only `GET /WatchOrder/Missing`)
+  build the settings page's "Missing from your library" section.
 - `Sync/SyncPlaylistsTask.cs` finds each user's own playlist by name, then creates it,
   or replaces its contents in order when anything changed.
 

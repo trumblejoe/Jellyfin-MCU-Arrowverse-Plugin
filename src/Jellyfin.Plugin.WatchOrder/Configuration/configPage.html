@@ -55,6 +55,13 @@
                         </button>
                     </div>
                 </form>
+
+                <div class="verticalSection" style="margin-top:2.5em">
+                    <h2 class="sectionTitle">Missing from your library</h2>
+                    <p class="fieldDescription">What the ticked playlists include that isn't in your library, based on the guides saved at the last sync. Fix a misnamed show with a Series Alias, save, and it drops off this list. Movie titles aren't shown, only counts.</p>
+                    <button is="emby-button" type="button" id="WatchOrderRefreshMissing" class="raised emby-button"><span>Refresh</span></button>
+                    <div id="WatchOrderMissing" style="margin-top:1em"></div>
+                </div>
             </div>
         </div>
         <script type="text/javascript">
@@ -94,6 +101,74 @@
             WatchOrderConfig.checkboxes = ['RemoveWatched', 'EnableArrowverse'].concat(
                 WatchOrderConfig.mcuPlaylists.map(function (p) { return p[0]; }));
 
+            // "Missing from your library" report. Built with textContent only (no HTML from data).
+            WatchOrderConfig.loadMissing = function () {
+                var out = document.querySelector('#WatchOrderMissing');
+                var el = function (tag, text, style) {
+                    var e = document.createElement(tag);
+                    if (text !== undefined) { e.textContent = text; }
+                    if (style) { e.style.cssText = style; }
+                    return e;
+                };
+                // Jellyfin's API uses PascalCase; accept camelCase too.
+                var g = function (o, k) { return o[k] !== undefined ? o[k] : o[k.charAt(0).toLowerCase() + k.slice(1)]; };
+                out.textContent = 'Loading...';
+                ApiClient.getJSON(ApiClient.getUrl('WatchOrder/Missing')).then(function (r) {
+                    out.textContent = '';
+                    if (!g(r, 'HasData')) {
+                        out.appendChild(el('p', 'Nothing to show yet. Run "Sync watch-order playlists" under Scheduled Tasks first.'));
+                        return;
+                    }
+
+                    var table = el('table', undefined, 'border-collapse:collapse;margin-bottom:1.5em');
+                    var head = el('tr');
+                    ['Playlist', 'In library', 'Missing episodes', 'Missing movies/specials'].forEach(function (h) {
+                        head.appendChild(el('th', h, 'text-align:left;padding:.3em 1.2em .3em 0'));
+                    });
+                    table.appendChild(head);
+                    g(r, 'Playlists').forEach(function (p) {
+                        var row = el('tr');
+                        [g(p, 'Name'), g(p, 'InLibrary') + ' of ' + g(p, 'Total'), g(p, 'MissingEpisodes'), g(p, 'MissingMovies')].forEach(function (v) {
+                            row.appendChild(el('td', String(v), 'padding:.3em 1.2em .3em 0'));
+                        });
+                        table.appendChild(row);
+                    });
+                    out.appendChild(table);
+
+                    var shows = g(r, 'Shows');
+                    var notOwned = shows.filter(function (s) { return !g(s, 'InLibrary'); });
+                    var partial = shows.filter(function (s) { return g(s, 'InLibrary'); });
+                    var describe = function (s) {
+                        var seasons = g(s, 'Seasons');
+                        return g(s, 'Name') + ': ' + g(s, 'MissingEpisodes') + ' episode' + (g(s, 'MissingEpisodes') === 1 ? '' : 's') +
+                            ' (season' + (seasons.length === 1 ? ' ' : 's ') + seasons.join(', ') + ')';
+                    };
+                    var section = function (title, note, items) {
+                        if (!items.length) { return; }
+                        out.appendChild(el('h3', title));
+                        if (note) { out.appendChild(el('div', note, 'opacity:.75;margin-bottom:.4em')); }
+                        var ul = el('ul');
+                        items.forEach(function (s) { ul.appendChild(el('li', describe(s))); });
+                        out.appendChild(ul);
+                    };
+                    section('Shows not in your library', 'If you have one under a different name, add a Series Alias using the name shown here.', notOwned);
+                    section('Shows with missing episodes', null, partial);
+
+                    var movies = g(r, 'MissingMovies');
+                    if (movies) {
+                        out.appendChild(el('h3', 'Movies and specials'));
+                        out.appendChild(el('p', movies + ' not in your library (titles hidden to avoid spoilers).'));
+                    }
+                    if (!shows.length && !movies) {
+                        out.appendChild(el('p', 'Nothing missing. Everything in your playlists is in your library.'));
+                    }
+                }, function () {
+                    out.textContent = 'Couldn\'t load the report. Check the server log.';
+                });
+            };
+
+            document.querySelector('#WatchOrderRefreshMissing').addEventListener('click', WatchOrderConfig.loadMissing);
+
             document.querySelector('#WatchOrderConfigPage').addEventListener('pageshow', function () {
                 Dashboard.showLoadingMsg();
                 var page = this;
@@ -132,6 +207,7 @@
                     page.querySelector('#SeriesAliases').value = config.SeriesAliases || '';
                     page.querySelector('#BackupDataUrl').value = config.BackupDataUrl || '';
                     Dashboard.hideLoadingMsg();
+                    WatchOrderConfig.loadMissing();
                 });
             });
 
@@ -148,6 +224,8 @@
                     config.BackupDataUrl = form.querySelector('#BackupDataUrl').value.trim();
                     ApiClient.updatePluginConfiguration(WatchOrderConfig.pluginUniqueId, config).then(function (result) {
                         Dashboard.processPluginConfigurationUpdateResult(result);
+                        // New aliases or playlist choices change what's missing.
+                        WatchOrderConfig.loadMissing();
                     });
                 });
                 return false;
