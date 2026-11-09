@@ -19,7 +19,24 @@ public static class McuSource
 {
     public const string Url = "https://aaronperris.com/mcu/mcu.json";
 
-    public static string PlaylistName(McuOrder order) => order switch
+    /// <summary>
+    /// Names sort in pairs on Jellyfin's playlist page ("MCU Release", "MCU Release Extended", ...)
+    /// and stay short because some clients scroll long names.
+    /// </summary>
+    public static string PlaylistName(McuOrder order, bool extended)
+    {
+        var name = order switch
+        {
+            McuOrder.Release => "MCU Release",
+            McuOrder.Chronological => "MCU Chronological",
+            McuOrder.SacredTimeline => "MCU Sacred Timeline",
+            _ => throw new ArgumentOutOfRangeException(nameof(order))
+        };
+        return extended ? name + " Extended" : name;
+    }
+
+    /// <summary>Names used before 1.2; existing playlists with these names are renamed once.</summary>
+    public static string LegacyPlaylistName(McuOrder order) => order switch
     {
         McuOrder.Release => "MCU - Release Order",
         McuOrder.Chronological => "MCU - Chronological Order",
@@ -57,10 +74,11 @@ public static class McuSource
         return items;
     }
 
-    public static WatchOrderList Build(IReadOnlyList<McuItem> items, McuOrder order, bool canonOnly, DateOnly today)
+    /// <param name="extended">false = canon only; true = canon plus the guide's non-canon entries.</param>
+    public static WatchOrderList Build(IReadOnlyList<McuItem> items, McuOrder order, bool extended, DateOnly today)
     {
         var released = items
-            .Where(i => !canonOnly || i.Canon)
+            .Where(i => extended || i.Canon)
             .Where(i => i.ReleaseDate is { } d && d <= today);
 
         IEnumerable<McuItem> sorted = order switch
@@ -76,7 +94,7 @@ public static class McuSource
                 : new WatchOrderEntry(null, null, null, i.Title, i.ReleaseDate?.Year))
             .ToList();
 
-        return new WatchOrderList(PlaylistName(order), entries);
+        return new WatchOrderList(PlaylistName(order, extended), entries);
     }
 
     public sealed class McuItem

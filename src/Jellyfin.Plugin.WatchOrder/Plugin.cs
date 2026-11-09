@@ -16,6 +16,12 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
         : base(applicationPaths, xmlSerializer)
     {
         Instance = this;
+
+        // One-time conversion of pre-1.2 "canon only" settings into Extended playlists.
+        if (Configuration.MigrateLegacyCanonSettings())
+        {
+            SaveConfiguration();
+        }
     }
 
     public static Plugin? Instance { get; private set; }

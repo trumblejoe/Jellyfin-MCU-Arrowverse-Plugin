@@ -82,6 +82,7 @@ public class SyncPlaylistsTask : IScheduledTask
         var done = 0;
         foreach (var userId in users)
         {
+            await RenameLegacyPlaylistsAsync(config, userId).ConfigureAwait(false);
             foreach (var (name, ids) in matched)
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -115,34 +116,68 @@ public class SyncPlaylistsTask : IScheduledTask
             }
         }
 
-        var mcuOrders = new List<(McuOrder Order, bool CanonOnly)>();
-        if (config.EnableMcuRelease)
-        {
-            mcuOrders.Add((McuOrder.Release, config.McuReleaseCanonOnly));
-        }
-
-        if (config.EnableMcuChronological)
-        {
-            mcuOrders.Add((McuOrder.Chronological, config.McuChronologicalCanonOnly));
-        }
-
-        if (config.EnableMcuSacredTimeline)
-        {
-            mcuOrders.Add((McuOrder.SacredTimeline, config.McuSacredTimelineCanonOnly));
-        }
-
-        if (mcuOrders.Count > 0)
+        var mcuPlaylists = EnabledMcuPlaylists(config);
+        if (mcuPlaylists.Count > 0)
         {
             var result = await GuideDownloader.McuAsync(http, store, config.BackupDataUrl, ct).ConfigureAwait(false);
             LogOutcome("the MCU guide", result.Outcome, result.SavedUtc, result.FreshCount, result.Error);
             if (result.Items is not null)
             {
                 var today = DateOnly.FromDateTime(DateTime.Now);
-                lists.AddRange(mcuOrders.Select(o => McuSource.Build(result.Items, o.Order, o.CanonOnly, today)));
+                lists.AddRange(mcuPlaylists.Select(p => McuSource.Build(result.Items, p.Order, p.Extended, today)));
             }
         }
 
         return lists;
+    }
+
+    /// <summary>The MCU playlists ticked in settings, as (order, extended) pairs.</summary>
+    private static List<(McuOrder Order, bool Extended)> EnabledMcuPlaylists(PluginConfiguration config)
+    {
+        var all = new (McuOrder Order, bool Extended, bool Enabled)[]
+        {
+            (McuOrder.Release, false, config.EnableMcuRelease),
+            (McuOrder.Release, true, config.EnableMcuReleaseExtended),
+            (McuOrder.Chronological, false, config.EnableMcuChronological),
+            (McuOrder.Chronological, true, config.EnableMcuChronologicalExtended),
+            (McuOrder.SacredTimeline, false, config.EnableMcuSacredTimeline),
+            (McuOrder.SacredTimeline, true, config.EnableMcuSacredTimelineExtended),
+        };
+        return all.Where(p => p.Enabled).Select(p => (p.Order, p.Extended)).ToList();
+    }
+
+    /// <summary>
+    /// Pre-1.2 playlists ("MCU - Release Order", ...) are renamed to their new name, so the
+    /// user keeps the same playlist instead of getting a duplicate. If only the Extended
+    /// playlist is ticked for that order, it becomes the Extended one; otherwise the canon one.
+    /// </summary>
+    private async Task RenameLegacyPlaylistsAsync(PluginConfiguration config, Guid userId)
+    {
+        var enabled = EnabledMcuPlaylists(config);
+        foreach (var order in Enum.GetValues<McuOrder>())
+        {
+            var legacy = ManagedPlaylists.Find(_playlistManager, userId, McuSource.LegacyPlaylistName(order));
+            if (legacy is null)
+            {
+                continue;
+            }
+
+            var onlyExtended = enabled.Contains((order, true)) && !enabled.Contains((order, false));
+            var newName = McuSource.PlaylistName(order, extended: onlyExtended);
+            if (ManagedPlaylists.Find(_playlistManager, userId, newName) is not null)
+            {
+                _logger.LogWarning("Watch Order: left old playlist {Old} alone because {New} already exists; delete it if you don't need it.", legacy.Name, newName);
+                continue;
+            }
+
+            await _playlistManager.UpdatePlaylist(new PlaylistUpdateRequest
+            {
+                Id = legacy.Id,
+                UserId = userId,
+                Name = newName
+            }).ConfigureAwait(false);
+            _logger.LogInformation("Watch Order: renamed playlist {Old} to {New} for user {UserId}.", legacy.Name, newName, userId);
+        }
     }
 
     private void LogOutcome(string source, SnapshotOutcome outcome, DateTime? savedUtc, int? freshCount, string? error)

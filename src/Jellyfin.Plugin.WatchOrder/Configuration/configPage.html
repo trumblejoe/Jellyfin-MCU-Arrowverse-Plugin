@@ -34,43 +34,8 @@
                             <span>Arrowverse</span>
                         </label>
                     </div>
-                    <div class="checkboxContainer">
-                        <label class="emby-checkbox-label">
-                            <input id="EnableMcuRelease" name="EnableMcuRelease" type="checkbox" is="emby-checkbox" />
-                            <span>MCU - Release Order</span>
-                        </label>
-                    </div>
-                    <div class="checkboxContainer" style="margin-left:2em">
-                        <label class="emby-checkbox-label">
-                            <input id="McuReleaseCanonOnly" name="McuReleaseCanonOnly" type="checkbox" is="emby-checkbox" />
-                            <span>Canon only</span>
-                        </label>
-                    </div>
-                    <div class="checkboxContainer">
-                        <label class="emby-checkbox-label">
-                            <input id="EnableMcuChronological" name="EnableMcuChronological" type="checkbox" is="emby-checkbox" />
-                            <span>MCU - Chronological Order</span>
-                        </label>
-                    </div>
-                    <div class="checkboxContainer" style="margin-left:2em">
-                        <label class="emby-checkbox-label">
-                            <input id="McuChronologicalCanonOnly" name="McuChronologicalCanonOnly" type="checkbox" is="emby-checkbox" />
-                            <span>Canon only</span>
-                        </label>
-                    </div>
-                    <div class="checkboxContainer">
-                        <label class="emby-checkbox-label">
-                            <input id="EnableMcuSacredTimeline" name="EnableMcuSacredTimeline" type="checkbox" is="emby-checkbox" />
-                            <span>MCU - Sacred Timeline Order</span>
-                        </label>
-                    </div>
-                    <div class="checkboxContainer checkboxContainer-withDescription" style="margin-left:2em">
-                        <label class="emby-checkbox-label">
-                            <input id="McuSacredTimelineCanonOnly" name="McuSacredTimelineCanonOnly" type="checkbox" is="emby-checkbox" />
-                            <span>Canon only</span>
-                        </label>
-                    </div>
-                    <div class="fieldDescription">"Canon only" unchecked also includes the non-canon entries the guide lists (older Fox and animated series, etc.).</div>
+                    <div id="McuPlaylistList"></div>
+                    <div class="fieldDescription">Each order comes as a canon playlist and an <em>Extended</em> playlist, which adds the non-canon entries the guide lists (older Fox and animated series, etc.).</div>
 
                     <div class="inputContainer">
                         <label class="inputLabel inputLabelUnfocused" for="BackupDataUrl">Backup data URL (optional)</label>
@@ -95,8 +60,39 @@
         <script type="text/javascript">
             var WatchOrderConfig = {
                 pluginUniqueId: '6f0c9a51-2b7e-4d8a-9c3f-1e5a7b2d4c60',
-                checkboxes: ['RemoveWatched', 'EnableArrowverse', 'EnableMcuRelease', 'EnableMcuChronological', 'EnableMcuSacredTimeline', 'McuReleaseCanonOnly', 'McuChronologicalCanonOnly', 'McuSacredTimelineCanonOnly']
+                mcuPlaylists: [
+                    ['EnableMcuRelease', 'MCU Release'],
+                    ['EnableMcuReleaseExtended', 'MCU Release Extended'],
+                    ['EnableMcuChronological', 'MCU Chronological'],
+                    ['EnableMcuChronologicalExtended', 'MCU Chronological Extended'],
+                    ['EnableMcuSacredTimeline', 'MCU Sacred Timeline'],
+                    ['EnableMcuSacredTimelineExtended', 'MCU Sacred Timeline Extended']
+                ]
             };
+
+            // One checkbox per MCU playlist, in the same order Jellyfin lists them.
+            (function () {
+                var list = document.querySelector('#McuPlaylistList');
+                WatchOrderConfig.mcuPlaylists.forEach(function (p) {
+                    var wrap = document.createElement('div');
+                    wrap.className = 'checkboxContainer';
+                    var label = document.createElement('label');
+                    label.className = 'emby-checkbox-label';
+                    var box = document.createElement('input');
+                    box.type = 'checkbox';
+                    box.setAttribute('is', 'emby-checkbox');
+                    box.id = p[0];
+                    var span = document.createElement('span');
+                    span.textContent = p[1];
+                    label.appendChild(box);
+                    label.appendChild(span);
+                    wrap.appendChild(label);
+                    list.appendChild(wrap);
+                });
+            })();
+
+            WatchOrderConfig.checkboxes = ['RemoveWatched', 'EnableArrowverse'].concat(
+                WatchOrderConfig.mcuPlaylists.map(function (p) { return p[0]; }));
 
             document.querySelector('#WatchOrderConfigPage').addEventListener('pageshow', function () {
                 Dashboard.showLoadingMsg();

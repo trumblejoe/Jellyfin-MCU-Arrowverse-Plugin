@@ -5,7 +5,7 @@ A Jellyfin plugin that keeps playlists in sync with these community watch-order 
 | Playlist | Source |
 |---|---|
 | Arrowverse | https://arrowverse.info/ (HTML table, already in viewing order) |
-| MCU - Release / Chronological / Sacred Timeline Order | https://aaronperris.com/mcu/ (reads its data file `mcu.json`) |
+| MCU Release, MCU Chronological, MCU Sacred Timeline, each also as an "Extended" version | https://aaronperris.com/mcu/ (reads its data file `mcu.json`) |
 
 A scheduled task runs daily at 04:00 and at server start. It downloads the guides, matches
 each entry to your library, and creates or reorders the playlists. Only items you actually
@@ -83,8 +83,7 @@ plugin isn't loaded twice.
 | Users | first admin | Each ticked user gets their own private copy of each playlist |
 | Remove watched items | on | Keeps each user's next unwatched item first, so Play picks up where they left off. Items drop off as soon as that user finishes them; marking one unwatched puts it back |
 | Arrowverse | on | |
-| MCU Release / Chronological / Sacred Timeline | Release on | Each one becomes its own playlist |
-| Canon only (one per MCU order) | on | Set separately for each order. Turn it off to also include the guide's non-canon entries |
+| MCU playlists | MCU Release on | Six checkboxes: `MCU Release`, `MCU Chronological`, `MCU Sacred Timeline` (canon only), each with an `... Extended` version that also includes the guide's non-canon entries. The names sort in canon/Extended pairs on Jellyfin's playlist page |
 | Backup data URL | empty | Optional GitHub backup to fall back on (see below) |
 | Series aliases | empty | `Name on guide = Name in Jellyfin`, one per line. Only needed if a show you own gets skipped; the server log lists any unmatched show names |
 

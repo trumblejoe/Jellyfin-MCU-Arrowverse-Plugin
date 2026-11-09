@@ -155,7 +155,7 @@ public sealed class GuideSnapshotStoreTests : IDisposable
         var (items, _, _) = new GuideSnapshotStore(_dir).Resolve<McuSource.McuItem>("mcu", null);
         McuSource.Index(items!);
         var today = new DateOnly(2026, 1, 1);
-        Assert.Equal("Movie One", McuSource.Build(items!, McuOrder.Release, true, today).Entries[0].MovieTitle);
-        Assert.Equal("Show A", McuSource.Build(items!, McuOrder.Chronological, true, today).Entries[0].SeriesName);
+        Assert.Equal("Movie One", McuSource.Build(items!, McuOrder.Release, extended: false, today).Entries[0].MovieTitle);
+        Assert.Equal("Show A", McuSource.Build(items!, McuOrder.Chronological, extended: false, today).Entries[0].SeriesName);
     }
 }

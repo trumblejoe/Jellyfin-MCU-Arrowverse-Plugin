@@ -10,13 +10,16 @@ namespace Jellyfin.Plugin.WatchOrder.Sync;
 /// <summary>Shared helpers: which users get playlists and which playlists this plugin manages.</summary>
 public static class ManagedPlaylists
 {
+    /// <summary>Every playlist name the plugin manages, including pre-1.2 names awaiting rename.</summary>
     public static readonly IReadOnlySet<string> Names = new HashSet<string>(
-        [
-            ArrowverseSource.PlaylistName,
-            McuSource.PlaylistName(McuOrder.Release),
-            McuSource.PlaylistName(McuOrder.Chronological),
-            McuSource.PlaylistName(McuOrder.SacredTimeline)
-        ],
+        Enum.GetValues<McuOrder>()
+            .SelectMany(o => new[]
+            {
+                McuSource.PlaylistName(o, extended: false),
+                McuSource.PlaylistName(o, extended: true),
+                McuSource.LegacyPlaylistName(o)
+            })
+            .Append(ArrowverseSource.PlaylistName),
         StringComparer.OrdinalIgnoreCase);
 
     /// <summary>

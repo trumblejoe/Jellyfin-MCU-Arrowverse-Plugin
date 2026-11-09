@@ -22,16 +22,16 @@ public class McuSourceTests
     [Fact]
     public void Release_order_sorts_by_release_date()
     {
-        var list = McuSource.Build(McuSource.ParseItems(Json), McuOrder.Release, canonOnly: false, Today);
+        var list = McuSource.Build(McuSource.ParseItems(Json), McuOrder.Release, extended: true, Today);
 
-        Assert.Equal("MCU - Release Order", list.PlaylistName);
+        Assert.Equal("MCU Release Extended", list.PlaylistName);
         Assert.Equal(["Show B", "Movie One", "Show A"], Ids(list));
     }
 
     [Fact]
     public void Chronological_order_uses_timeline_order()
     {
-        var list = McuSource.Build(McuSource.ParseItems(Json), McuOrder.Chronological, canonOnly: false, Today);
+        var list = McuSource.Build(McuSource.ParseItems(Json), McuOrder.Chronological, extended: true, Today);
 
         Assert.Equal(["Show A", "Show B", "Movie One"], Ids(list));
     }
@@ -39,15 +39,15 @@ public class McuSourceTests
     [Fact]
     public void Sacred_timeline_order_uses_sacred_timeline()
     {
-        var list = McuSource.Build(McuSource.ParseItems(Json), McuOrder.SacredTimeline, canonOnly: false, Today);
+        var list = McuSource.Build(McuSource.ParseItems(Json), McuOrder.SacredTimeline, extended: true, Today);
 
         Assert.Equal(["Show B", "Movie One", "Show A"], Ids(list));
     }
 
     [Fact]
-    public void Canon_only_drops_non_canon_entries()
+    public void Canon_playlist_drops_non_canon_entries()
     {
-        var list = McuSource.Build(McuSource.ParseItems(Json), McuOrder.Release, canonOnly: true, Today);
+        var list = McuSource.Build(McuSource.ParseItems(Json), McuOrder.Release, extended: false, Today);
 
         Assert.DoesNotContain("Show B", Ids(list));
     }
@@ -57,7 +57,7 @@ public class McuSourceTests
     {
         foreach (var order in Enum.GetValues<McuOrder>())
         {
-            var list = McuSource.Build(McuSource.ParseItems(Json), order, canonOnly: false, Today);
+            var list = McuSource.Build(McuSource.ParseItems(Json), order, extended: true, Today);
             Assert.DoesNotContain("Future Movie", Ids(list));
         }
     }
@@ -65,7 +65,7 @@ public class McuSourceTests
     [Fact]
     public void Episodes_carry_no_title_only_show_season_episode()
     {
-        var list = McuSource.Build(McuSource.ParseItems(Json), McuOrder.Release, canonOnly: false, Today);
+        var list = McuSource.Build(McuSource.ParseItems(Json), McuOrder.Release, extended: true, Today);
         var episode = list.Entries.Single(e => e.SeriesName == "Show A");
 
         Assert.Null(episode.MovieTitle);
