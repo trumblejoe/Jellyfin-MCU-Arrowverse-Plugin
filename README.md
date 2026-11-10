@@ -1,7 +1,9 @@
 # Guide data backup
 
-Maintained automatically by the "Update guide data" workflow on `main`. The
-Watch Order Playlists plugin falls back to these files if a guide site is unavailable.
+Maintained automatically by the "Update guide data" and "Update lists" workflows on
+`main`. The Watch Order Playlists plugin falls back to the guide files if a guide site is
+unavailable, and picks up updated built-in lists from `lists/` (servers with a Backup
+data URL only).
 
 Data comes from, and all credit goes to:
 - https://arrowverse.info/
