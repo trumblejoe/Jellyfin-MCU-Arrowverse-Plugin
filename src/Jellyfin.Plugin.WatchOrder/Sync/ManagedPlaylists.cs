@@ -60,4 +60,41 @@ public static class ManagedPlaylists
     public static IEnumerable<Playlist> OwnedBy(IPlaylistManager playlistManager, Guid userId) =>
         playlistManager.GetPlaylists(userId)
             .Where(p => p.OwnerUserId == userId && Names.Contains(p.Name));
+
+    /// <summary>
+    /// The playlists ticked in settings (from the settings alone, never from what downloaded,
+    /// so a guide being offline can't make a playlist look "turned off").
+    /// </summary>
+    public static IReadOnlySet<string> EnabledNames(PluginConfiguration config)
+    {
+        var names = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        if (config.EnableArrowverse)
+        {
+            names.Add(ArrowverseSource.PlaylistName);
+        }
+
+        foreach (var (order, extended) in SyncPlaylistsTask.EnabledMcuPlaylists(config))
+        {
+            names.Add(McuSource.PlaylistName(order, extended));
+        }
+
+        foreach (var list in SyncPlaylistsTask.EnabledBuiltInLists(config))
+        {
+            names.Add(list.PlaylistName);
+        }
+
+        return names;
+    }
+
+    /// <summary>The playlists this user gets: the ticked ones minus the user's opt-outs.</summary>
+    public static IReadOnlySet<string> NamesFor(PluginConfiguration config, Guid userId)
+    {
+        var excluded = (config.ExcludedUserPlaylists ?? [])
+            .Select(e => e.Split('|', 2))
+            .Where(p => p.Length == 2 && Guid.TryParse(p[0], out var id) && id == userId)
+            .Select(p => p[1].Trim());
+        var names = new HashSet<string>(EnabledNames(config), StringComparer.OrdinalIgnoreCase);
+        names.ExceptWith(excluded);
+        return names;
+    }
 }

@@ -78,18 +78,28 @@ public class SyncPlaylistsTask : IScheduledTask
         var matched = lists.Select(l => (l.PlaylistName, Ids: MatchAndLog(l, matcher))).ToList();
         progress.Report(50);
 
-        var steps = users.Count * matched.Count;
+        var steps = Math.Max(1, users.Count * matched.Count);
         var done = 0;
         foreach (var userId in users)
         {
             await RenameLegacyPlaylistsAsync(config, userId).ConfigureAwait(false);
+            var mine = ManagedPlaylists.NamesFor(config, userId);
             foreach (var (name, ids) in matched)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                var desired = config.RemoveWatched ? FromNextUnwatched(ids, userId) : ids;
-                await SyncOneAsync(name, desired, userId).ConfigureAwait(false);
+                if (mine.Contains(name))
+                {
+                    var desired = config.RemoveWatched ? FromNextUnwatched(ids, userId) : ids;
+                    await SyncOneAsync(name, desired, userId).ConfigureAwait(false);
+                }
+
                 progress.Report(50 + (50.0 * ++done / steps));
             }
+        }
+
+        if (config.DeleteTurnedOff)
+        {
+            DeleteTurnedOffPlaylists(config, users);
         }
 
         if (matcher.MissingSeries.Count > 0)
@@ -148,6 +158,24 @@ public class SyncPlaylistsTask : IScheduledTask
         }
 
         return lists;
+    }
+
+    /// <summary>
+    /// Deletes this plugin's playlists that are turned off: lists unticked, users unticked, or a
+    /// user's opt-outs. Decided from the settings alone (not from what downloaded this run), and
+    /// only playlists the plugin manages, owned by that user, are touched.
+    /// </summary>
+    private void DeleteTurnedOffPlaylists(PluginConfiguration config, IReadOnlyList<Guid> users)
+    {
+        foreach (var user in _userManager.GetUsers())
+        {
+            var keep = users.Contains(user.Id) ? ManagedPlaylists.NamesFor(config, user.Id) : new HashSet<string>();
+            foreach (var playlist in ManagedPlaylists.OwnedBy(_playlistManager, user.Id).Where(p => !keep.Contains(p.Name)).ToList())
+            {
+                _libraryManager.DeleteItem(playlist, new DeleteOptions { DeleteFileLocation = true }, true);
+                _logger.LogInformation("Watch Order: deleted turned-off playlist {Playlist} for user {UserId}.", playlist.Name, user.Id);
+            }
+        }
     }
 
     /// <summary>The built-in lists ticked in settings.</summary>

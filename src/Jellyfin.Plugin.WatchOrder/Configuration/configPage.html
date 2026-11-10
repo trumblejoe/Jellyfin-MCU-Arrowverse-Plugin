@@ -14,6 +14,7 @@
                         <a is="emby-linkbutton" class="button-link" href="https://arrowverse.info/" target="_blank">arrowverse.info</a> and
                         <a is="emby-linkbutton" class="button-link" href="https://aaronperris.com/mcu/" target="_blank">aaronperris.com/mcu</a>.
                         Only items already in your library are added. To sync now: Dashboard &rarr; Scheduled Tasks &rarr; <em>Sync watch-order playlists</em>.</p>
+                    <div id="WatchOrderStatus" class="fieldDescription" style="margin:.4em 0 1.5em"></div>
 
                     <h3>Users</h3>
                     <div class="fieldDescription">Each ticked user gets their own private copy of each playlist. If none are ticked, the first administrator gets them.</div>
@@ -25,6 +26,13 @@
                             <span>Start at my next unwatched item</span>
                         </label>
                         <div class="fieldDescription checkboxFieldDescription">Each user's playlists drop watched items from the front, so pressing Play continues where they left off. Something watched out of order further down stays in its place (shown as watched) until they get there. To skip an item on purpose, mark it watched; marking one unwatched moves the starting point back.</div>
+                    </div>
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label class="emby-checkbox-label">
+                            <input id="DeleteTurnedOff" name="DeleteTurnedOff" type="checkbox" is="emby-checkbox" />
+                            <span>Remove playlists I turn off</span>
+                        </label>
+                        <div class="fieldDescription checkboxFieldDescription">At the next sync, deletes this plugin's playlists for anything unticked below: a playlist, a user, or a user's opt-out. Playlists you made yourself are never touched.</div>
                     </div>
 
                     <h3>Playlists</h3>
@@ -40,6 +48,10 @@
                     <h3>Built-in lists</h3>
                     <div class="fieldDescription">Watch orders shipped with the plugin, for franchises without an online guide. With a Backup data URL set, they update automatically; otherwise they update with plugin releases.</div>
                     <div id="BuiltInListList"></div>
+
+                    <h3>Who gets which playlist</h3>
+                    <div class="fieldDescription">Every ticked user gets every ticked playlist unless you untick it here.</div>
+                    <div id="UserPlaylistGrid" style="overflow-x:auto;margin:.6em 0 1.5em"></div>
 
                     <div class="inputContainer">
                         <label class="inputLabel inputLabelUnfocused" for="BackupDataUrl">Backup data URL (optional)</label>
@@ -105,7 +117,7 @@
                 });
             })();
 
-            WatchOrderConfig.checkboxes = ['RemoveWatched', 'EnableArrowverse'].concat(
+            WatchOrderConfig.checkboxes = ['RemoveWatched', 'DeleteTurnedOff', 'EnableArrowverse'].concat(
                 WatchOrderConfig.mcuPlaylists.map(function (p) { return p[0]; }));
 
             // "Missing from your library" report. Built with textContent only (no HTML from data).
@@ -250,6 +262,125 @@
                 WatchOrderConfig.addAliasRow('', '');
             });
 
+            // ---- Who gets which playlist: a grid of ticked playlists x ticked users. ----
+            // Opt-outs are saved as "userId|Playlist Name". Opt-outs for users or playlists that are
+            // currently unticked are kept, so re-ticking them restores the earlier choice.
+            WatchOrderConfig.normId = function (id) { return (id || '').replace(/-/g, '').toLowerCase(); };
+            WatchOrderConfig.excluded = [];
+
+            WatchOrderConfig.tickedUsers = function () {
+                return Array.prototype.map.call(document.querySelectorAll('.chkWatchOrderUser:checked'), function (c) {
+                    return { id: c.value, name: c.parentNode.querySelector('span').textContent };
+                });
+            };
+
+            WatchOrderConfig.tickedPlaylists = function () {
+                var names = [];
+                if (document.querySelector('#EnableArrowverse').checked) { names.push('Arrowverse'); }
+                WatchOrderConfig.mcuPlaylists.forEach(function (p) {
+                    if (document.querySelector('#' + p[0]).checked) { names.push(p[1]); }
+                });
+                Array.prototype.forEach.call(document.querySelectorAll('.chkWatchOrderList:checked'), function (c) { names.push(c.value); });
+                return names;
+            };
+
+            // The opt-outs as they stand now: unticked grid cells, plus remembered ones not on screen.
+            WatchOrderConfig.currentExcluded = function () {
+                var key = function (id, name) { return WatchOrderConfig.normId(id) + '|' + name.toLowerCase(); };
+                var shown = {};
+                var result = [];
+                Array.prototype.forEach.call(document.querySelectorAll('.chkWatchOrderCell'), function (c) {
+                    shown[key(c.dataset.user, c.dataset.playlist)] = true;
+                    if (!c.checked) { result.push(c.dataset.user + '|' + c.dataset.playlist); }
+                });
+                WatchOrderConfig.excluded.forEach(function (e) {
+                    var at = e.indexOf('|');
+                    if (at > 0 && !shown[key(e.slice(0, at), e.slice(at + 1))]) { result.push(e); }
+                });
+                return result;
+            };
+
+            WatchOrderConfig.renderGrid = function () {
+                var excluded = WatchOrderConfig.currentExcluded();
+                WatchOrderConfig.excluded = excluded;
+                var isOut = {};
+                excluded.forEach(function (e) {
+                    var at = e.indexOf('|');
+                    isOut[WatchOrderConfig.normId(e.slice(0, at)) + '|' + e.slice(at + 1).toLowerCase()] = true;
+                });
+                var users = WatchOrderConfig.tickedUsers();
+                var playlists = WatchOrderConfig.tickedPlaylists();
+                var box = document.querySelector('#UserPlaylistGrid');
+                box.innerHTML = '';
+                if (users.length < 2 || !playlists.length) {
+                    box.textContent = users.length < 2
+                        ? 'Tick two or more users above to choose playlists per user.'
+                        : 'Tick some playlists above first.';
+                    return;
+                }
+                var cell = function (tag, text, css) {
+                    var e = document.createElement(tag);
+                    if (text !== undefined) { e.textContent = text; }
+                    e.style.cssText = 'padding:.25em .9em .25em 0;' + (css || '');
+                    return e;
+                };
+                var table = document.createElement('table');
+                table.style.borderCollapse = 'collapse';
+                var head = document.createElement('tr');
+                head.appendChild(cell('th', 'Playlist', 'text-align:left'));
+                users.forEach(function (u) { head.appendChild(cell('th', u.name, 'text-align:center')); });
+                table.appendChild(head);
+                playlists.forEach(function (p) {
+                    var row = document.createElement('tr');
+                    row.appendChild(cell('td', p));
+                    users.forEach(function (u) {
+                        var td = cell('td', undefined, 'text-align:center');
+                        var c = document.createElement('input');
+                        c.type = 'checkbox';
+                        c.className = 'chkWatchOrderCell';
+                        c.dataset.user = u.id;
+                        c.dataset.playlist = p;
+                        c.title = u.name + ' gets ' + p;
+                        c.checked = !isOut[WatchOrderConfig.normId(u.id) + '|' + p.toLowerCase()];
+                        td.appendChild(c);
+                        row.appendChild(td);
+                    });
+                    table.appendChild(row);
+                });
+                box.appendChild(table);
+            };
+
+            // Re-draw the grid whenever a user or playlist checkbox changes.
+            document.querySelector('#WatchOrderConfigForm').addEventListener('change', function (e) {
+                if (e.target && e.target.type === 'checkbox' && !e.target.classList.contains('chkWatchOrderCell')) {
+                    WatchOrderConfig.renderGrid();
+                }
+            });
+
+            // ---- Status line: last sync, guide changes, list updates. ----
+            WatchOrderConfig.loadStatus = function () {
+                var out = document.querySelector('#WatchOrderStatus');
+                var g = function (o, k) { return o[k] !== undefined ? o[k] : o[k.charAt(0).toLowerCase() + k.slice(1)]; };
+                var when = function (d) {
+                    return d ? new Date(d).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' }) : null;
+                };
+                ApiClient.getJSON(ApiClient.getUrl('WatchOrder/Status')).then(function (s) {
+                    var parts = [];
+                    var status = g(s, 'LastSyncStatus');
+                    parts.push(g(s, 'LastSyncUtc') ? 'Last sync: ' + when(g(s, 'LastSyncUtc')) + (status && status !== 'Completed' ? ' (' + status + ')' : '') : 'Last sync: not run yet');
+                    parts.push('Guides last changed: MCU ' + (when(g(s, 'McuUpdatedUtc')) || 'not yet') + ', Arrowverse ' + (when(g(s, 'ArrowverseUpdatedUtc')) || 'not yet'));
+                    if (g(s, 'ListUpdatesOn')) {
+                        parts.push(g(s, 'ListsUpdatedUtc')
+                            ? 'List updates: last received ' + when(g(s, 'ListsUpdatedUtc')) + ' (' + g(s, 'ListsDownloaded') + ' lists)'
+                            : 'List updates: none received yet');
+                    } else {
+                        parts.push('List updates: off (set a Backup data URL)');
+                    }
+                    out.textContent = parts.join('  ·  ');
+                    out.style.color = status && status !== 'Completed' ? '#e8a33d' : '';
+                }, function () { out.textContent = ''; });
+            };
+
             document.querySelector('#WatchOrderConfigPage').addEventListener('pageshow', function () {
                 Dashboard.showLoadingMsg();
                 var page = this;
@@ -313,8 +444,12 @@
                     WatchOrderConfig.setAliases(config.SeriesAliases || '');
                     WatchOrderConfig.loadLibraryNames();
                     page.querySelector('#BackupDataUrl').value = config.BackupDataUrl || '';
+                    WatchOrderConfig.excluded = config.ExcludedUserPlaylists || [];
+                    page.querySelector('#UserPlaylistGrid').innerHTML = '';
+                    WatchOrderConfig.renderGrid();
                     Dashboard.hideLoadingMsg();
                     WatchOrderConfig.loadMissing();
+                    WatchOrderConfig.loadStatus();
                 });
             });
 
@@ -329,6 +464,7 @@
                         config[id] = form.querySelector('#' + id).checked;
                     });
                     config.SeriesAliases = WatchOrderConfig.getAliases();
+                    config.ExcludedUserPlaylists = WatchOrderConfig.currentExcluded();
                     config.BackupDataUrl = form.querySelector('#BackupDataUrl').value.trim();
                     ApiClient.updatePluginConfiguration(WatchOrderConfig.pluginUniqueId, config).then(function (result) {
                         Dashboard.processPluginConfigurationUpdateResult(result);

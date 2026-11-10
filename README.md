@@ -81,6 +81,8 @@ plugin isn't loaded twice.
 | Setting | Default | Notes |
 |---|---|---|
 | Users | first admin | Each ticked user gets their own private copy of each playlist |
+| Who gets which playlist | everyone gets everything | A grid of ticked playlists by ticked users; untick a cell to leave that playlist out for that user |
+| Remove playlists I turn off | on | At the next sync, deletes this plugin's playlists for anything unticked (a playlist, a user, or a per-user opt-out). Playlists you made yourself are never touched |
 | Start at my next unwatched item | on | Each user's playlists drop watched items from the front, so Play picks up where they left off. Something watched out of order further down stays in its place until they get there. To skip an item, mark it watched; marking one unwatched moves the start back |
 | Arrowverse | on | |
 | MCU playlists | MCU Release on | Six checkboxes: `MCU Release`, `MCU Chronological`, `MCU Sacred Timeline` (canon only), each with an `... Extended` version that also includes the guide's non-canon entries. The names sort in canon/Extended pairs on Jellyfin's playlist page |
@@ -181,6 +183,13 @@ be run by hand from the Actions tab:
 
 The updater is `tools/lists/update_lists.py`. Try it locally with
 `python -I tools/lists/update_lists.py --dry-run [--today 2027-12-31]`.
+
+## Status line
+
+The top of the settings page shows when the sync last ran (and whether it failed), when the MCU
+and Arrowverse guides last changed, and when list updates were last received, so you can see
+at a glance that the weekly updates are arriving. It's worked out from Jellyfin's task history
+and the files already on the server; nothing extra is stored.
 
 ## Missing from your library
 

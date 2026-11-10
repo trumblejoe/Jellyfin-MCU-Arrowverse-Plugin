@@ -16,10 +16,12 @@ namespace Jellyfin.Plugin.WatchOrder.Api;
 public class WatchOrderController : ControllerBase
 {
     private readonly ILibraryManager _libraryManager;
+    private readonly MediaBrowser.Model.Tasks.ITaskManager _taskManager;
 
-    public WatchOrderController(ILibraryManager libraryManager)
+    public WatchOrderController(ILibraryManager libraryManager, MediaBrowser.Model.Tasks.ITaskManager taskManager)
     {
         _libraryManager = libraryManager;
+        _taskManager = taskManager;
     }
 
     /// <summary>
@@ -65,6 +67,37 @@ public class WatchOrderController : ControllerBase
         return builtIn.Count > 0 && !report.HasData
             ? new MissingReport { HasData = true, Playlists = report.Playlists, Shows = report.Shows, MissingMovies = report.MissingMovies }
             : report;
+    }
+
+    /// <summary>When things last ran and changed, for the settings page's status line.</summary>
+    [HttpGet("Status")]
+    [Produces(MediaTypeNames.Application.Json)]
+    public ActionResult<StatusInfo> GetStatus()
+    {
+        var plugin = Plugin.Instance;
+        var config = plugin?.Configuration ?? new PluginConfiguration();
+        var sync = _taskManager.ScheduledTasks.FirstOrDefault(t => t.ScheduledTask is SyncPlaylistsTask)?.LastExecutionResult;
+
+        DateTime? listsUpdated = null;
+        var listsDownloaded = 0;
+        if (BuiltInLists.DownloadFolder is { } folder && Directory.Exists(folder))
+        {
+            var files = Directory.GetFiles(folder, "*.txt");
+            listsDownloaded = files.Length;
+            listsUpdated = files.Length > 0 ? files.Max(System.IO.File.GetLastWriteTimeUtc) : null;
+        }
+
+        var store = plugin is null ? null : new GuideSnapshotStore(plugin.DataFolderPath);
+        return new StatusInfo
+        {
+            LastSyncUtc = sync?.EndTimeUtc,
+            LastSyncStatus = sync?.Status.ToString(),
+            McuUpdatedUtc = store?.Peek<McuSource.McuItem>(GuideDownloader.McuName)?.SavedUtc,
+            ArrowverseUpdatedUtc = store?.Peek<WatchOrderEntry>(GuideDownloader.ArrowverseName)?.SavedUtc,
+            ListsUpdatedUtc = listsUpdated,
+            ListsDownloaded = listsDownloaded,
+            ListUpdatesOn = !string.IsNullOrWhiteSpace(config.BackupDataUrl)
+        };
     }
 
     /// <summary>Your library's show names, as suggestions for the settings page's alias boxes.</summary>

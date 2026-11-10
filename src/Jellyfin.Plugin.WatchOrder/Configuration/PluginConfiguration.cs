@@ -20,6 +20,18 @@ public class PluginConfiguration : BasePluginConfiguration
     /// </summary>
     public bool RemoveWatched { get; set; } = true;
 
+    /// <summary>
+    /// Delete this plugin's playlists that are turned off: a list unticked, a user unticked, or a
+    /// playlist a user was opted out of. Only playlists this plugin made are ever touched.
+    /// </summary>
+    public bool DeleteTurnedOff { get; set; } = true;
+
+    /// <summary>
+    /// Per-user opt-outs, as "userId|Playlist Name". Every ticked user gets every ticked playlist
+    /// except these.
+    /// </summary>
+    public string[] ExcludedUserPlaylists { get; set; } = [];
+
     public bool EnableArrowverse { get; set; } = true;
 
     // MCU playlists: each order has a canon playlist and an Extended (canon + non-canon) playlist.
