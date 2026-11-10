@@ -4,6 +4,7 @@
 # aired order. No titles or notes here, to keep the list spoiler-free.
 
 playlist: Star Wars Chronological
+description: Every canon Star Wars film and series in story order, per StarWars.com, including the official Clone Wars episode order. Best for a rewatch.
 updates: ongoing
 upcoming: movie: Star Wars: Starfighter (2027-05-28) | after: Star Wars: The Rise of Skywalker
 

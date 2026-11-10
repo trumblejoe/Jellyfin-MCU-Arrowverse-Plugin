@@ -2,6 +2,7 @@
 # James Cameron's Avatar films in release order (also their story order).
 
 playlist: Avatar Release
+description: James Cameron's Avatar films in order (release order is also story order).
 updates: auto
 upcoming: movie: Avatar 4 (2029-12-21)
 

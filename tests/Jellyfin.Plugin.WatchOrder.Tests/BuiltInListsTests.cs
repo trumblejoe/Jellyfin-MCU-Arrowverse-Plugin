@@ -97,6 +97,24 @@ public class BuiltInListsTests
     }
 
     [Fact]
+    public void Every_list_has_a_description_and_multiple_lines_join()
+    {
+        Assert.All(BuiltInLists.All, l => Assert.False(string.IsNullOrWhiteSpace(l.Description), l.PlaylistName));
+        Assert.Equal("One two.", BuiltInLists.Parse("playlist: X\ndescription: One\ndescription: two.").Description);
+    }
+
+    [Fact]
+    public void Every_mcu_playlist_has_a_description_that_says_who_it_suits()
+    {
+        foreach (var order in Enum.GetValues<McuOrder>())
+        {
+            var text = McuSource.Description(order, false);
+            Assert.True(text.Contains("first watch", StringComparison.OrdinalIgnoreCase) || text.Contains("rewatch", StringComparison.OrdinalIgnoreCase), order.ToString());
+            Assert.Contains("Extended:", McuSource.Description(order, true));
+        }
+    }
+
+    [Fact]
     public void Every_list_says_whether_it_is_ongoing_or_finished()
     {
         Assert.All(BuiltInLists.All, l => Assert.NotNull(l.Ongoing));

@@ -2,6 +2,7 @@
 # The Fast & Furious films (including Hobbs & Shaw) in release order. Alternate titles after "|".
 
 playlist: Fast & Furious Release
+description: The Fast & Furious films in the order they came out. Best for a first watch.
 updates: auto
 upcoming: movie: Fast X: Part 2 (2027-03-17) | alt: Fast X Part 2 | alt: Fast & Furious 11
 

@@ -43,6 +43,33 @@ public static class McuSource
         return extended ? name + " Extended" : name;
     }
 
+    /// <summary>Spoiler-free description shown on the playlist: what the order is and who it suits.</summary>
+    public static string Description(McuOrder order, bool extended)
+    {
+        var text = order switch
+        {
+            McuOrder.Hybrid =>
+                "Best first watch. Release order, so nothing plays before what it assumes you've seen, starting with Iron Man. " +
+                "The older Fox, Sony and Blade films play together just before the Multiverse Saga, and each Disney+ and Netflix season plays straight through.",
+            McuOrder.Release =>
+                "The MCU in the order it came out, including the Netflix and ABC shows, the older Fox and Sony films and the web shorts. " +
+                "Spoiler-safe for a first watch, but it opens with the older films before Iron Man, and some films land in the middle of a series.",
+            McuOrder.SacredTimeline =>
+                "Best for a rewatch. The main MCU in story order through Endgame, then the stories from other universes. " +
+                "Not for a first watch: prequels made later play early and can give things away.",
+            McuOrder.Chronological =>
+                "For a rewatch. Everything in story order, with the stories from other universes woven into the timeline. " +
+                "Not for a first watch: prequels made later play early and can give things away.",
+            _ => throw new ArgumentOutOfRangeException(nameof(order))
+        };
+        if (extended)
+        {
+            text += " Extended: also includes the non-canon entries the guide lists, such as the older Fox series and the 90s animated shows.";
+        }
+
+        return text + " Order from aaronperris.com/mcu; updated automatically.";
+    }
+
     /// <summary>Names used before 1.2 (renamed once); null for orders added later.</summary>
     public static string? LegacyPlaylistName(McuOrder order) => order switch
     {
@@ -153,7 +180,7 @@ public static class McuSource
                 : new WatchOrderEntry(null, null, null, i.Title, i.ReleaseDate?.Year))
             .ToList();
 
-        return new WatchOrderList(PlaylistName(order, extended), entries);
+        return new WatchOrderList(PlaylistName(order, extended), entries) { Description = Description(order, extended) };
     }
 
     public sealed class McuItem

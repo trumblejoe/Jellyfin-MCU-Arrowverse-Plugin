@@ -2,6 +2,7 @@
 # The live-action films and Transformers One, in release order.
 
 playlist: Transformers Release
+description: The Transformers films in the order they came out. Best for a first watch.
 updates: auto
 
 movie: Transformers (2007)

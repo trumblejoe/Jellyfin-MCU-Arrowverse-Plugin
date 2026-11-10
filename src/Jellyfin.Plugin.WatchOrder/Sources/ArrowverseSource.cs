@@ -15,6 +15,10 @@ public static partial class ArrowverseSource
 
     public const string PlaylistName = "Arrowverse";
 
+    public const string Description =
+        "Every Arrowverse episode in the order it first aired, with the shows interleaved so crossover episodes play in the right place. " +
+        "Order from arrowverse.info; updated automatically.";
+
     [GeneratedRegex("<tr class=\"episode [^\"]*\">(.*?)</tr>", RegexOptions.Singleline)]
     private static partial Regex RowRegex();
 

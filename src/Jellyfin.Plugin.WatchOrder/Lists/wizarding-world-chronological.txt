@@ -3,6 +3,7 @@
 # Alternate titles after "|".
 
 playlist: Wizarding World Chronological
+description: The Wizarding World in story order: Fantastic Beasts, then Harry Potter, then HBO's Harry Potter series as it airs.
 updates: ongoing
 
 movie: Fantastic Beasts and Where to Find Them (2016)

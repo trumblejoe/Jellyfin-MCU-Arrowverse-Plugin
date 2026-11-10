@@ -4,6 +4,7 @@
 # Episode codes use TheTVDB aired order. No titles or notes here, to keep the list spoiler-free.
 
 playlist: One Chicago Release
+description: Chicago Fire, P.D., Med and Justice, plus the SVU crossover episodes, in broadcast order down to the time slot, so crossover nights play correctly.
 updates: auto
 
 @ Chicago Fire

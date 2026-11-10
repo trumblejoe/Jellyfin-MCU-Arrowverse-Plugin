@@ -359,6 +359,29 @@
                 }
             });
 
+            // ---- Each playlist's description (the same text users see on the playlist) under its checkbox. ----
+            WatchOrderConfig.showDescriptions = function () {
+                ApiClient.getJSON(ApiClient.getUrl('WatchOrder/Descriptions')).then(function (map) {
+                    var lower = {};
+                    Object.keys(map || {}).forEach(function (k) { lower[k.toLowerCase()] = map[k]; });
+                    var boxes = [[document.querySelector('#EnableArrowverse'), 'Arrowverse']];
+                    WatchOrderConfig.mcuPlaylists.forEach(function (p) { boxes.push([document.querySelector('#' + p[0]), p[1]]); });
+                    Array.prototype.forEach.call(document.querySelectorAll('.chkWatchOrderList'), function (c) { boxes.push([c, c.value]); });
+                    boxes.forEach(function (b) {
+                        var text = b[0] && lower[b[1].toLowerCase()];
+                        var container = b[0] && b[0].closest('.checkboxContainer');
+                        if (!text || !container) { return; }
+                        var old = container.querySelector('.watchOrderDescription');
+                        if (old) { old.remove(); }
+                        var div = document.createElement('div');
+                        div.className = 'fieldDescription checkboxFieldDescription watchOrderDescription';
+                        div.textContent = text;
+                        container.classList.add('checkboxContainer-withDescription');
+                        container.appendChild(div);
+                    });
+                });
+            };
+
             // ---- Status line: last sync, guide changes, list updates. ----
             WatchOrderConfig.loadStatus = function () {
                 var out = document.querySelector('#WatchOrderStatus');
@@ -452,6 +475,7 @@
                     Dashboard.hideLoadingMsg();
                     WatchOrderConfig.loadMissing();
                     WatchOrderConfig.loadStatus();
+                    WatchOrderConfig.showDescriptions();
                 });
             });
 

@@ -152,6 +152,7 @@ or among a show's specials if that's where your library files them.
 
 ```
 playlist: My List Name          # playlist name (required)
+description: What it is and who it suits.   # shown on the playlist in Jellyfin; spoiler-free
 updates: finished               # 'finished', or 'ongoing' if new titles are still coming (only those get checked for updates)
 @ Some Show                     # show for the codes below; "@ Some Show (2014)" picks between same-named shows
 S01E13                          # one episode
@@ -206,6 +207,13 @@ be run by hand from the Actions tab:
 
 The updater is `tools/lists/update_lists.py`. Try it locally with
 `python -I tools/lists/update_lists.py --dry-run [--today 2027-12-31]`.
+
+## Playlist descriptions
+
+Every playlist the plugin creates gets a short, spoiler-free **description**, shown on the
+playlist's page in Jellyfin and in most apps. It says what the order is and who it's best for
+(first watch or rewatch), so your users can pick the right one. The same text appears under each
+checkbox on the settings page. Built-in lists carry theirs in a `description:` line.
 
 ## Status line
 

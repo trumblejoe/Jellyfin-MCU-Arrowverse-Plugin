@@ -3,6 +3,7 @@
 # (the 50th Games, once released), then the original four films.
 
 playlist: Hunger Games Chronological
+description: The Hunger Games films in story order, starting with the prequels. Best for a rewatch.
 updates: ongoing
 upcoming: movie: The Hunger Games: Sunrise on the Reaping (2026-11-20) | alt: Sunrise on the Reaping | after: The Hunger Games: The Ballad of Songbirds & Snakes
 

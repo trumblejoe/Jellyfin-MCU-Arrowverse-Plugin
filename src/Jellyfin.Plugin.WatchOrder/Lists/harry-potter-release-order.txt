@@ -2,6 +2,7 @@
 # The eight Harry Potter films in release order. Alternate titles after "|".
 
 playlist: Harry Potter Release
+description: The eight Harry Potter films in order.
 updates: finished
 
 movie: Harry Potter and the Philosopher's Stone (2001) | Harry Potter and the Sorcerer's Stone

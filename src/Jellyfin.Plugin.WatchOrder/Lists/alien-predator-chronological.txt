@@ -4,6 +4,7 @@
 # future and is placed last. Alternate titles after "|". Episode codes use TheTVDB aired order. No titles or notes here, to keep the list spoiler-free.
 
 playlist: Alien & Predator Chronological
+description: The Alien and Predator stories in story order, from the earliest-set Predator stories to the far future. Best for a rewatch.
 updates: ongoing
 
 movie: Predator: Killer of Killers (2025)

@@ -3,6 +3,7 @@
 # then the 2007-2017 films.
 
 playlist: Transformers Chronological
+description: The Transformers films in story order, starting with Transformers One. Best for a rewatch.
 updates: ongoing
 
 movie: Transformers One (2024)

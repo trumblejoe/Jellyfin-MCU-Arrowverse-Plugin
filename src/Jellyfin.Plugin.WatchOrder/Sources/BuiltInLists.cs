@@ -12,6 +12,7 @@ namespace Jellyfin.Plugin.WatchOrder.Sources;
 /// File format (one item per line; blank lines and <c># comments</c> ignored):
 /// <code>
 /// playlist: Batman TAS Fan Order        the playlist name (required, once)
+/// description: A fan-curated order ...  shown on the playlist in Jellyfin; spoiler-free (lines join)
 /// updates: finished                     'finished' (never checked), 'auto' (release-order list: newly
 ///                                       aired episodes are appended each week) or 'ongoing' (hand-
 ///                                       ordered: new episodes go right after that show's last one)
@@ -49,6 +50,7 @@ public static partial class BuiltInLists
     public static WatchOrderList Parse(string text)
     {
         string? playlist = null;
+        string? description = null;
         bool? ongoing = null;
         string? show = null;
         int? showYear = null;
@@ -67,6 +69,12 @@ public static partial class BuiltInLists
             if (line.StartsWith("playlist:", StringComparison.OrdinalIgnoreCase))
             {
                 playlist = line["playlist:".Length..].Trim();
+            }
+            else if (line.StartsWith("description:", StringComparison.OrdinalIgnoreCase))
+            {
+                // Several description lines join into one paragraph.
+                var part = line["description:".Length..].Trim();
+                description = description is null ? part : description + " " + part;
             }
             else if (line.StartsWith("updates:", StringComparison.OrdinalIgnoreCase))
             {
@@ -138,7 +146,7 @@ public static partial class BuiltInLists
             throw new InvalidDataException("Missing 'playlist:' line.");
         }
 
-        return new WatchOrderList(playlist, entries) { Ongoing = ongoing };
+        return new WatchOrderList(playlist, entries) { Ongoing = ongoing, Description = description };
     }
 
     private static int Int(Group g) => int.Parse(g.Value, CultureInfo.InvariantCulture);

@@ -2,6 +2,7 @@
 # The Harry Potter and Fantastic Beasts films in release order. Alternate titles after "|".
 
 playlist: Wizarding World Release
+description: The Harry Potter and Fantastic Beasts films, then HBO's Harry Potter series as it airs, in the order they came out. Best for a first watch.
 updates: auto
 
 movie: Harry Potter and the Philosopher's Stone (2001) | Harry Potter and the Sorcerer's Stone

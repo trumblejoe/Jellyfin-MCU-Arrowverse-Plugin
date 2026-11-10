@@ -5,6 +5,7 @@
 # TheTVDB aired order. No titles or notes here, to keep the list spoiler-free.
 
 playlist: Saved by the Bell Chronological
+description: Saved by the Bell in story (production) order, which fixes the network's scrambled airing order, with the Hawaiian Style movie in its place.
 updates: finished
 
 @ Saved by the Bell

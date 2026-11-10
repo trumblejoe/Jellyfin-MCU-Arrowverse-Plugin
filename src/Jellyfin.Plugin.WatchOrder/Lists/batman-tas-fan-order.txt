@@ -5,6 +5,7 @@
 # No titles or notes here, to keep the list spoiler-free.
 
 playlist: Batman TAS Fan Order
+description: A fan-curated order for Batman: The Animated Series, its two movies and The New Batman Adventures, grouped into six story arcs that keep each villain's episodes in sensible order.
 updates: finished
 
 # Part 1 - "Batman Begins"

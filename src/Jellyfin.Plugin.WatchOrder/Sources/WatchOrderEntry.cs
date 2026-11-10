@@ -34,4 +34,10 @@ public sealed record WatchOrderList(string PlaylistName, IReadOnlyList<WatchOrde
 {
     /// <summary>Built-in lists only: true if the franchise has more coming, false if finished.</summary>
     public bool? Ongoing { get; init; }
+
+    /// <summary>
+    /// Spoiler-free description shown on the playlist in Jellyfin (its overview) and on the settings
+    /// page: what the order is and who it's best for.
+    /// </summary>
+    public string? Description { get; init; }
 }

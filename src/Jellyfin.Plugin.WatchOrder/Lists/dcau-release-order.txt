@@ -4,6 +4,7 @@
 # Justice League seasons 3-5 on TheTVDB. Episode codes use TheTVDB aired order. No titles or notes here, to keep the list spoiler-free.
 
 playlist: DCAU Release
+description: Every DC Animated Universe series and movie in the order it aired, with shows that ran at the same time interleaved so crossovers line up.
 updates: finished
 
 @ Batman: The Animated Series

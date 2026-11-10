@@ -3,6 +3,7 @@
 # TheTVDB aired order. No titles or notes here, to keep the list spoiler-free.
 
 playlist: Stargate Optimized
+description: GateWorld's Optimized Stargate order: the films, SG-1, Atlantis and Universe, with the shows that ran at the same time interleaved for the crossovers.
 updates: ongoing
 upcoming: New Stargate series (Amazon) - add once it has aired episodes (2027-01-01)
 

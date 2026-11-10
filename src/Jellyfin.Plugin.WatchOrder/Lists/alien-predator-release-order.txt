@@ -3,6 +3,7 @@
 # (series episodes by air date). Alternate titles after "|". Episode codes use TheTVDB aired order. No titles or notes here, to keep the list spoiler-free.
 
 playlist: Alien & Predator Release
+description: The Alien and Predator films, the AVP crossovers and Alien: Earth in the order they came out. Best for a first watch.
 updates: auto
 
 movie: Alien (1979)

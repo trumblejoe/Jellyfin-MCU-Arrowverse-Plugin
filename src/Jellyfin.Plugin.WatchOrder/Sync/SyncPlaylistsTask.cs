@@ -4,6 +4,7 @@ using Jellyfin.Plugin.WatchOrder.Sources;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Playlists;
+using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Playlists;
 using MediaBrowser.Model.Tasks;
 using Microsoft.Extensions.Logging;
@@ -75,7 +76,10 @@ public class SyncPlaylistsTask : IScheduledTask
         progress.Report(30);
 
         var matcher = new LibraryMatcher(_libraryManager, config.SeriesAliases);
-        var matched = lists.Select(l => (l.PlaylistName, Ids: MatchAndLog(l, matcher))).ToList();
+        var footer = config.RemoveWatched ? " Starts at your next unwatched item." : string.Empty;
+        var matched = lists
+            .Select(l => (l.PlaylistName, Description: l.Description is null ? null : l.Description + footer, Ids: MatchAndLog(l, matcher)))
+            .ToList();
         progress.Report(50);
 
         var steps = Math.Max(1, users.Count * matched.Count);
@@ -84,13 +88,13 @@ public class SyncPlaylistsTask : IScheduledTask
         {
             await RenameLegacyPlaylistsAsync(config, userId).ConfigureAwait(false);
             var mine = ManagedPlaylists.NamesFor(config, userId);
-            foreach (var (name, ids) in matched)
+            foreach (var (name, description, ids) in matched)
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 if (mine.Contains(name))
                 {
                     var desired = config.RemoveWatched ? FromNextUnwatched(ids, userId) : ids;
-                    await SyncOneAsync(name, desired, userId).ConfigureAwait(false);
+                    await SyncOneAsync(name, description, desired, userId, cancellationToken).ConfigureAwait(false);
                 }
 
                 progress.Report(50 + (50.0 * ++done / steps));
@@ -122,7 +126,7 @@ public class SyncPlaylistsTask : IScheduledTask
             LogOutcome("arrowverse.info", result.Outcome, result.SavedUtc, result.FreshCount, result.Error);
             if (result.Items is not null)
             {
-                lists.Add(new WatchOrderList(ArrowverseSource.PlaylistName, result.Items));
+                lists.Add(new WatchOrderList(ArrowverseSource.PlaylistName, result.Items) { Description = ArrowverseSource.Description });
             }
         }
 
@@ -296,7 +300,7 @@ public class SyncPlaylistsTask : IScheduledTask
         return ids;
     }
 
-    private async Task SyncOneAsync(string playlistName, List<Guid> desired, Guid userId)
+    private async Task SyncOneAsync(string playlistName, string? description, List<Guid> desired, Guid userId, CancellationToken ct)
     {
         var existing = ManagedPlaylists.Find(_playlistManager, userId, playlistName);
         if (existing is null)
@@ -315,27 +319,51 @@ public class SyncPlaylistsTask : IScheduledTask
                 Public = false
             }).ConfigureAwait(false);
             _logger.LogInformation("Watch Order: created {Playlist} for user {UserId}.", playlistName, userId);
-            return;
+        }
+        else
+        {
+            var current = existing.LinkedChildren.Select(c => c.ItemId ?? Guid.Empty).ToList();
+            var orderChanged = !current.SequenceEqual(desired);
+
+            // Each user has their own copy now, so a shared (pre-1.1) playlist is made private.
+            if (orderChanged || existing.OpenAccess)
+            {
+                await _playlistManager.UpdatePlaylist(new PlaylistUpdateRequest
+                {
+                    Id = existing.Id,
+                    UserId = userId,
+                    Ids = orderChanged ? desired : null,
+                    Public = false
+                }).ConfigureAwait(false);
+                _logger.LogInformation("Watch Order: updated {Playlist} for user {UserId} ({Count} items).", playlistName, userId, desired.Count);
+            }
         }
 
-        var current = existing.LinkedChildren.Select(c => c.ItemId ?? Guid.Empty).ToList();
-        var orderChanged = !current.SequenceEqual(desired);
+        if (description is not null && ManagedPlaylists.Find(_playlistManager, userId, playlistName) is { } playlist)
+        {
+            await SetDescriptionAsync(playlist, description, ct).ConfigureAwait(false);
+        }
+    }
 
-        // Each user has their own copy now, so a shared (pre-1.1) playlist is made private.
-        var wasShared = existing.OpenAccess;
-        if (!orderChanged && !wasShared)
+    /// <summary>
+    /// Shows what the order is and who it suits on the playlist's page in Jellyfin (its overview),
+    /// locked so a metadata refresh can't clear it.
+    /// </summary>
+    private static async Task SetDescriptionAsync(Playlist playlist, string text, CancellationToken ct)
+    {
+        var locked = playlist.LockedFields.Contains(MetadataField.Overview);
+        if (playlist.Overview == text && locked)
         {
             return;
         }
 
-        await _playlistManager.UpdatePlaylist(new PlaylistUpdateRequest
+        playlist.Overview = text;
+        if (!locked)
         {
-            Id = existing.Id,
-            UserId = userId,
-            Ids = orderChanged ? desired : null,
-            Public = false
-        }).ConfigureAwait(false);
-        _logger.LogInformation("Watch Order: updated {Playlist} for user {UserId} ({Count} items).", playlistName, userId, desired.Count);
+            playlist.LockedFields = [.. playlist.LockedFields, MetadataField.Overview];
+        }
+
+        await playlist.UpdateToRepositoryAsync(ItemUpdateType.MetadataEdit, ct).ConfigureAwait(false);
     }
 
     /// <summary>The playlist from the user's next unwatched item onward (see <see cref="WatchProgress"/>).</summary>

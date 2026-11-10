@@ -46,7 +46,7 @@ public class WatchOrderController : ControllerBase
         var lists = new List<WatchOrderList>();
         if (config.EnableArrowverse && arrowverse is not null)
         {
-            lists.Add(new WatchOrderList(ArrowverseSource.PlaylistName, arrowverse.Items));
+            lists.Add(new WatchOrderList(ArrowverseSource.PlaylistName, arrowverse.Items) { Description = ArrowverseSource.Description });
         }
 
         if (mcu is not null)
@@ -114,6 +114,29 @@ public class WatchOrderController : ControllerBase
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .Order(StringComparer.OrdinalIgnoreCase)
             .ToList();
+
+    /// <summary>Each playlist's description (shown under its checkbox), by playlist name.</summary>
+    [HttpGet("Descriptions")]
+    [Produces(MediaTypeNames.Application.Json)]
+    public ActionResult<Dictionary<string, string>> GetDescriptions()
+    {
+        var map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [ArrowverseSource.PlaylistName] = ArrowverseSource.Description
+        };
+        foreach (var order in Enum.GetValues<McuOrder>())
+        {
+            map[McuSource.PlaylistName(order, false)] = McuSource.Description(order, false);
+            map[McuSource.PlaylistName(order, true)] = McuSource.Description(order, true);
+        }
+
+        foreach (var list in BuiltInLists.All.Where(l => l.Description is not null))
+        {
+            map[list.PlaylistName] = list.Description!;
+        }
+
+        return map;
+    }
 
     /// <summary>The built-in lists shipped with the plugin, for the settings page's checkboxes.</summary>
     [HttpGet("Lists")]

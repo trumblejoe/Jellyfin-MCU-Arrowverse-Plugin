@@ -3,6 +3,7 @@
 # and The Lord of the Rings films (Third Age). Episode codes use TheTVDB aired order. No titles or notes here, to keep the list spoiler-free.
 
 playlist: Middle-earth Chronological
+description: Middle-earth in story order, from The Rings of Power to The Return of the King. Best for a rewatch.
 updates: ongoing
 upcoming: movie: The Lord of the Rings: The Hunt for Gollum (2027-12-17) | alt: The Hunt for Gollum | after: The Hobbit: The Battle of the Five Armies
 

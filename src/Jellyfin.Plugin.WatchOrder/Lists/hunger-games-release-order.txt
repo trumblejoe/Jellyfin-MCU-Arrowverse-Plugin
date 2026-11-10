@@ -2,6 +2,7 @@
 # The Hunger Games films in release order.
 
 playlist: Hunger Games Release
+description: The Hunger Games films in the order they came out. Best for a first watch.
 updates: auto
 upcoming: movie: The Hunger Games: Sunrise on the Reaping (2026-11-20) | alt: Sunrise on the Reaping
 

@@ -4,6 +4,7 @@
 # Episode codes use TheTVDB aired order. No titles or notes here, to keep the list spoiler-free.
 
 playlist: Doctor Who Release
+description: Modern Doctor Who with Torchwood, The Sarah Jane Adventures, Class and The War Between the Land and the Sea, in broadcast order with the full-length specials, so crossovers line up.
 updates: auto
 
 @ Doctor Who (2005)

@@ -17,6 +17,7 @@ changelog: >
     remove playlists you turn off; choose playlists per user. New lists: Alien & Predator,
     Avatar, Transformers, Hunger Games. New MCU Hybrid playlist: the best first watch (release
     order, older other-universe films just before the Multiverse Saga, streaming seasons unbroken).
+    Every playlist now has a spoiler-free description saying what it is and who it suits.
     Fix: a list's show year also matches a year in the show's name and allows +/-2 years
     (Battlestar Galactica premiered 2003/2004/2005 by country). Series Aliases keep their year
     and override a list's year, so they can fix any remaining mismatch. Aliases are now edited
