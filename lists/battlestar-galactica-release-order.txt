@@ -7,6 +7,7 @@
 # spoiler-free.
 
 playlist: Battlestar Galactica Release
+description: The 2003 miniseries, the series and its webisodes, Razor, The Plan, Caprica and Blood & Chrome, in the order they came out.
 updates: finished
 
 movie: Battlestar Galactica (2003) | Battlestar Galactica: The Miniseries | Battlestar Galactica: Miniseries | Battlestar Galactica Miniseries

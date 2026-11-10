@@ -2,6 +2,7 @@
 # The widely used story order, which differs from release order. Alternate titles after "|".
 
 playlist: Fast & Furious Chronological
+description: The Fast & Furious films in story order, which differs from release order. Best for a rewatch.
 updates: ongoing
 upcoming: movie: Fast X: Part 2 (2027-03-17) | alt: Fast X Part 2 | alt: Fast & Furious 11 | after: Fast X
 

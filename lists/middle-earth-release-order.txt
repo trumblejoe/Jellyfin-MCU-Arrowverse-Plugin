@@ -3,6 +3,7 @@
 # in release order (series episodes by air date). Episode codes use TheTVDB aired order. No titles or notes here, to keep the list spoiler-free.
 
 playlist: Middle-earth Release
+description: The Lord of the Rings and Hobbit films, The War of the Rohirrim and The Rings of Power in the order they came out. Best for a first watch.
 updates: auto
 upcoming: movie: The Lord of the Rings: The Hunt for Gollum (2027-12-17) | alt: The Hunt for Gollum
 

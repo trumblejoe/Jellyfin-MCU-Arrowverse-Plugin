@@ -3,6 +3,7 @@
 # Episode codes use TheTVDB aired order. No titles or notes here, to keep the list spoiler-free.
 
 playlist: Breaking Bad Release
+description: Breaking Bad, Better Call Saul and El Camino in the order they came out. Best for a first watch.
 updates: finished
 
 @ Breaking Bad

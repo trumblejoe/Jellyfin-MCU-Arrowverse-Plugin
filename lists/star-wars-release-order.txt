@@ -3,6 +3,7 @@
 # the same time are interleaved by air date. Alternate movie titles after "|". Episode codes use TheTVDB aired order. No titles or notes here, to keep the list spoiler-free.
 
 playlist: Star Wars Release
+description: Every canon Star Wars film and series in the order it came out. Best for a first watch.
 updates: auto
 upcoming: movie: Star Wars: Starfighter (2027-05-28)
 

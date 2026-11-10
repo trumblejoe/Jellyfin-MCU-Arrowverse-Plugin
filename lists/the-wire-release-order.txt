@@ -3,6 +3,7 @@
 # Episode codes use TheTVDB aired order. No titles or notes here, to keep the list spoiler-free.
 
 playlist: The Wire Release
+description: David Simon's Baltimore: The Corner, The Wire, then We Own This City.
 updates: finished
 
 @ The Corner (2000)

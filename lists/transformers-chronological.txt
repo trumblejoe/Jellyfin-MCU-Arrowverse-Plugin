@@ -1,0 +1,16 @@
+# Transformers - Chronological Order
+# Story order: Transformers One (Cybertron), Bumblebee (1987), Rise of the Beasts (1994),
+# then the 2007-2017 films.
+
+playlist: Transformers Chronological
+description: The Transformers films in story order, starting with Transformers One. Best for a rewatch.
+updates: ongoing
+
+movie: Transformers One (2024)
+movie: Bumblebee (2018)
+movie: Transformers: Rise of the Beasts (2023)
+movie: Transformers (2007)
+movie: Transformers: Revenge of the Fallen (2009)
+movie: Transformers: Dark of the Moon (2011)
+movie: Transformers: Age of Extinction (2014)
+movie: Transformers: The Last Knight (2017)

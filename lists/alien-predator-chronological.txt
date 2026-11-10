@@ -1,0 +1,27 @@
+# Alien / Predator - Chronological Order
+# In-universe order: the Predator stories (the Killer of Killers anthology first), the crossover
+# films, then the Alien saga from Prometheus on. Predator: Badlands is set in an unspecified
+# future and is placed last. Alternate titles after "|". Episode codes use TheTVDB aired order. No titles or notes here, to keep the list spoiler-free.
+
+playlist: Alien & Predator Chronological
+description: The Alien and Predator stories in story order, from the earliest-set Predator stories to the far future. Best for a rewatch.
+updates: ongoing
+
+movie: Predator: Killer of Killers (2025)
+movie: Prey (2022)
+movie: Predator (1987)
+movie: Predator 2 (1990)
+movie: AVP: Alien vs. Predator (2004) | Alien vs. Predator | AVP
+movie: Aliens vs Predator: Requiem (2007) | AVPR: Aliens vs Predator - Requiem | Aliens vs. Predator: Requiem
+movie: Predators (2010)
+movie: The Predator (2018)
+movie: Prometheus (2012)
+movie: Alien: Covenant (2017)
+@ Alien: Earth
+S01E01-E08
+movie: Alien (1979)
+movie: Alien: Romulus (2024)
+movie: Aliens (1986)
+movie: Alien³ (1992) | Alien 3
+movie: Alien Resurrection (1997) | Alien: Resurrection
+movie: Predator: Badlands (2025)
