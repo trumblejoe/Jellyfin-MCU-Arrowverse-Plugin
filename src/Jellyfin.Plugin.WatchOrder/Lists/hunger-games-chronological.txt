@@ -1,0 +1,13 @@
+# The Hunger Games - Chronological Order
+# Story order: The Ballad of Songbirds & Snakes (the 10th Games), Sunrise on the Reaping
+# (the 50th Games, once released), then the original four films.
+
+playlist: Hunger Games Chronological
+updates: ongoing
+upcoming: movie: The Hunger Games: Sunrise on the Reaping (2026-11-20) | alt: Sunrise on the Reaping | after: The Hunger Games: The Ballad of Songbirds & Snakes
+
+movie: The Hunger Games: The Ballad of Songbirds & Snakes (2023)
+movie: The Hunger Games (2012)
+movie: The Hunger Games: Catching Fire (2013)
+movie: The Hunger Games: Mockingjay - Part 1 (2014)
+movie: The Hunger Games: Mockingjay - Part 2 (2015)

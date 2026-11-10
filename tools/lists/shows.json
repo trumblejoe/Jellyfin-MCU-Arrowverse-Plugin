@@ -2,6 +2,7 @@
   "_comment": "TheTVDB slug for every show named on an '@' line in a list marked 'updates: auto' or 'updates: ongoing'. 'partial' = shows a list only includes some episodes of (never auto-added).",
   "slugs": {
     "Ahsoka": "ahsoka",
+    "Alien: Earth": "alien-earth",
     "Andor": "andor",
     "Chicago Fire": "chicago-fire",
     "Chicago Justice": "chicago-justice",

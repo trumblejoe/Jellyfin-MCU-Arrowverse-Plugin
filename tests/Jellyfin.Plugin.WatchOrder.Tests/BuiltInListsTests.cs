@@ -84,10 +84,13 @@ public class BuiltInListsTests
     {
         Assert.Equal(
             [
+                "Alien & Predator Chronological", "Alien & Predator Release", "Avatar Release",
                 "Batman TAS Fan Order", "Battlestar Galactica Release", "Breaking Bad Release", "DCAU Release", "DCU Release",
                 "Doctor Who Release", "Fast & Furious Chronological", "Fast & Furious Release", "Harry Potter Release",
+                "Hunger Games Chronological", "Hunger Games Release",
                 "Middle-earth Chronological", "Middle-earth Release", "One Chicago Release", "Saved by the Bell Chronological",
                 "Star Wars Chronological", "Star Wars Release", "Stargate Optimized", "The Wire Release",
+                "Transformers Chronological", "Transformers Release",
                 "Wizarding World Chronological", "Wizarding World Release"
             ],
             BuiltInLists.All.Select(l => l.PlaylistName).Order(StringComparer.Ordinal));
@@ -123,6 +126,17 @@ public class BuiltInListsTests
     }
 
     [Fact]
+    public void New_franchise_lists_have_the_expected_size()
+    {
+        Assert.True(List("Alien & Predator Release").Entries.Count >= 24); // 16 films + Alien: Earth
+        Assert.Equal(24, List("Alien & Predator Chronological").Entries.Count);
+        Assert.True(List("Avatar Release").Entries.Count >= 3);
+        Assert.Equal(8, List("Transformers Chronological").Entries.Count);
+        Assert.Equal("Transformers One", List("Transformers Chronological").Entries[0].MovieTitle);
+        Assert.Equal("The Hunger Games: The Ballad of Songbirds & Snakes", List("Hunger Games Chronological").Entries[0].MovieTitle);
+    }
+
+    [Fact]
     public void Show_line_year_becomes_a_strict_premiere_year()
     {
         var list = BuiltInLists.Parse("playlist: X\n@ Doctor Who (2023)\nS01E01\n@ Torchwood\nS01E01");
@@ -149,7 +163,7 @@ public class BuiltInListsTests
     [Fact]
     public void Release_versions_cover_everything_in_chronological_versions()
     {
-        foreach (var franchise in new[] { "Middle-earth", "Wizarding World", "Fast & Furious" })
+        foreach (var franchise in new[] { "Middle-earth", "Wizarding World", "Fast & Furious", "Alien & Predator", "Transformers", "Hunger Games" })
         {
             var release = List(franchise + " Release").Entries.Select(e => e.IsEpisode ? $"{e.SeriesName}|{e.Season}|{e.Episode}" : e.MovieTitle!).Order();
             var chrono = List(franchise + " Chronological").Entries.Select(e => e.IsEpisode ? $"{e.SeriesName}|{e.Season}|{e.Episode}" : e.MovieTitle!).Order();

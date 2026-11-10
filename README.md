@@ -99,6 +99,8 @@ plugin releases, and nothing is downloaded.
 
 | List | Covers |
 |---|---|
+| Alien & Predator Release / Chronological | The Alien and Predator films, the AVP crossovers, Prey, Killer of Killers, Badlands and Alien: Earth, in release order and in story order |
+| Avatar Release | James Cameron's Avatar films (release order is also story order) |
 | Batman TAS Fan Order | A fan-curated order across Batman: The Animated Series (including its two movies, as show specials S00E02/S00E03) and The New Batman Adventures; 111 items |
 | Battlestar Galactica Release | The 2003 miniseries, the 2004 series, its webisodes/minisodes, Razor, The Plan, Caprica and Blood & Chrome, by release date; 126 entries (the miniseries and Razor are listed both as movies and as TVDB specials, so either library layout works) |
 | Breaking Bad Release | Breaking Bad, Better Call Saul and El Camino, by air date; 126 items |
@@ -106,6 +108,7 @@ plugin releases, and nothing is downloaded.
 | DCU Release | DC Studios' DCU in release order, per [JustWatch's guide](https://guides.justwatch.com/us/james-gunn-dcu-in-order) (Sept 2026); 35 items. Needs updating as new titles release |
 | Doctor Who Release | The modern era (2005 on) with Torchwood, The Sarah Jane Adventures, Class and The War Between the Land and the Sea, by air date, with the full-length specials; 303 items. TheTVDB files 2023 onward as a separate series, "Doctor Who (2023)", so your library needs it as its own show |
 | Fast & Furious Release / Chronological | The 11 films (including Hobbs & Shaw), in release order and in the widely used story order |
+| Hunger Games Release / Chronological | The Hunger Games films; story order starts with The Ballad of Songbirds & Snakes (Sunrise on the Reaping is added when it releases) |
 | Harry Potter Release | The 8 films in release order |
 | Middle-earth Release / Chronological | The Lord of the Rings and Hobbit films, The War of the Rohirrim and The Rings of Power, in release order and in story order |
 | One Chicago Release | Chicago Fire, P.D., Med and Justice plus the Law & Order: SVU crossover episodes, in broadcast order down to the time slot so crossover nights play correctly; 810 items |
@@ -115,6 +118,7 @@ plugin releases, and nothing is downloaded.
 | Stargate Optimized | [GateWorld's Optimized Stargate Watch Order](https://gateworld.net/news/2024/09/optimized-stargate-watch-order) (SG-1, Atlantis, Universe including its kino web shorts as specials, and 4 movies); 392 items |
 
 | The Wire Release | David Simon's Baltimore: The Corner, The Wire, then We Own This City; 72 episodes |
+| Transformers Release / Chronological | The live-action films and Transformers One; story order starts with Transformers One, Bumblebee and Rise of the Beasts |
 | Wizarding World Release / Chronological | The Harry Potter and Fantastic Beasts films, in release order and in story order |
 
 A year on a show line, as in `@ Doctor Who (2023)`, is strict: only a series whose year (in its
