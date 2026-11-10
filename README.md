@@ -85,7 +85,7 @@ plugin isn't loaded twice.
 | Arrowverse | on | |
 | MCU playlists | MCU Release on | Six checkboxes: `MCU Release`, `MCU Chronological`, `MCU Sacred Timeline` (canon only), each with an `... Extended` version that also includes the guide's non-canon entries. The names sort in canon/Extended pairs on Jellyfin's playlist page |
 | Backup data URL | empty | Optional: where to download list updates from, and a fallback copy of the guides (see below) |
-| Series aliases | empty | `Name on guide = Name in Jellyfin`, one per line. Only needed if a show you own gets skipped; the server log lists any unmatched show names |
+| Series aliases | empty | One row per alias: the name on the guide → the name in Jellyfin (both boxes suggest names). Only needed if a show you own gets skipped; the server log lists any unmatched show names |
 
 ## Built-in lists
 

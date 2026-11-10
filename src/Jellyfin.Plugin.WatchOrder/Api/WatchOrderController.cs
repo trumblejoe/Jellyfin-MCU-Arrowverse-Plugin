@@ -67,6 +67,21 @@ public class WatchOrderController : ControllerBase
             : report;
     }
 
+    /// <summary>Your library's show names, as suggestions for the settings page's alias boxes.</summary>
+    [HttpGet("LibraryShows")]
+    [Produces(MediaTypeNames.Application.Json)]
+    public ActionResult<IEnumerable<string>> GetLibraryShows() =>
+        _libraryManager.GetItemList(new MediaBrowser.Controller.Entities.InternalItemsQuery
+            {
+                IncludeItemTypes = [Jellyfin.Data.Enums.BaseItemKind.Series],
+                Recursive = true
+            })
+            .Select(s => s.Name)
+            .Where(n => !string.IsNullOrWhiteSpace(n))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .Order(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
     /// <summary>The built-in lists shipped with the plugin, for the settings page's checkboxes.</summary>
     [HttpGet("Lists")]
     [Produces(MediaTypeNames.Application.Json)]

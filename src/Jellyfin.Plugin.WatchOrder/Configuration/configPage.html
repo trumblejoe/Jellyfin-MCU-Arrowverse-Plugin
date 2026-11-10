@@ -5,7 +5,7 @@
     <title>Watch Order Playlists</title>
 </head>
 <body>
-    <div id="WatchOrderConfigPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-select,emby-checkbox,emby-textarea">
+    <div id="WatchOrderConfigPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-select,emby-checkbox">
         <div data-role="content">
             <div class="content-primary">
                 <form id="WatchOrderConfigForm">
@@ -47,10 +47,13 @@
                         <div class="fieldDescription">Leave blank unless you run your own backup. When set, the daily sync also picks up updated built-in lists from it (no plugin update or restart needed), and it's used as a fallback when a guide site is down or looks broken. A copy of each guide and list is always kept on this server.</div>
                     </div>
 
-                    <div class="inputContainer">
-                        <label class="textareaLabel" for="SeriesAliases">Series aliases (optional)</label>
-                        <textarea is="emby-textarea" id="SeriesAliases" name="SeriesAliases" rows="4" class="emby-textarea"></textarea>
-                        <div class="fieldDescription">Only needed if a show you own is skipped because its name differs. One per line: <code>Name on guide = Name in Jellyfin</code>. Missing shows are listed in the server log after each sync.</div>
+                    <div class="verticalSection">
+                        <h3>Series aliases (optional)</h3>
+                        <div class="fieldDescription">Only needed if a show you own is listed under <em>Missing from your library</em> because its name differs. Pick the name the guide uses on the left and your show on the right; both boxes suggest names as you type. Add a year to the right-hand name, e.g. <code>Doctor Who (2005)</code>, to pick one of several shows with the same name.</div>
+                        <div id="AliasRows" style="margin-top:.8em"></div>
+                        <button is="emby-button" type="button" id="AddAlias" class="raised emby-button" style="margin-top:.4em"><span>Add alias</span></button>
+                        <datalist id="WatchOrderGuideNames"></datalist>
+                        <datalist id="WatchOrderLibraryNames"></datalist>
                     </div>
 
                     <div>
@@ -142,6 +145,8 @@
                     var shows = g(r, 'Shows');
                     var notOwned = shows.filter(function (s) { return !g(s, 'InLibrary'); });
                     var partial = shows.filter(function (s) { return g(s, 'InLibrary'); });
+                    // Suggest the not-found shows in the alias boxes' left-hand side.
+                    WatchOrderConfig.fillDatalist('WatchOrderGuideNames', notOwned.map(function (s) { return g(s, 'Name'); }));
                     var describe = function (s) {
                         var seasons = g(s, 'Seasons');
                         return g(s, 'Name') + ': ' + g(s, 'MissingEpisodes') + ' episode' + (g(s, 'MissingEpisodes') === 1 ? '' : 's') +
@@ -172,6 +177,78 @@
             };
 
             document.querySelector('#WatchOrderRefreshMissing').addEventListener('click', WatchOrderConfig.loadMissing);
+
+            // Series aliases: one row per alias (guide name -> library name). Saved in the same
+            // "Name on guide = Name in Jellyfin" text format as before, so existing aliases carry over.
+            WatchOrderConfig.addAliasRow = function (guide, library) {
+                var row = document.createElement('div');
+                row.className = 'watchOrderAliasRow';
+                row.style.cssText = 'display:flex;flex-wrap:wrap;align-items:center;gap:.5em;margin-bottom:.6em';
+                var make = function (cls, value, placeholder, list) {
+                    var input = document.createElement('input');
+                    input.type = 'text';
+                    input.setAttribute('is', 'emby-input');
+                    input.className = 'emby-input ' + cls;
+                    input.value = value || '';
+                    input.placeholder = placeholder;
+                    input.setAttribute('list', list);
+                    input.style.cssText = 'flex:1 1 16em;min-width:12em';
+                    return input;
+                };
+                var arrow = document.createElement('span');
+                arrow.textContent = '→';
+                arrow.setAttribute('aria-hidden', 'true');
+                var remove = document.createElement('button');
+                remove.type = 'button';
+                remove.setAttribute('is', 'emby-button');
+                remove.className = 'emby-button';
+                remove.title = 'Remove this alias';
+                remove.textContent = 'Remove';
+                remove.addEventListener('click', function () { row.remove(); });
+                row.appendChild(make('aliasGuide', guide, 'Name on the guide', 'WatchOrderGuideNames'));
+                row.appendChild(arrow);
+                row.appendChild(make('aliasLibrary', library, 'Name in Jellyfin', 'WatchOrderLibraryNames'));
+                row.appendChild(remove);
+                document.querySelector('#AliasRows').appendChild(row);
+            };
+
+            WatchOrderConfig.setAliases = function (text) {
+                document.querySelector('#AliasRows').innerHTML = '';
+                text.split('\n').forEach(function (line) {
+                    var at = line.indexOf('=');
+                    if (at > 0 && line.slice(at + 1).trim()) {
+                        WatchOrderConfig.addAliasRow(line.slice(0, at).trim(), line.slice(at + 1).trim());
+                    }
+                });
+            };
+
+            WatchOrderConfig.getAliases = function () {
+                return Array.prototype.map.call(document.querySelectorAll('.watchOrderAliasRow'), function (row) {
+                    var guide = row.querySelector('.aliasGuide').value.replace(/=/g, ' ').trim();
+                    var library = row.querySelector('.aliasLibrary').value.replace(/=/g, ' ').trim();
+                    return guide && library ? guide + ' = ' + library : '';
+                }).filter(Boolean).join('\n');
+            };
+
+            WatchOrderConfig.fillDatalist = function (id, names) {
+                var list = document.querySelector('#' + id);
+                list.innerHTML = '';
+                names.forEach(function (n) {
+                    var option = document.createElement('option');
+                    option.value = n;
+                    list.appendChild(option);
+                });
+            };
+
+            WatchOrderConfig.loadLibraryNames = function () {
+                ApiClient.getJSON(ApiClient.getUrl('WatchOrder/LibraryShows')).then(function (names) {
+                    WatchOrderConfig.fillDatalist('WatchOrderLibraryNames', names || []);
+                });
+            };
+
+            document.querySelector('#AddAlias').addEventListener('click', function () {
+                WatchOrderConfig.addAliasRow('', '');
+            });
 
             document.querySelector('#WatchOrderConfigPage').addEventListener('pageshow', function () {
                 Dashboard.showLoadingMsg();
@@ -233,7 +310,8 @@
                     WatchOrderConfig.checkboxes.forEach(function (id) {
                         page.querySelector('#' + id).checked = !!config[id];
                     });
-                    page.querySelector('#SeriesAliases').value = config.SeriesAliases || '';
+                    WatchOrderConfig.setAliases(config.SeriesAliases || '');
+                    WatchOrderConfig.loadLibraryNames();
                     page.querySelector('#BackupDataUrl').value = config.BackupDataUrl || '';
                     Dashboard.hideLoadingMsg();
                     WatchOrderConfig.loadMissing();
@@ -250,7 +328,7 @@
                     WatchOrderConfig.checkboxes.forEach(function (id) {
                         config[id] = form.querySelector('#' + id).checked;
                     });
-                    config.SeriesAliases = form.querySelector('#SeriesAliases').value;
+                    config.SeriesAliases = WatchOrderConfig.getAliases();
                     config.BackupDataUrl = form.querySelector('#BackupDataUrl').value.trim();
                     ApiClient.updatePluginConfiguration(WatchOrderConfig.pluginUniqueId, config).then(function (result) {
                         Dashboard.processPluginConfigurationUpdateResult(result);
