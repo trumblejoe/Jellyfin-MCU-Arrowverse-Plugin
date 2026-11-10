@@ -5,7 +5,7 @@ A Jellyfin plugin that keeps playlists in sync with these community watch-order 
 | Playlist | Source |
 |---|---|
 | Arrowverse | https://arrowverse.info/ (HTML table, already in viewing order) |
-| MCU Release, MCU Chronological, MCU Sacred Timeline, each also as an "Extended" version | https://aaronperris.com/mcu/ (reads its data file `mcu.json`) |
+| MCU Release, MCU Chronological, MCU Sacred Timeline, MCU Hybrid, each also as an "Extended" version | https://aaronperris.com/mcu/ (reads its data file `mcu.json`) |
 
 A scheduled task runs daily at 04:00 and at server start. It downloads the guides, matches
 each entry to your library, and creates or reorders the playlists. Only items you actually
@@ -88,6 +88,25 @@ plugin isn't loaded twice.
 | MCU playlists | MCU Release on | Six checkboxes: `MCU Release`, `MCU Chronological`, `MCU Sacred Timeline` (canon only), each with an `... Extended` version that also includes the guide's non-canon entries. The names sort in canon/Extended pairs on Jellyfin's playlist page |
 | Backup data URL | empty | Optional: where to download list updates from, and a fallback copy of the guides (see below) |
 | Series aliases | empty | One row per alias: the name on the guide → the name in Jellyfin (both boxes suggest names). Only needed if a show you own gets skipped; the server log lists any unmatched show names |
+
+### MCU Hybrid (best first watch)
+
+**MCU Hybrid** is built from the same guide data, for people who've never seen the MCU:
+
+- **Release order**, so nothing plays before what it assumes you've seen. That makes it spoiler-safe,
+  unlike the story orders (Chronological and Sacred Timeline), where dozens of later-made items play
+  before Endgame.
+- **Older films from other universes** (the Fox X-Men films, Raimi's Spider-Man, Blade, Daredevil,
+  Elektra, Fantastic Four, ...) released before the Multiverse Saga play together, in release order,
+  right before it starts. Newcomers start with Iron Man instead of 13 older films, and the
+  Infinity Saga runs straight through. Later ones stay at their release dates.
+- **Each Disney+, Netflix and Hulu season plays straight through.** Broadcast shows (Agents of
+  S.H.I.E.L.D., Inhumans, Cloak & Dagger) keep air-date order, so tie-in episodes follow the films
+  they react to.
+- Same items as MCU Release, including the web shorts.
+
+Chronological and Sacred Timeline suit a rewatch. Use **Who gets which playlist** to give each
+user the right one.
 
 ## Built-in lists
 

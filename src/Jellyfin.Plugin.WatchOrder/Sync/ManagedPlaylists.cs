@@ -22,6 +22,7 @@ public static class ManagedPlaylists
                 McuSource.PlaylistName(o, extended: true),
                 McuSource.LegacyPlaylistName(o)
             })
+            .OfType<string>()
             .Append(ArrowverseSource.PlaylistName)
             .Concat(BuiltInLists.All.Select(l => l.PlaylistName)),
         StringComparer.OrdinalIgnoreCase);

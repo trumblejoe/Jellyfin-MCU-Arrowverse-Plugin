@@ -47,6 +47,11 @@ public class PluginConfiguration : BasePluginConfiguration
 
     public bool EnableMcuSacredTimelineExtended { get; set; }
 
+    /// <summary>MCU Hybrid: the first-time-viewer order (see McuOrder.Hybrid).</summary>
+    public bool EnableMcuHybrid { get; set; }
+
+    public bool EnableMcuHybridExtended { get; set; }
+
     /// <summary>Playlist names of the built-in lists (Lists/*.txt) that are turned on.</summary>
     public string[] EnabledLists { get; set; } = [];
 

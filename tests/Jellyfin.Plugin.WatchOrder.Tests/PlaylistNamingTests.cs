@@ -18,6 +18,8 @@ public class PlaylistNamingTests
             [
                 "MCU Chronological",
                 "MCU Chronological Extended",
+                "MCU Hybrid",
+                "MCU Hybrid Extended",
                 "MCU Release",
                 "MCU Release Extended",
                 "MCU Sacred Timeline",

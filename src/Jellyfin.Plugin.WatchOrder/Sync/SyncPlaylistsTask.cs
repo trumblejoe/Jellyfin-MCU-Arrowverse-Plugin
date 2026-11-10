@@ -193,6 +193,8 @@ public class SyncPlaylistsTask : IScheduledTask
             (McuOrder.Chronological, true, config.EnableMcuChronologicalExtended),
             (McuOrder.SacredTimeline, false, config.EnableMcuSacredTimeline),
             (McuOrder.SacredTimeline, true, config.EnableMcuSacredTimelineExtended),
+            (McuOrder.Hybrid, false, config.EnableMcuHybrid),
+            (McuOrder.Hybrid, true, config.EnableMcuHybridExtended),
         };
         return all.Where(p => p.Enabled).Select(p => (p.Order, p.Extended)).ToList();
     }
@@ -207,7 +209,12 @@ public class SyncPlaylistsTask : IScheduledTask
         var enabled = EnabledMcuPlaylists(config);
         foreach (var order in Enum.GetValues<McuOrder>())
         {
-            var legacy = ManagedPlaylists.Find(_playlistManager, userId, McuSource.LegacyPlaylistName(order));
+            if (McuSource.LegacyPlaylistName(order) is not { } legacyName)
+            {
+                continue; // orders added after 1.2 never had an old name
+            }
+
+            var legacy = ManagedPlaylists.Find(_playlistManager, userId, legacyName);
             if (legacy is null)
             {
                 continue;
