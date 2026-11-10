@@ -19,6 +19,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Lets the tests build a LibraryMatcher from a fake library. -->
+    <InternalsVisibleTo Include="Jellyfin.Plugin.WatchOrder.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <!-- For the settings page's API endpoint (Api/WatchOrderController.cs). Provided by the server. -->
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>

@@ -115,8 +115,10 @@ plugin releases, and nothing is downloaded.
 | The Wire Release | David Simon's Baltimore: The Corner, The Wire, then We Own This City; 72 episodes |
 | Wizarding World Release / Chronological | The Harry Potter and Fantastic Beasts films, in release order and in story order |
 
-A year on a show line, as in `@ Doctor Who (2023)`, is strict: only a series that premiered
-that year matches, so same-named shows from different eras can't be mixed up.
+A year on a show line, as in `@ Doctor Who (2023)`, is strict: only a series whose year (in its
+name, premiere date or production year) is within 2 of it matches, so same-named shows from
+different eras can't be mixed up. A Series Alias overrides it. `Doctor Who (2023) = Doctor Who (2005)`
+picks that year's series, and an alias without a year accepts the named show whatever its year.
 
 **Movies** are found in the Movies library by title and year (alternate titles after `|`),
 or among a show's specials if that's where your library files them.

@@ -20,17 +20,30 @@ public sealed partial class LibraryMatcher
     private readonly Dictionary<(Guid SeriesId, int Season, int Episode), Guid> _episodes = new();
     private readonly Dictionary<string, List<Movie>> _moviesByTitle = new();
     private readonly Dictionary<string, List<Special>> _specialsByTitle = new();
-    private readonly Dictionary<string, string> _aliases;
+    private readonly Dictionary<string, (string Name, int? Year)> _aliases;
+
+    /// <summary>
+    /// How far a show's year may be from the year a list gives ("@ Show (2003)"). Premiere dates
+    /// vary by country (Battlestar Galactica: 2003 miniseries, 2004 UK, 2005 US), while
+    /// same-named shows from different eras (Doctor Who 2005 vs 2023) stay far apart.
+    /// </summary>
+    private const int ShowYearTolerance = 2;
 
     public LibraryMatcher(ILibraryManager libraryManager, string aliasText)
+        : this(
+            libraryManager.GetItemList(new InternalItemsQuery { IncludeItemTypes = [BaseItemKind.Series], Recursive = true }).OfType<Series>(),
+            libraryManager.GetItemList(new InternalItemsQuery { IncludeItemTypes = [BaseItemKind.Episode], Recursive = true, IsVirtualItem = false }).OfType<Episode>(),
+            libraryManager.GetItemList(new InternalItemsQuery { IncludeItemTypes = [BaseItemKind.Movie], Recursive = true, IsVirtualItem = false }).OfType<Movie>(),
+            aliasText)
+    {
+    }
+
+    /// <summary>Builds the matcher from given items (the library, or test data).</summary>
+    internal LibraryMatcher(IEnumerable<Series> allSeries, IEnumerable<Episode> allEpisodes, IEnumerable<Movie> allMovies, string aliasText)
     {
         _aliases = ParseAliases(aliasText);
 
-        foreach (var s in libraryManager.GetItemList(new InternalItemsQuery
-                 {
-                     IncludeItemTypes = [BaseItemKind.Series],
-                     Recursive = true
-                 }).OfType<Series>())
+        foreach (var s in allSeries)
         {
             Add(_seriesByName, Normalize(s.Name), s);
             if (!string.IsNullOrWhiteSpace(s.OriginalTitle))
@@ -39,12 +52,7 @@ public sealed partial class LibraryMatcher
             }
         }
 
-        foreach (var e in libraryManager.GetItemList(new InternalItemsQuery
-                 {
-                     IncludeItemTypes = [BaseItemKind.Episode],
-                     Recursive = true,
-                     IsVirtualItem = false
-                 }).OfType<Episode>())
+        foreach (var e in allEpisodes)
         {
             if (e.ParentIndexNumber is not { } season || e.IndexNumber is not { } first)
             {
@@ -65,12 +73,7 @@ public sealed partial class LibraryMatcher
             }
         }
 
-        foreach (var m in libraryManager.GetItemList(new InternalItemsQuery
-                 {
-                     IncludeItemTypes = [BaseItemKind.Movie],
-                     Recursive = true,
-                     IsVirtualItem = false
-                 }).OfType<Movie>())
+        foreach (var m in allMovies)
         {
             Add(_moviesByTitle, Normalize(m.Name), m);
             if (!string.IsNullOrWhiteSpace(m.OriginalTitle))
@@ -146,23 +149,71 @@ public sealed partial class LibraryMatcher
     public bool HasSeries(string siteName, int? year) => FindSeries(siteName, year) is not null;
 
     /// <summary>
-    /// Strict lookup for a built-in list's "@ Show (2023)": only a series that premiered within a
-    /// year of that matches, never a same-named series from another era.
+    /// Strict lookup for a built-in list's "@ Show (2023)": only a series whose year is within
+    /// <see cref="ShowYearTolerance"/> of that matches, never a same-named series from another era.
+    /// A Series Alias wins over the list's year: "Show (2003) = Other Name (2005)" uses 2005, and an
+    /// alias without a year accepts the named series whatever its year.
     /// </summary>
     private Series? FindSeriesPremiered(string siteName, int premiered)
     {
-        var name = _aliases.TryGetValue(Normalize(siteName), out var alias) ? alias : Normalize(siteName);
+        if (_aliases.TryGetValue(Normalize(siteName), out var alias))
+        {
+            if (alias.Year is null)
+            {
+                return _seriesByName.TryGetValue(alias.Name, out var named) ? named[0] : null;
+            }
+
+            premiered = alias.Year.Value;
+        }
+
+        var name = alias.Name ?? Normalize(siteName);
         return _seriesByName.TryGetValue(name, out var candidates)
             ? candidates
-                .Where(s => (s.PremiereDate?.Year ?? s.ProductionYear) is { } y && Math.Abs(y - premiered) <= 1)
-                .OrderBy(s => Math.Abs((s.PremiereDate?.Year ?? s.ProductionYear)!.Value - premiered))
+                .Select(s => (Series: s, Distance: YearsOf(s).Select(y => Math.Abs(y - premiered)).DefaultIfEmpty(int.MaxValue).Min()))
+                .Where(c => c.Distance <= ShowYearTolerance)
+                .OrderBy(c => c.Distance)
+                .Select(c => c.Series)
                 .FirstOrDefault()
             : null;
     }
 
+    /// <summary>
+    /// Every year a series is known by: a year in its name ("Battlestar Galactica (2003)"), its
+    /// premiere date, and its production year.
+    /// </summary>
+    private static IEnumerable<int> YearsOf(Series s)
+    {
+        foreach (var title in new[] { s.Name, s.OriginalTitle })
+        {
+            if (title is not null && NameYear().Match(title) is { Success: true } m)
+            {
+                yield return int.Parse(m.Groups[1].Value, System.Globalization.CultureInfo.InvariantCulture);
+            }
+        }
+
+        if (s.PremiereDate is { } premiere)
+        {
+            yield return premiere.Year;
+        }
+
+        if (s.ProductionYear is { } production)
+        {
+            yield return production;
+        }
+    }
+
+    [GeneratedRegex(@"\((\d{4})\)\s*$")]
+    private static partial Regex NameYear();
+
     private Series? FindSeries(string siteName, int? year)
     {
-        var name = _aliases.TryGetValue(Normalize(siteName), out var alias) ? alias : Normalize(siteName);
+        if (_aliases.TryGetValue(Normalize(siteName), out var alias) && alias.Year is { } aliasYear)
+        {
+            // The alias names a specific year's series; use it as-is.
+            return FindSeriesPremiered(siteName, aliasYear);
+        }
+
+        var name = alias.Name ?? Normalize(siteName);
         if (!_seriesByName.TryGetValue(name, out var candidates))
         {
             return null;
@@ -182,15 +233,23 @@ public sealed partial class LibraryMatcher
                ?? candidates[0];
     }
 
-    private static Dictionary<string, string> ParseAliases(string text)
+    /// <summary>
+    /// "Name on guide = Name in Jellyfin" lines. A year on the right ("Doctor Who (2005)") is kept,
+    /// so an alias can pick one of several same-named shows; a year on the left is ignored.
+    /// </summary>
+    private static Dictionary<string, (string Name, int? Year)> ParseAliases(string text)
     {
-        var map = new Dictionary<string, string>();
+        var map = new Dictionary<string, (string Name, int? Year)>();
         foreach (var line in (text ?? string.Empty).Split('\n'))
         {
             var parts = line.Split('=', 2);
-            if (parts.Length == 2 && parts[0].Trim().Length > 0 && parts[1].Trim().Length > 0)
+            if (parts.Length == 2 && Normalize(parts[0]).Length > 0 && Normalize(parts[1]).Length > 0)
             {
-                map[Normalize(parts[0])] = Normalize(parts[1]);
+                var target = parts[1].Trim();
+                int? year = NameYear().Match(target) is { Success: true } m
+                    ? int.Parse(m.Groups[1].Value, System.Globalization.CultureInfo.InvariantCulture)
+                    : null;
+                map[Normalize(parts[0])] = (Normalize(target), year);
             }
         }
 
