@@ -1,5 +1,5 @@
 {
-  "SavedUtc": "2026-11-14T13:28:08.309758Z",
+  "SavedUtc": "2026-11-15T13:53:51.5542166Z",
   "Items": [
     {
       "SeriesName": "Arrow",
@@ -4419,13 +4419,6 @@
       "Year": 2021
     },
     {
-      "SeriesName": "The Flash",
-      "Season": 7,
-      "Episode": 5,
-      "MovieTitle": null,
-      "Year": 2021
-    },
-    {
       "SeriesName": "Supergirl",
       "Season": 6,
       "Episode": 1,
@@ -4435,7 +4428,7 @@
     {
       "SeriesName": "The Flash",
       "Season": 7,
-      "Episode": 6,
+      "Episode": 5,
       "MovieTitle": null,
       "Year": 2021
     },
@@ -4443,6 +4436,13 @@
       "SeriesName": "Supergirl",
       "Season": 6,
       "Episode": 2,
+      "MovieTitle": null,
+      "Year": 2021
+    },
+    {
+      "SeriesName": "The Flash",
+      "Season": 7,
+      "Episode": 6,
       "MovieTitle": null,
       "Year": 2021
     },
@@ -4461,16 +4461,16 @@
       "Year": 2021
     },
     {
-      "SeriesName": "The Flash",
-      "Season": 7,
-      "Episode": 7,
+      "SeriesName": "Supergirl",
+      "Season": 6,
+      "Episode": 3,
       "MovieTitle": null,
       "Year": 2021
     },
     {
-      "SeriesName": "Supergirl",
-      "Season": 6,
-      "Episode": 3,
+      "SeriesName": "The Flash",
+      "Season": 7,
+      "Episode": 7,
       "MovieTitle": null,
       "Year": 2021
     },
@@ -4531,16 +4531,16 @@
       "Year": 2021
     },
     {
-      "SeriesName": "The Flash",
-      "Season": 7,
-      "Episode": 8,
+      "SeriesName": "Supergirl",
+      "Season": 6,
+      "Episode": 6,
       "MovieTitle": null,
       "Year": 2021
     },
     {
-      "SeriesName": "Supergirl",
-      "Season": 6,
-      "Episode": 6,
+      "SeriesName": "The Flash",
+      "Season": 7,
+      "Episode": 8,
       "MovieTitle": null,
       "Year": 2021
     },
@@ -4566,16 +4566,16 @@
       "Year": 2021
     },
     {
-      "SeriesName": "The Flash",
-      "Season": 7,
-      "Episode": 9,
+      "SeriesName": "Supergirl",
+      "Season": 6,
+      "Episode": 7,
       "MovieTitle": null,
       "Year": 2021
     },
     {
-      "SeriesName": "Supergirl",
-      "Season": 6,
-      "Episode": 7,
+      "SeriesName": "The Flash",
+      "Season": 7,
+      "Episode": 9,
       "MovieTitle": null,
       "Year": 2021
     },
@@ -4622,13 +4622,6 @@
       "Year": 2021
     },
     {
-      "SeriesName": "DC\u0027s Legends of Tomorrow",
-      "Season": 6,
-      "Episode": 4,
-      "MovieTitle": null,
-      "Year": 2021
-    },
-    {
       "SeriesName": "The Flash",
       "Season": 7,
       "Episode": 11,
@@ -4639,6 +4632,13 @@
       "SeriesName": "Superman \u0026 Lois",
       "Season": 1,
       "Episode": 7,
+      "MovieTitle": null,
+      "Year": 2021
+    },
+    {
+      "SeriesName": "DC\u0027s Legends of Tomorrow",
+      "Season": 6,
+      "Episode": 4,
       "MovieTitle": null,
       "Year": 2021
     },
