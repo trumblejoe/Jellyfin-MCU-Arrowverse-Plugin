@@ -2228,3 +2228,9 @@ S15E05
 
 @ Chicago P.D.
 S14E05
+@ Chicago Med
+S12E06
+@ Chicago Fire
+S15E06
+@ Chicago P.D.
+S14E06
