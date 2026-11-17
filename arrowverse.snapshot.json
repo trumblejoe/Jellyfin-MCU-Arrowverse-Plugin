@@ -1,5 +1,5 @@
 {
-  "SavedUtc": "2026-11-16T15:39:39.2329637Z",
+  "SavedUtc": "2026-11-17T15:56:54.7803157Z",
   "Items": [
     {
       "SeriesName": "Arrow",
@@ -3740,15 +3740,15 @@
       "Year": 2019
     },
     {
-      "SeriesName": "Batwoman",
-      "Season": 1,
+      "SeriesName": "Black Lightning",
+      "Season": 3,
       "Episode": 9,
       "MovieTitle": null,
       "Year": 2019
     },
     {
-      "SeriesName": "Black Lightning",
-      "Season": 3,
+      "SeriesName": "Batwoman",
+      "Season": 1,
       "Episode": 9,
       "MovieTitle": null,
       "Year": 2019
@@ -4328,16 +4328,16 @@
       "Year": 2021
     },
     {
-      "SeriesName": "Superman \u0026 Lois",
-      "Season": 1,
-      "Episode": 2,
+      "SeriesName": "The Flash",
+      "Season": 7,
+      "Episode": 1,
       "MovieTitle": null,
       "Year": 2021
     },
     {
-      "SeriesName": "The Flash",
-      "Season": 7,
-      "Episode": 1,
+      "SeriesName": "Superman \u0026 Lois",
+      "Season": 1,
+      "Episode": 2,
       "MovieTitle": null,
       "Year": 2021
     },
@@ -4349,16 +4349,16 @@
       "Year": 2021
     },
     {
-      "SeriesName": "Superman \u0026 Lois",
-      "Season": 1,
-      "Episode": 3,
+      "SeriesName": "The Flash",
+      "Season": 7,
+      "Episode": 2,
       "MovieTitle": null,
       "Year": 2021
     },
     {
-      "SeriesName": "The Flash",
-      "Season": 7,
-      "Episode": 2,
+      "SeriesName": "Superman \u0026 Lois",
+      "Season": 1,
+      "Episode": 3,
       "MovieTitle": null,
       "Year": 2021
     },
@@ -4377,16 +4377,16 @@
       "Year": 2021
     },
     {
-      "SeriesName": "Superman \u0026 Lois",
-      "Season": 1,
-      "Episode": 4,
+      "SeriesName": "The Flash",
+      "Season": 7,
+      "Episode": 3,
       "MovieTitle": null,
       "Year": 2021
     },
     {
-      "SeriesName": "The Flash",
-      "Season": 7,
-      "Episode": 3,
+      "SeriesName": "Superman \u0026 Lois",
+      "Season": 1,
+      "Episode": 4,
       "MovieTitle": null,
       "Year": 2021
     },
@@ -4398,13 +4398,6 @@
       "Year": 2021
     },
     {
-      "SeriesName": "Superman \u0026 Lois",
-      "Season": 1,
-      "Episode": 5,
-      "MovieTitle": null,
-      "Year": 2021
-    },
-    {
       "SeriesName": "The Flash",
       "Season": 7,
       "Episode": 4,
@@ -4412,9 +4405,23 @@
       "Year": 2021
     },
     {
+      "SeriesName": "Superman \u0026 Lois",
+      "Season": 1,
+      "Episode": 5,
+      "MovieTitle": null,
+      "Year": 2021
+    },
+    {
       "SeriesName": "Batwoman",
       "Season": 2,
       "Episode": 9,
+      "MovieTitle": null,
+      "Year": 2021
+    },
+    {
+      "SeriesName": "The Flash",
+      "Season": 7,
+      "Episode": 5,
       "MovieTitle": null,
       "Year": 2021
     },
@@ -4428,7 +4435,7 @@
     {
       "SeriesName": "The Flash",
       "Season": 7,
-      "Episode": 5,
+      "Episode": 6,
       "MovieTitle": null,
       "Year": 2021
     },
@@ -4436,13 +4443,6 @@
       "SeriesName": "Supergirl",
       "Season": 6,
       "Episode": 2,
-      "MovieTitle": null,
-      "Year": 2021
-    },
-    {
-      "SeriesName": "The Flash",
-      "Season": 7,
-      "Episode": 6,
       "MovieTitle": null,
       "Year": 2021
     },
@@ -4461,16 +4461,16 @@
       "Year": 2021
     },
     {
-      "SeriesName": "Supergirl",
-      "Season": 6,
-      "Episode": 3,
+      "SeriesName": "The Flash",
+      "Season": 7,
+      "Episode": 7,
       "MovieTitle": null,
       "Year": 2021
     },
     {
-      "SeriesName": "The Flash",
-      "Season": 7,
-      "Episode": 7,
+      "SeriesName": "Supergirl",
+      "Season": 6,
+      "Episode": 3,
       "MovieTitle": null,
       "Year": 2021
     },
@@ -4531,16 +4531,16 @@
       "Year": 2021
     },
     {
-      "SeriesName": "Supergirl",
-      "Season": 6,
-      "Episode": 6,
+      "SeriesName": "The Flash",
+      "Season": 7,
+      "Episode": 8,
       "MovieTitle": null,
       "Year": 2021
     },
     {
-      "SeriesName": "The Flash",
-      "Season": 7,
-      "Episode": 8,
+      "SeriesName": "Supergirl",
+      "Season": 6,
+      "Episode": 6,
       "MovieTitle": null,
       "Year": 2021
     },
@@ -4566,16 +4566,16 @@
       "Year": 2021
     },
     {
-      "SeriesName": "Supergirl",
-      "Season": 6,
-      "Episode": 7,
+      "SeriesName": "The Flash",
+      "Season": 7,
+      "Episode": 9,
       "MovieTitle": null,
       "Year": 2021
     },
     {
-      "SeriesName": "The Flash",
-      "Season": 7,
-      "Episode": 9,
+      "SeriesName": "Supergirl",
+      "Season": 6,
+      "Episode": 7,
       "MovieTitle": null,
       "Year": 2021
     },
@@ -4601,16 +4601,16 @@
       "Year": 2021
     },
     {
-      "SeriesName": "Superman \u0026 Lois",
-      "Season": 1,
-      "Episode": 6,
+      "SeriesName": "The Flash",
+      "Season": 7,
+      "Episode": 10,
       "MovieTitle": null,
       "Year": 2021
     },
     {
-      "SeriesName": "The Flash",
-      "Season": 7,
-      "Episode": 10,
+      "SeriesName": "Superman \u0026 Lois",
+      "Season": 1,
+      "Episode": 6,
       "MovieTitle": null,
       "Year": 2021
     },
@@ -4622,9 +4622,9 @@
       "Year": 2021
     },
     {
-      "SeriesName": "Superman \u0026 Lois",
-      "Season": 1,
-      "Episode": 7,
+      "SeriesName": "DC\u0027s Legends of Tomorrow",
+      "Season": 6,
+      "Episode": 4,
       "MovieTitle": null,
       "Year": 2021
     },
@@ -4636,9 +4636,9 @@
       "Year": 2021
     },
     {
-      "SeriesName": "DC\u0027s Legends of Tomorrow",
-      "Season": 6,
-      "Episode": 4,
+      "SeriesName": "Superman \u0026 Lois",
+      "Season": 1,
+      "Episode": 7,
       "MovieTitle": null,
       "Year": 2021
     },
@@ -4664,16 +4664,16 @@
       "Year": 2021
     },
     {
-      "SeriesName": "Superman \u0026 Lois",
-      "Season": 1,
-      "Episode": 9,
+      "SeriesName": "The Flash",
+      "Season": 7,
+      "Episode": 12,
       "MovieTitle": null,
       "Year": 2021
     },
     {
-      "SeriesName": "The Flash",
-      "Season": 7,
-      "Episode": 12,
+      "SeriesName": "Superman \u0026 Lois",
+      "Season": 1,
+      "Episode": 9,
       "MovieTitle": null,
       "Year": 2021
     },
@@ -4692,16 +4692,16 @@
       "Year": 2021
     },
     {
-      "SeriesName": "Superman \u0026 Lois",
-      "Season": 1,
-      "Episode": 10,
+      "SeriesName": "The Flash",
+      "Season": 7,
+      "Episode": 13,
       "MovieTitle": null,
       "Year": 2021
     },
     {
-      "SeriesName": "The Flash",
-      "Season": 7,
-      "Episode": 13,
+      "SeriesName": "Superman \u0026 Lois",
+      "Season": 1,
+      "Episode": 10,
       "MovieTitle": null,
       "Year": 2021
     },
@@ -4720,16 +4720,16 @@
       "Year": 2021
     },
     {
-      "SeriesName": "Superman \u0026 Lois",
-      "Season": 1,
-      "Episode": 11,
+      "SeriesName": "The Flash",
+      "Season": 7,
+      "Episode": 14,
       "MovieTitle": null,
       "Year": 2021
     },
     {
-      "SeriesName": "The Flash",
-      "Season": 7,
-      "Episode": 14,
+      "SeriesName": "Superman \u0026 Lois",
+      "Season": 1,
+      "Episode": 11,
       "MovieTitle": null,
       "Year": 2021
     },
@@ -4769,16 +4769,16 @@
       "Year": 2021
     },
     {
-      "SeriesName": "Superman \u0026 Lois",
-      "Season": 1,
-      "Episode": 12,
+      "SeriesName": "The Flash",
+      "Season": 7,
+      "Episode": 17,
       "MovieTitle": null,
       "Year": 2021
     },
     {
-      "SeriesName": "The Flash",
-      "Season": 7,
-      "Episode": 17,
+      "SeriesName": "Superman \u0026 Lois",
+      "Season": 1,
+      "Episode": 12,
       "MovieTitle": null,
       "Year": 2021
     },
@@ -4790,16 +4790,16 @@
       "Year": 2021
     },
     {
-      "SeriesName": "Superman \u0026 Lois",
-      "Season": 1,
-      "Episode": 13,
+      "SeriesName": "The Flash",
+      "Season": 7,
+      "Episode": 18,
       "MovieTitle": null,
       "Year": 2021
     },
     {
-      "SeriesName": "The Flash",
-      "Season": 7,
-      "Episode": 18,
+      "SeriesName": "Superman \u0026 Lois",
+      "Season": 1,
+      "Episode": 13,
       "MovieTitle": null,
       "Year": 2021
     },
