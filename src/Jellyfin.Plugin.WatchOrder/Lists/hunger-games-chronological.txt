@@ -5,9 +5,9 @@
 playlist: Hunger Games Chronological
 description: The Hunger Games films in story order, starting with the prequels. Best for a rewatch.
 updates: ongoing
-upcoming: movie: The Hunger Games: Sunrise on the Reaping (2026-11-20) | alt: Sunrise on the Reaping | after: The Hunger Games: The Ballad of Songbirds & Snakes
 
 movie: The Hunger Games: The Ballad of Songbirds & Snakes (2023)
+movie: The Hunger Games: Sunrise on the Reaping (2026) | Sunrise on the Reaping
 movie: The Hunger Games (2012)
 movie: The Hunger Games: Catching Fire (2013)
 movie: The Hunger Games: Mockingjay - Part 1 (2014)
