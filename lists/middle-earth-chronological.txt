@@ -11,6 +11,7 @@ upcoming: movie: The Lord of the Rings: The Hunt for Gollum (2027-12-17) | alt: 
 S01E01-E08
 S02E01-E08
 S03E01-E04
+S03E05-E06
 movie: The Lord of the Rings: The War of the Rohirrim (2024)
 movie: The Hobbit: An Unexpected Journey (2012)
 movie: The Hobbit: The Desolation of Smaug (2013)

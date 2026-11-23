@@ -2234,3 +2234,9 @@ S12E06
 S15E06
 @ Chicago P.D.
 S14E06
+@ Chicago Med
+S12E07
+@ Chicago Fire
+S15E07
+@ Chicago P.D.
+S14E07
